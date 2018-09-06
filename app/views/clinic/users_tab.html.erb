@@ -1,0 +1,44 @@
+<head>
+<style type="text/css">
+     button {
+        min-height: 50px;
+        min-width: 350px;
+        margin: 5px;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        background-color: #6281a7;
+        color: #FFF;
+        font-weight: normal;
+        border-radius: 30px;
+        border: 5px outset #000;
+        padding: 10px;
+        cursor: pointer;
+      }
+ 	 h2 {
+		padding-top: 50px;
+	  }
+</style>
+</head>
+<body>
+  <center>
+<h2 style="color: #6281a7;">Administration</h2>
+    <button onclick="parent.window.location = '/user/new/<%= current_user.user_id %>';">
+      Create User
+    </button>    
+    <button onclick="parent.window.location = '/user/select_user/<%= current_user.user_id %>';">
+      Edit User
+    </button>
+    <button onclick="parent.window.location = '/barcodes/new';">
+      Create Barcode
+    </button>
+     <button onclick="parent.window.location = '/drug/drug_sets/<%= current_user.user_id %>';">
+      Manage drug sets
+    </button>
+    <button onclick="window.location = 'data_cleaning_tools/s<%= current_user.user_id %>';">
+      Data Cleaning Tools
+    </button>
+    <button onclick="window.location = 'configurations/<%= current_user.user_id %>';">
+      Configurations
+    </button>
+  </center>
+</body>

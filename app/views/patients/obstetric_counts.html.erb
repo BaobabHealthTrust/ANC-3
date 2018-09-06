@@ -1,0 +1,699 @@
+
+<html>
+  <head>
+    <script type="text/javascript" language="javascript">
+      <!--
+      tt_cancel_show = "/patients/show/<%= @patient.id %>";
+      tt_cancel_destination = "/patients/show/<%= @patient.id %>";
+      var deliveries = 0;
+      var max_delivered = 1;
+      var parity;
+      var parsedConceptName;
+<%
+@pre_conditions = eval(params[:data]) || {'values' => {}, 'conditions' => {}}
+
+@max =   @pre_conditions['values'].values.max rescue 1
+@max_values = {1 => "No", 2 => "Twins", 3 => "Triplets", 4 => "Quadruplet", 5 => "5", 6 => "6", 7 => "7", 8 => "8"}
+%>
+
+<% if @pre_conditions['values'] && @pre_conditions['values'].length > 0 %>
+    max_delivered = parseInt(<%= @max%>);
+<%end%>
+  //-->
+
+  function readableMessage(){
+
+    var conceptName = conceptHash[tstCurrentPage]
+    conceptName = (parsedConceptName && parsedConceptName.length > 1) ? parsedConceptName : conceptName;
+    conceptName = (conceptName.toLowerCase() == "parity")? "Number of Pregnancies" : conceptName;
+
+    try{
+      conceptName = conceptName.charAt(0).toUpperCase() + conceptName.slice(1).toLowerCase();
+      if(__$("messageBar") && !__$("messageBar").innerHTML.match(conceptName)){
+        __$("messageBar").innerHTML = __$("messageBar").innerHTML.replace("Value", conceptName + " Value").replace("value", conceptName + " value").replace("a " + conceptName + " value", conceptName + " value")
+      }
+    }catch(ex){}
+
+    setTimeout(function(){ readableMessage()}, 50);
+  }
+
+  function buildConceptsHash(){
+    var count = 0;
+    var inputArr = document.getElementsByTagName("input")
+    conceptHash = {};
+    for (var i = 0; i < inputArr.length; i ++){
+      if (inputArr[i].name && inputArr[i].name.match("concept_name") && inputArr[i].name.match("observations")){
+        conceptHash[count] = inputArr[i].value;
+        count ++;
+      }
+    }
+  }
+
+  function transformMessages(){
+    buildConceptsHash();
+    setTimeout(function(){ readableMessage()}, 50);
+  }
+
+  function updateMultiplePregnancy(){
+
+    if (max_delivered == 2){
+      __$("multiple_pregnancy").value = "Twins"
+    }else if(max_delivered == 3){
+      __$("multiple_pregnancy").value = "Triplets"
+    }else if(max_delivered == 4){
+      __$("multiple_pregnancy").value = "Quadruplet"
+    }else if(max_delivered == 1){
+      __$("multiple_pregnancy").value = "No"
+    }
+
+  }
+
+  function updateParity(num){
+    par = 0;
+    for (i = 1; i <= num; i ++){
+      try{
+        if (parseInt(__$('gestation_type' + i).value) > 0){
+          par = par + parseInt(__$("gestation_type" + i).value);
+        }
+      }catch(ex){
+      }
+    }
+    parity = par;
+    __$('enter_number_of_deliveries').value = "";
+    __$('enter_number_of_deliveries').value = parity;
+  }
+
+  function updateDeliveries(){
+    deliveries = __$('enter_number_of_deliveries').value;
+  }
+
+  function updateVariables(num){
+    max_delivered = 1;
+    for (i = 1; i <= num; i ++){
+      if (__$("gestation_type" + i).value > max_delivered){
+        max_delivered = __$("gestation_type" + i).value;
+      }
+    }
+  }
+
+  function validateInput(preg, baby_no){
+
+    if (baby_no > 1){
+
+      var twin_baby_year = __$("year_of_birth" + preg + "" + (baby_no - 1)).value;
+
+      if (!twin_baby_year.toString().match(/unknown/i)){
+
+        __$("touchscreenInput" + tstCurrentPage).setAttribute("min", twin_baby_year);
+
+        __$("touchscreenInput" + tstCurrentPage).setAttribute("absoluteMin", twin_baby_year);
+
+        __$("touchscreenInput" + tstCurrentPage).setAttribute("max", twin_baby_year);
+
+        __$("touchscreenInput" + tstCurrentPage).setAttribute("absoluteMax", (parseInt(twin_baby_year) + 1));
+
+      }
+    }
+
+    if (__$("year_of_birth" + preg + (baby_no - 1))){
+      __$("year_of_birth" + preg + (baby_no - 1)).value = "";
+    }
+
+  }
+
+  function loadSplitSelections(arr){
+    //array format [url, input_id, helpText]
+    var arr = [["/encounters/yes_no_options", "ever_had_symphysiotomy"],
+      ["/encounters/hemorrhage_options", "hemorrhage"],
+      ["/encounters/yes_no_options", "pre_eclampsia"],
+      ["/encounters/yes_no_options", "eclampsia"]
+    ];
+
+    var count = arr.length;
+    var n = Math.floor(Math.sqrt(count));
+    var v_count = Math.ceil(count/n);
+    var h_count = Math.ceil(count/n);
+    var e_count = count % n;
+
+    __$("keyboard").style.display = "none";
+    __$("touchscreenInput" + tstCurrentPage).style.display = "none";
+    __$("inputFrame" + tstCurrentPage).style.height = (0.72 * screen.height) + "px";
+    __$("inputFrame" + tstCurrentPage).style.marginTop = (0.05 * screen.height) + "px";
+    //__$("inputFrame" + tstCurrentPage).style.background = "lightblue";
+
+    if (count > 0){
+
+      var n = 0;
+      var holder = document.createElement("div");
+      holder.id = 'holder';
+      holder.style.height =  (0.72 * screen.height) + "px";
+      holder.style.width = "100%";
+      holder.style.display = "none";
+      holder.setAttribute("class", "options");
+      holder.style.borderRadius = "5px";
+      holder.style.background = "white";
+      __$("inputFrame" + tstCurrentPage).appendChild(holder);
+
+      for (var r = 1; r <= v_count; r ++){
+
+        var row = document.createElement("div");
+        row.id = r;
+        row.style.display = "table-row";
+        row.setAttribute("class", "row");
+        holder.appendChild(row);
+
+        for(var c = 1; c <= h_count; c ++){
+
+          var cell = document.createElement("div");
+          cell.id = r + "_" + c;
+          cell.style.display = "table-cell";
+          cell.setAttribute("class", "cell");
+          cell.style.background = "white";
+
+          var helpText = __$(arr[n][1]).getAttribute("helpText");
+          var heada = document.createElement("div");
+          heada.style.height = "40px";
+          heada.innerHTML = helpText;
+          heada.style.marginTop = "5px";
+          heada.style.background = "#CFE4CD";
+          heada.style.borderRadius = "3px";
+          heada.style.border = "2px gray solid";
+          heada.style.fontSize = "28px";
+          heada.style.marginLeft = "5px";
+          heada.style.marginRight = "5px";
+          cell.appendChild(heada);
+
+          if(c != 1){
+            cell.style.borderLeft = "1px solid";
+          }
+
+          if(r != 1){
+            cell.style.borderTop = "1px solid";
+          }
+
+          cell.style.height = ((72/v_count) - 2) * 0.001 * screen.height + "px";
+          cell.style.width = ((100/h_count)) + "%";
+          row.appendChild(cell);
+
+          n ++;
+          if (n != arr.length - 1){
+
+            ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "", (r + "_" + c));
+          }else{
+
+            ajaxCustomRequest(arr[n - 1][0], arr[n - 1][1], "table", (r + "_" + c));
+          }
+
+        }
+      }
+
+      __$("2_2").style.display = "none";
+      __$("1_2").style.borderBottom = "1px solid";
+      __$("2_1").style.borderRight = "1px solid";
+
+    }
+  }
+
+  function ajaxCustomRequest(aUrl, id, n, dom_id) {
+
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.onreadystatechange = function() {
+      handleCustomResult(httpRequest, id, n, dom_id);
+    };
+    try {
+      httpRequest.open('GET', aUrl, true);
+      httpRequest.send(null);
+    } catch(e){
+    }
+  }
+
+  function handleCustomResult(aXMLHttpRequest, id, n, dom_id) {
+
+    if (!aXMLHttpRequest) return;
+
+    if (aXMLHttpRequest.readyState == 4 && (aXMLHttpRequest.status == 200 ||
+      aXMLHttpRequest.status == 304)) {
+
+      var result = aXMLHttpRequest.responseText;
+
+      //__$(dom_id).innerHTML = "";
+
+      var data = result.split("|");
+
+      var ul = document.createElement("ul");
+      ul.style.paddingLeft = "5px";
+      ul.style.paddingRight = "5px";
+
+      for(var i = 0; i < data.length; i ++){
+
+        var li = document.createElement("li")
+        li.setAttribute("class", "cell-data");
+        li.setAttribute("target", id);
+        li.value = data[i];
+        li.setAttribute("value", data[i]);
+        li.innerHTML = data[i];
+        li.onmousedown = function(){
+
+          __$(this.getAttribute("target")).value = this.getAttribute("value");
+
+          if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/Yes/i)){
+
+            __$("2_2").style.display = "table-cell";
+            __$("2_2").style.opacity = 1
+            __$("1_2").style.borderBottom = "hidden";
+            __$("2_1").style.borderRight = "hidden";
+          } else if (this.getAttribute("target") == 'pre_eclampsia' && this.innerHTML.match(/No/i)){
+
+            __$("eclampsia").value = ""
+
+            __$("1_2").style.borderBottom = "1px solid";
+            __$("2_1").style.borderRight = "1px solid";
+
+            hideMsg("2_2");
+          }
+
+          updateTouchscreenInput(this);
+        }
+
+        if(i % 2 == 0){
+
+          li.className = "even";
+          li.setAttribute("group", "even");
+
+        } else {
+
+          li.className = "odd";
+          li.setAttribute("group", "odd");
+        }
+
+        ul.appendChild(li);
+      }
+
+      __$(dom_id).appendChild(ul);
+
+      if (n == "table")
+        setTimeout(function(){
+          __$('holder').style.display = n;
+        }, 350);
+
+    }
+  }
+
+  function fade(div, opacity){
+
+    __$(div).style.opacity = opacity;
+    if (opacity >= 0){
+      opacity = opacity - 0.01;
+      setTimeout(function(){fade(div, opacity)}, 1)
+    }
+    else{
+      __$(div).style.display = "none";
+    }
+  }
+
+  function fadeOut(div, opacity){
+
+    __$(div).style.opacity = opacity;
+    if (opacity <= 1){
+      opacity = opacity + 0.01;
+      setTimeout(function(){fade(div, opacity)}, 5)
+    }
+  }
+  function hideMsg(div){
+    __$(div).style.display = "none"
+    // setTimeout(function(){fade(div, 1);}, 5);
+  }
+
+  function showMsg(div){
+    setTimeout(function(){fadeOut(div, 0);}, 1);
+  }
+
+    </script>
+
+    <style>
+
+      li.highlighted {
+        background-color: lightblue;
+      }
+      li {
+
+        cursor: pointer;
+        font-size: 1.5em;
+        margin: 2px;
+        -moz-user-select: none;
+      }
+    </style>
+  </head>
+  <body>
+    <% form_tag :controller => "encounters", :action => "create" do |f| %>
+      <%= hidden_field_tag "encounter[encounter_type_name]", "OBSTETRIC HISTORY" %>
+      <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
+      <%= hidden_field_tag "encounter[encounter_datetime]", session[:datetime] || Date.today %>
+      <%= hidden_field_tag "encounter[provider_id]", session[:user_id] %>
+
+      <%= hidden_field_tag "parity", @calc_parity %>
+
+      <%= (touch_numeric_tag "GRAVIDA", @patient, @gravida,
+        {:id => "enter_gravida",
+        :helptext => "Gravida <span class='helper'>Obstetric History</span>",
+        :absoluteMin => 0,
+        :value => "#{@gravida}",
+        :condition => false,
+        :max => 20,
+        :min => 1,
+        :tt_onLoad => "document.forms[0].reset();transformMessages(); gotoNextPage()",
+        :tt_onUnLoad => "if(__$('category')){__$('content').removeChild(__$('category'))}
+    if(__$('enter_gravida').value == 1){
+    __$('enter_number_of_deliveries').value = 0;
+    __$('multiple_pregnancy').value = 'No';
+    __$('enter_number_of_abortions').value = 0;
+    __$('pre_eclampsia').value = 'No';
+    __$('ever_had_symphysiotomy').value = 'No';
+    __$('hemorrhage').value = 'No';
+    __$('ever_had_c_sections').value = 'No';
+    __$('ever_had_a_vacuum_extraction').value = 'No';
+    __$('ever_had_still_births').value = 'No';
+    }",
+        :tt_pageStyleClass => "NumbersOnly"}).html_safe %>
+
+
+      <%= (touch_numeric_tag "PARITY", @patient, nil,
+        {:id => "enter_number_of_deliveries",
+        :helptext => "Enter Number Of Delivered Pregnancies <span class='helper'>Obstetric History</span>",
+        :tt_pageStyleClass => "NumbersWithUnknown",
+        :value => "#{@parity}",
+        :condition => false,
+        :condition => "__$('enter_gravida').value > 1",
+        :tt_onLoad => " __$('touchscreenInput' + " +
+          "tstCurrentPage).setAttribute('absoluteMax', (__$('enter_gravida').value - 1)); gotoNextPage()",
+        :tt_onUnLoad => "if(__$('enter_number_of_deliveries').value == 0){
+    __$('ever_had_still_births').value = 'No';
+    __$('ever_had_symphysiotomy').value = 'No';
+    __$('ever_had_c_sections').value = 'No';
+    __$('ever_had_a_vacuum_extraction').value = 'No';
+    }; __$('enter_number_of_abortions').setAttribute('absoluteMax', (parseInt(__$('enter_gravida').value - parseInt(__$('enter_number_of_deliveries').value) -1 )));
+    __$('enter_number_of_abortions').setAttribute('absoluteMin', (parseInt(__$('enter_gravida').value - parseInt(__$('enter_number_of_deliveries').value) -1 )));
+    __$('enter_number_of_abortions').setAttribute('validationRule', '[' + (parseInt(__$('enter_gravida').value) -
+    parseInt(__$('enter_number_of_deliveries').value) - 1) + ']');
+    __$('enter_number_of_abortions').setAttribute('validationMessage', 'Expected value is ' + (parseInt(__$('enter_gravida').value) -
+    parseInt(__$('enter_number_of_deliveries').value) - 1));
+    __$('enter_number_of_abortions').removeAttribute('validationRule'); " +
+          "__$('enter_number_of_abortions').removeAttribute('validationMessage')"
+      }).html_safe %>
+
+      <%= (touch_numeric_tag "NUMBER OF ABORTIONS", @patient, nil,
+        {:id => "enter_number_of_abortions",
+        :helptext => "Enter Number Of Abortions <span class='helper'>Obstetric History</span>",
+        :tt_pageStyleClass => "NumbersWithUnknown",
+        :condition => "__$('enter_gravida').value > 1",
+        :tt_onLoad => " updateDeliveries();  __$('touchscreenInput' + tstCurrentPage).value = parseInt(__$('enter_gravida').value) - parseInt(__$('enter_number_of_deliveries').value) -1; gotoNextPage()",
+        :value => "#{@abortions}",
+        :validationRule => "[0-5]",
+        :validationMessage => "Check your value"
+      }).html_safe %>
+
+      <%
+
+      1.upto(@parity.to_i).each{|e| %>
+
+        <%
+        indice = ""
+        case e
+        when 1
+          indice = "<sup>st</sup>"
+        when 2
+          indice = "<sup>nd</sup>"
+        when 3
+          indice = "<sup>rd</sup>"
+        else
+          indice = "<sup>th</sup>"
+        end
+      %>
+
+        <%= (touch_numeric_tag "NUMBER OF CHILDREN IN PREGNANCY", @patient, @pre_conditions["values"][e],
+        {:id => "gestation_type#{e}",
+          :helptext => "#{e}#{indice} Pregnancy Number of Children <span class='helper'>Obstetric History</span>",
+          :tt_pageStyleClass => "NumbersWithUnknown",
+          :tt_BeforeUnload => "updateVariables(#{e});
+      try{ if(max_delivered < __$('touchscreenInput' + tstCurrentPage).value){
+      max_delivered = __$('touchscreenInput' + tstCurrentPage).value}}catch(exx){};
+      updateMultiplePregnancy();",
+          :tt_onUnLoad => "updateParity(#{e});",
+          :absoluteMin => 1,
+          :tt_onLoad => "",
+          :min => 1,
+          :max => 4,
+          :absoluteMax => 10,
+          :condition => "false" }).html_safe %>
+
+        <%= (touch_select_tag "MULTIPLE GESTATION", @patient, options_for_select([[@max_values[@max], @max_values[@max]],
+            ["No", "No"],
+            ["Twins", "Twins"],
+            ["Triplets", "Triplets"],
+            ["Quadruplet", "Quadruplet"]]),
+        {
+          :id => "multiple_pregnancy",
+          :field_type => "text",
+          :tt_onLoad => " __$('touchscreenInput' + tstCurrentPage).value = __$('multiple_pregnancy').value; ",
+          :helptext => "Ever Had Multiple Delivery <span class='helper'>Obstetric History</span>",
+          :condition => "false"}).html_safe %>
+
+        <% 1.upto(4).each{|d| %>
+
+          <%
+          indic = ""
+          case d
+          when 1
+            indic = "<sup>st</sup>"
+          when 2
+            indic = "<sup>nd</sup>"
+          when 3
+            indic = "<sup>rd</sup>"
+          else
+            indic = "<sup>th</sup>"
+          end %>
+
+          <%= (touch_numeric_tag "YEAR OF BIRTH", @patient, nil,
+          {:id => "year_of_birth#{e}#{d}",
+            :helptext => "Year of Birth #{d}#{indic} Child (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :tt_pageStyleClass => "NumbersWithUnknown",
+            :absoluteMin => @min_birth_year,
+            :min => @min_birth_year,
+            :tt_onLoad => " validateInput(#{e}, #{d})",
+            :max => @max_birth_year,
+            :absoluteMax => @abs_max_birth_year,
+            :condition => "__$('gestation_type#{e}').value >= #{d} && #{@pre_conditions["conditions"][e]}" }).html_safe %>
+
+          <%= (touch_text_field_tag "Place of Birth", @patient, nil,
+          {:id => "delivery#{e}#{d}",
+            :helptext => "Place of Birth #{d}#{indic} Child (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :ajaxURL => "/encounters/static_locations?extras=1&search_string=",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && #{@pre_conditions["conditions"][e]}",
+            :tt_onLoad => " addHereButton()",
+            :tt_onUnLoad => "removeHereButton()"
+          }).html_safe %>
+
+          <%= (touch_text_field_tag "Gestation", @patient, nil,
+          {:id => "gestation#{e}#{d}",
+            :helptext => "Gestation (Months) #{d}#{indic} Child (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && #{@pre_conditions["conditions"][e]}",
+            :field_type => "number",
+            :tt_pageStyleClass => "NumbersWithUnknown",
+            :max => 9,
+            :tt_onLoad => "",
+            :min => 6
+          }).html_safe %>
+
+          <%= (touch_text_field_tag "Labour Duration", @patient, nil,
+          {:id => "labour_duration#{e}#{d}",
+            :helptext => "Estimated Labour Duration (Hours) #{d}#{indic} Child (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && #{@pre_conditions["conditions"][e]}",
+            :field_type => "number",
+            :tt_onLoad => "",
+            :tt_pageStyleClass => "NumbersWithUnknown" }).html_safe %>
+
+          <%= (touch_select_tag "Method of Delivery", @patient, options_for_select(@delivery_modes),
+          {:id => "method_of_delivery#{e}#{d}",
+            :tt_onLoad => "",
+            :helptext => "Method of Delivery #{d}#{indic} Child (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && #{@pre_conditions["conditions"][e]}",
+            :tt_onUnLoad => "try{if(__$('method_of_delivery#{e}').value == 'Caesarean Section'){__$('ever_had_c_sections').value = 'Yes';} " +
+              " else if(__$('method_of_delivery#{e}#{d}').value == 'Vacuum Extraction Delivery'){__$('ever_had_a_vacuum_extraction').value = 'Yes';}}catch(e){}" }).html_safe %>
+
+          <%= (touch_select_tag "Condition at Birth", @patient,
+          options_for_select([["", ""], ["Alive", "Alive"], ["Still Birth","Still Birth"]]),
+          {:id => "condition_at_birth#{e}#{d}",
+            :tt_onLoad => "",
+            :helptext => "Condition at Birth #{d}#{indic} Child (#{e}#{indice} Pregnancy <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && #{@pre_conditions["conditions"][e]}",
+            :tt_onUnLoad => "try{if(__$('condition_at_birth#{e}#{d}').value == 'Still Birth'){__$('ever_had_still_births').value = 'Yes';}}catch(e){}"
+          }).html_safe %>
+
+          <%= (touch_select_tag "Birth Weight", @patient,
+          options_for_select([["", ""], ["Big Baby (Above 4kg)", "Big Baby (Above 4kg)"],
+              ["Average","Average"], ["Small Baby (Less than 2.5kg)", "Small Baby (Less than 2.5kg)"]]),
+          {:id => "birth_weight#{e}#{d}",
+            :tt_onLoad => "",
+            :helptext => "Estimated Birth Weight #{d}#{indic} Child (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && __$('condition_at_birth#{e}#{d}').value != 'Still Birth' && #{@pre_conditions["conditions"][e]}" }).html_safe %>
+
+          <%= (touch_select_tag "Alive", @patient, options_for_select([["", ""], ["Yes", "Yes"], ["No","No"]]),
+          {:id => "alive#{e}#{d}",
+            :tt_onLoad => "",
+            :helptext => "#{d}#{indic} Child Alive Now (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && __$('condition_at_birth#{e}#{d}').value != 'Still Birth' && #{@pre_conditions["conditions"][e]}" }).html_safe %>
+
+          <%= (touch_select_tag "Units of age of child", @patient,
+          options_for_select([["", ""], ["Years", "Years"], ["Months","Months"], ["Weeks", "Weeks"], ["Days", "Days"],
+              ["Hours", "Hours"], ["Minutes", "Minutes"]]),
+          {:id => "age_units#{e}#{d}",
+            :tt_onLoad => "",
+            :helptext => "#{d}#{indic} Child's Units of age at death (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && __$('alive#{e}#{d}').value == 'No' && #{@pre_conditions["conditions"][e]}" }).html_safe %>
+
+          <%= (touch_numeric_tag "Age at Death", @patient, nil,
+          {:id => "age_at_death#{e}#{d}",
+            :helptext => "#{d}#{indic} Child's Age at Death (#{e}#{indice} Pregnancy) <span class='helper'>Obstetric History</span>",
+            :tt_pageStyleClass => "NumbersOnly",
+            :absoluteMin => 0,
+            :tt_onLoad => " __$('helpText' + tstCurrentPage).innerHTML += '(' + __$('age_units#{e}#{d}').value + ')'",
+            :condition => "__$('gestation_type#{e}').value >= #{d} && __$('alive#{e}#{d}').value == 'No' && #{@pre_conditions["conditions"][e]}" }).html_safe %>
+
+        <% } %>
+      <%}%>
+
+      <% 1.upto(@abortions.to_i).each{|e| %>
+
+        <%
+        indice = ""
+        case e
+        when 1
+          indice = "<sup>st</sup>"
+        when 2
+          indice = "<sup>nd</sup>"
+        when 3
+          indice = "<sup>rd</sup>"
+        else
+          indice = "<sup>th</sup>"
+        end
+
+
+      %>
+
+        <%= (touch_numeric_tag "YEAR OF BIRTH", @patient, nil,
+        {:id => "year_of_birth#{e}",
+          :tt_onLoad => " if (parseInt(#{e}) > 1){try{__$('touchscreenInput' + tstCurrentPage).setAttribute('min', parseInt(__$('year_of_birth#{e - 1}').value))}catch(ex){}}",
+          :helptext => "Year of #{e}#{indice} Abortion <span class='helper'>Obstetric History</span>",
+          :tt_pageStyleClass => "NumbersWithUnknown",
+          :absoluteMin => (@birth_year + 10),
+          :min =>   @min_birth_year,
+          :max => @max_birth_year,
+          :absoluteMax => @abs_max_birth_year,
+          :condition => "__$('enter_number_of_abortions').value >= #{e}" }).html_safe %>
+
+        <%= (touch_select_tag "Place of Birth", @patient, options_for_select(@place),
+        {:id => "delivery#{e}",
+          :tt_onLoad => "",
+          :helptext => "Place of #{e}#{indice} Abortion <span class='helper'>Obstetric History</span>",
+          :condition => "__$('enter_number_of_abortions').value >= #{e}" }).html_safe %>
+
+        <%= (touch_select_tag "Type of Abortion", @patient, options_for_select(["", "Incomplete abortion", "Complete abortion"]),
+        {:id => "type_of_abortion#{e}",
+          :tt_onLoad => "",
+          :helptext => "Type of #{e}#{indice} Abortion <span class='helper'>Obstetric History</span>",
+          :condition => "__$('enter_number_of_abortions').value >= #{e}",
+          :tt_onUnLoad => "__$('condition_at_birth_abortion#{e}').value = 'Abortion'"
+        }).html_safe %>
+
+        <%= (touch_select_tag "Procedure Done", @patient, options_for_select(@procedures),
+        {:id => "method_of_delivery#{e}",
+          :tt_onLoad => "",
+          :helptext => "Procedure Done #{e}#{indice} Abortion <span class='helper'>Obstetric History</span>",
+          :condition => "__$('enter_number_of_abortions').value >= #{e} && __$('type_of_abortion#{e}').value == 'Incomplete abortion'"
+        }).html_safe %>
+
+        <%= (touch_text_field_tag "Gestation", @patient, nil,
+        {:id => "gestation#{e}",
+          :helptext => "Gestation #{e}#{indice} Abortion (Months) <span class='helper'>Obstetric History</span>",
+          :condition => "__$('enter_number_of_abortions').value >= #{e}",
+          :field_type => "number",
+          :absoluteMax => "6",
+          :tt_onLoad => "",
+          :tt_pageStyleClass => "NumbersOnly" }).html_safe %>
+
+        <%= (touch_hidden_tag "Condition at Birth", @patient, nil,
+        {:id => "condition_at_birth_abortion#{e}",
+          :tt_onLoad => "",
+          :helptext => "Condition at Birth #{e}#{indice} Abortion <span class='helper'>Obstetric History</span>",
+          :condition => "__$('enter_number_of_abortions').value >= #{e}" }).html_safe %>
+
+      <% } %>
+
+      <%
+      controls = ""
+      1.upto(@abortions.to_i).each{|e|
+        controls = controls + (controls.length > 0 ? "&& " : "") + "__$('condition_at_birth#{e}').value != 'Still Birth' "
+      }
+    %>
+      <%= (touch_hidden_tag "STILL BIRTH", @patient, "No",
+        {:id => "ever_had_still_births",
+        :helptext => "Ever Had Still Births?",
+        :tt_onLoad => " parsedConceptName = 'STILL BIRTH'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "__$('enter_gravida').value > 0 && deliveries > 0 " +
+          "&& (#{controls})"}).html_safe %>
+      <%= (touch_hidden_tag "Caesarean section", @patient, "No",
+        {:id => "ever_had_c_sections",
+        :helptext => "Ever Had C-sections?",
+        :tt_onLoad => " parsedConceptName = 'Caesarean section'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "__$('enter_gravida').value > 0" }).html_safe %>
+      <%= (touch_hidden_tag "Vacuum extraction delivery", @patient, "No",
+        {:id => "ever_had_a_vacuum_extraction",
+        :helptext => "Ever Had A Vacuum Extraction",
+        :tt_onLoad => " parsedConceptName = 'Vacuum extraction delivery'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "__$('enter_gravida').value > 0" }).html_safe %>
+
+      <%= (touch_select_tag "SYMPHYSIOTOMY", @patient, options_for_select([["", ""], ["No", "No"], ["Yes", "Yes"]]),
+        {:id => "ever_had_symphysiotomy",
+        :helptext => "Ever Had Symphysiotomy?",
+        :tt_onLoad => " parsedConceptName = 'SYMPHYSIOTOMY'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "false"
+      }).html_safe %>
+
+      <%= (touch_select_tag "HEMORRHAGE", @patient, options_for_select([["", ""], ["No", "No"], ["APH", "APH"], ["PPH", "PPH"]]),
+        {:id => "hemorrhage",
+        :helptext => "Ever Had Hemorrhage?",
+        :tt_onLoad => " parsedConceptName = 'HEMORRHAGE'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "false"
+      }).html_safe %>
+
+      <%= (touch_select_tag "PRE-ECLAMPSIA", @patient, options_for_select([["", ""], ["No", "No"], ["Yes", "Yes"]]),
+        {:id => "pre_eclampsia",
+        :helptext => "Ever Had Pre-Eclampsia?",
+        :tt_onLoad => " parsedConceptName = 'PRE-ECLAMPSIA'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "false" }).html_safe %>
+
+      <%= (touch_select_tag "ECLAMPSIA", @patient, options_for_select([["", ""], ["No", "No"], ["Yes", "Yes"]]),
+        {:id => "eclampsia",
+        :helptext => "Ever Had Eclampsia?",
+        :tt_onLoad => " parsedConceptName = 'ECLAMPSIA'",
+        :tt_onUnLoad => "parsedConceptName = ''",
+        :condition => "false" }).html_safe %>
+
+      <%= (touch_text_field_tag "", @patient, nil,
+        {:id => "complications",
+        :helptext => "Previous complications <span class='helper'>Obstetric History</span>",
+        :tt_onLoad => "loadSplitSelections();",
+        :optional => "true",
+        :condition => "__$('enter_gravida').value > 1"
+      }).html_safe %>
+
+      <%= submit_tag 'Finish' %>
+    <% end %>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <% @title = "#{controller.controller_name.humanize} #{controller.action_name.humanize}" rescue ""  %>
+    <script language="javascript" defer="true">
+      <!--      
+      tstUsername = "<%= current_user.username unless current_user.nil? %>";
+      tstUserKeyboardPref = "<%=
+current_user.user_properties.last(:conditions => ["property = 'preferred.keyboard'"]).property_value rescue "abc"
+%>";
+      
+  tstCurrentDate = "<%= (session[:datetime] ? session[:datetime].to_date.strftime("%Y-%m-%d") : 
+    Date.today.strftime("%Y-%m-%d")) %>";
+            
+  function addHereButton(){
+    var button = document.createElement("button");
+    button.id = "addHere";
+    button.innerHTML = "<span>Here</span>";
+    button.style.cssFloat = "right";
+    
+    button.onclick = function(){
+      __$("touchscreenInput" + tstCurrentPage).value = "<%= Location.current_health_center.name rescue "" %>"
+    }
+    
+    if(__$("buttons")){
+      __$("buttons").appendChild(button);
+    }
+  }
+ 
+  function removeHereButton(){
+    if(__$("addHere")){
+      __$("buttons").removeChild(__$("addHere"));
+    }
+  }
+  
+  function getSelected(){
+    var choices = "";
+
+    for(var o = 0; o < __$('choice').options.length; o++){
+      if(__$('choice').options[o].selected == true){
+        choices += __$('choice').options[o].innerHTML + " ";
+      }
+    }
+
+    return choices;
+  }
+  function addSearchByNameButton(){
+    var button = __$("backButton");
+    button.id = "search_by_name";
+    button.innerHTML = "<span>Search By Name</span>";
+    button.style.display = "block";
+
+    button.onclick = function(){
+    <% if params['patient_id'].blank? %>
+      window.location = "/people/search?gender=Female"
+      console.log('here');
+    <% else %>
+      window.location = "/people/search?gender=Male&patient_id=<%=params[:patient_id]%>"
+    <%end%>
+  }
+
+  }
+  
+  //-->
+    </script>
+
+    <script language="javascript" type="text/javascript" src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<%#= stylesheet_link_tag "mateme" %>
+<%#= stylesheet_link_tag fancy_or_high_contrast_touch %>
+<%#= javascript_include_tag "preload" %>
+<%#= javascript_include_tag "touchscreenToolkit" %>
+    <%= javascript_include_tag "dateselector" %>
+
+  </head>
+  <body id="mateme">  
+    <div id="container">
+      <div id="content">
+          <% unless flash[:notice].nil? %>
+          <p id="flash_notice" style="color: green"><%= flash[:notice] %></p>
+        <% end %>
+        <% unless flash[:error].nil? %>
+          <p id="flash_error" style="color: red"><%= flash[:error] %></p>
+        <% end %>
+        <%= yield %>  
+        <div id="footer">
+        </div>    
+      </div>  
+    </div>
+  </body>
+</html>

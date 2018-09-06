@@ -1,0 +1,1099 @@
+ <script language="javascript" type="text/javascript" src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
+<style>
+	#a{
+		position:relative;
+		top:30px;
+		width:100%;
+		height:100px;
+		display:block;
+		border-bottom-style:solid;
+		border-bottom-color:black;
+		border-bottom-width:0.1px;
+		border-radius: 12px;
+		background-color: #EEEEEE;
+		overflow-y: scroll;
+	}
+	
+	.z{
+		position:relative;
+		height:50%;
+		diplay:block;
+		float:left;
+		text-align:center;
+		line-height:48px;
+		vertical-align: middle;
+		background-color: #ffffff;
+	}
+	
+	#b{
+		border-style:solid;
+		border-color:black;
+		border-width:0.1px;
+		border-bottom-style:none;
+		width: 19%;
+		height:97.8%;
+		line-height:82px;
+		vertical-align: middle;
+	}
+	
+	#c{
+		border-style:solid;
+		border-color:black;
+		border-width:0.1px;
+		border-left-style:none;
+		width: 14%;
+	}
+	
+	#d{
+		border-style:solid;
+		border-color:black;
+		border-width:0.1px;
+		border-left-style:none;
+		border-right-style:none;		
+		width: 10%;
+	}
+	
+	#e{
+		border-style:solid;
+		border-color:black;
+		border-width:0.1px;
+		border-bottom-style:none;
+		width:30%;
+		height:97.8%;
+	}
+	#f{
+		border-style:solid;
+		border-color:black;
+		border-left-style:none;
+		border-right-style:none;
+		border-width:0.1px;
+		width: 15.5%;
+	}
+	
+	#g{
+		width: 10.5%;
+		border-style:solid;
+		border-color:black;
+		border-right-style:none;
+		border-bottom-style:none;
+		border-width:0.1px;
+		height: 97%;
+	}
+	
+	#freq {
+		position:relative;
+		height:50.5%;
+		width:100%;
+		float:left;
+		border-bottom-style:solid;
+		border-color:black;
+		border-width:0.1px;
+		text-align:center;
+	}
+	.sfreq {
+		position:relative;
+		width: 24.2%;
+		height:50%;
+		float:left;
+		text-align:center;
+		border-right-style:solid;
+		border-color:black;
+		border-right-width:0.1px;
+	}
+
+	#srch {
+		font-size: 1.8em;
+		display:block;
+		float:left;
+		position: relative;
+		top: 20px;
+		margin-right:20px;
+	}
+	
+	#srchin {
+		background-color: #EEEEEE;
+		font-size: 1.8em;
+		left: 0%;
+		padding: 5px;
+		position: relative;
+		top: 10px;
+		width: 85%;
+		border-radius: 12px;
+	}
+	
+	#scont {
+		position:relative;
+		top:20px;
+		background-color:#EEEEEE;
+		border: 2px solid #CCCCCC;
+		border-radius: 12px;	
+	}
+	
+	#sdrug {
+		position:relative;
+		height:4cm;
+		width:49.7%;
+		background-color:#FFFFFF;
+		border: 2px solid #CCCCCC;
+		margin-bottom:2px;
+		float:left;
+		border-radius: 12px;
+	}
+	
+	#seff {
+		position:relative;
+		height:4cm;
+		width:49.7%;
+		background-color:#FFFFFF;
+		border: 2px solid #CCCCCC;
+		margin-bottom:2px;
+		left:50.2%;
+		border-radius: 12px;
+	}
+	
+	
+	#druglist{
+		position:relative;
+		top:20px;
+		list-style-type: none;
+		border-radius: 12px;
+		max-height:10cm;
+		overflow: auto;
+		overflow-x:hidden;
+		overflow-y: scroll;
+	}
+	
+	#druglist>li {
+		position:relative;
+		display:block;
+		width:99.5%;
+		left: -40px;
+		position: relative;
+		width: 103%;
+		border:0.05px solid black;
+		border-radius: 12px;
+		margin-top:1px;
+		margin-bottom:1px;
+		font-size:1.2em;
+	}
+	
+	#druglist>li:nth-child(even) {
+		background: #FFFFFF;
+	}
+	
+	#druglist>li:nth-child(odd) {
+		background: #EEEEEE;
+	}
+	
+	
+	#dul {
+		position:relative;
+		list-style-type: none;
+		left:-33px;
+		border-radius: 12px;
+		max-height:3.5cm;
+		overflow: auto;
+		overflow-x:hidden;
+	}
+	
+	#dul>li {
+		position:relative;
+		background-color: #CCCCCC;
+		display:block;
+		width:97%;
+		font-size: 1em;
+		padding:5px;
+		margin:3px;
+		border-radius: 12px;
+	}
+
+	#dul>li:nth-child(even) {
+		background: #FFFFFF;
+	}
+	
+	#dul>li:nth-child(odd) {
+		background: #EEEEEE;
+	}
+	
+	.sdli{
+		width:74%;
+	}
+	
+	.cb {
+		width:5%;
+	}
+	
+	.clbtn {
+		position:relative;
+		margin: 0px auto;
+		width:25px;
+		height:30px;
+		background-repeat: no-repeat;
+		background-image: url("../images/cancel_flat_small_red.png");
+		background-size:100% 100%;
+	}
+	
+	.sdlist {
+		position:relative;
+		display:table-cell;
+		text-align:left;
+		font-size:1em;
+		word-break: break-all;
+		word-wrap: break-word;
+	}
+	
+	.din {
+		width:50%;
+		text-align: center;
+		padding: 5px;
+		background-color: #EFFFFF;
+		font-weight:bold;
+	}
+	
+	.dlist {
+		position:relative;
+		display:table-cell;
+		text-align:center;
+		font-size:1em;
+		word-break: break-all;
+		word-wrap: break-word;
+		border-left-style:solid;
+		border-right-style:solid;
+		border-color:black;
+		border-width:0.1px;
+	}
+	
+	.bdiv {
+		width: 19%;
+	}
+	
+	.cdiv {
+		width: 14%;
+	}
+	
+	.ddiv {
+		width: 10%;
+
+	}
+	
+	.ediv {
+		width: 30%;
+	}
+	
+	.fdiv {
+		width: 15.5%;
+	}
+	
+	.gdiv {
+		width: 10.5%;
+	}
+	.fdx {
+		display:table-cell;
+	}
+	
+	#keyboard {
+		border-radius: 12px;
+		height: 5cm;
+		left: 41%;
+		position: absolute;
+		top: 0;
+		width: 60%;
+		z-index: 5000;
+	}
+	
+	#smallkeyboard {
+		height: 2cm;
+		left: 52%;
+		position: absolute;
+		top: 139%;
+		width: 7cm;
+		z-index: 5000;
+	}
+	
+	.cancelb {
+		position:relative;
+		float: right;
+		position: relative;
+		top: -50%;
+		width: 40px;
+		display:table-cell;
+		border-radius: 12px;
+	}
+	
+	.pdrug {
+		position:relative;
+		max-width:80%;
+		display:block;
+	}
+	
+	.sbmt {
+		position:relative;
+		top: -155px;
+	}
+	
+	.sbmtSz {
+		width: 140px;
+		margin-bottom:10px;
+	}
+	
+	#freqkeyboard {
+		border-radius: 12px;
+		height: 2cm;
+		left: 2%;
+		position: absolute;
+		top: 106%;
+		width: 18cm;
+		z-index: 5000;
+	}
+	
+	#tblKeyboard {
+		border-radius: 12px;
+	}
+	
+	#divMenu {
+		border-radius: 12px;
+	}
+	
+</style>
+
+<script>
+
+	var displayKeyBoard = false;
+	var smallDisplayKeyBoard = false;
+	var freqDisplayKeyBoard = false;
+	
+	function loadHighlight(tag_s) {
+		var e = document.querySelectorAll(tag_s)
+		for(var i=0; i<e.length; i++) {
+				e[i].onclick = 	function() {
+					var e = document.querySelectorAll(tag_s)
+		
+					for(var i=0; i<e.length; i++) {
+						if (e[i].style.backgroundColor == "lightblue" ){
+							if (i%2==0) {
+								e[i].style.backgroundColor="#EEEEEE";
+							}
+							else {
+								e[i].style.backgroundColor="#FFFFFF";
+							}
+						}
+					}
+					this.style.backgroundColor = "lightblue";
+				}
+			}
+	}
+	
+	function searchDrug(sStr) {
+		sStr =sStr.trim().toUpperCase();
+		if (/\S/.test(sStr)) {
+			findDrug(sStr);
+		}
+	}
+	
+	function showKeyBoard() {
+	
+		//Hide small key board
+		document.getElementById("smallkeyboard").style.display = "none";
+		smallDisplayKeyBoard=true;
+		
+		document.getElementById("freqkeyboard").style.display = "none";
+		freqDisplayKeyBoard=true;
+			
+		if(displayKeyBoard) {
+			document.getElementById("keyboard").style.display = "block";
+			displayKeyBoard=false;
+		} else {
+			document.getElementById("keyboard").style.display = "none";
+			displayKeyBoard=true;
+		}
+	}
+	
+	function showFixedKeyboard(ctrl, global_control){	
+		
+		var full_keyboard = "full";
+		
+		var div = document.createElement("div");
+		div.id = "divMenu";
+		div.style.backgroundColor = "#EEEEEE";
+		div.style.top = "0px";
+		div.style.left = "0px";
+		div.style.margin = "5px";
+
+		var row1 = ["Q","W","E","R","T","Y","U","I","O","P"];
+		var row2 = ["clear", "A","S","D","F","G","H","J","K","L"];
+		var row3 = ["del", "Z","X","C","V","B","N","M","stat<br />dose"];
+		var row5 = ["1","2","3","4","5","6","7","8","9","0"];
+
+		var tbl = document.createElement("table");
+		tbl.bgColor = "#fff";
+		tbl.cellSpacing = 2;
+		tbl.cellPadding = 10;
+		tbl.id = "tblKeyboard";
+		tbl.width = "100%";
+
+		var tr5 = document.createElement("tr");
+
+		for(var i = 0; i < row5.length; i++){
+		    var td5 = document.createElement("td");
+		    td5.innerHTML = row5[i];
+		    td5.align = "center";
+		    td5.vAlign = "middle";
+		    td5.style.cursor = "pointer";
+		    td5.style.fontSize = "1.5em";
+		    td5.bgColor = "#EEEEEE"
+		    td5.width = "30px";
+		    td5.className = "btn";
+
+		    td5.onclick = function(){
+		        
+		        if(!this.innerHTML.match(/^$/)){
+		            $(global_control).value += this.innerHTML.toProperCase();
+		            $(global_control).value = $(global_control).value.toProperCase();
+		            searchDrug(document.getElementById(global_control).value);
+		        }
+		    }
+
+		    tr5.appendChild(td5);
+		}
+
+		if(full_keyboard){
+		    tbl.appendChild(tr5);
+		}
+
+		var tr1 = document.createElement("tr");
+
+		for(var i = 0; i < row1.length; i++){
+		    var td1 = document.createElement("td");
+		    td1.innerHTML = row1[i];
+		    td1.align = "center";
+		    td1.vAlign = "middle";
+		    td1.style.cursor = "pointer";
+		    td1.style.fontSize = "1.5em";
+		    td1.bgColor = "#EEEEEE"
+		    td1.width = "30px";
+		    td1.className = "btn";
+		        
+		    td1.onclick = function(){
+		        if(!this.innerHTML.match(/^$/)){
+		            $(global_control).value += this.innerHTML.toProperCase();
+		            $(global_control).value = $(global_control).value.toProperCase();
+		            searchDrug(document.getElementById(global_control).value);
+		        }
+		    }
+
+		    tr1.appendChild(td1);
+		}
+
+		tbl.appendChild(tr1);
+
+		var tr2 = document.createElement("tr");
+
+		for(var i = 0; i < row2.length; i++){
+		    var td2 = document.createElement("td");
+		    td2.innerHTML = row2[i];
+		    td2.align = "center";
+		    td2.vAlign = "middle";
+		    td2.style.cursor = "pointer";
+		    td2.style.fontSize = "1.5em";
+		    td2.bgColor = "#EEEEEE"
+		    td2.width = "30px";
+
+		    if(!row2[i].trim().match(/^$/)){
+		        td2.className = "btn";
+		    }
+
+		    if(row2[i] == "clear"){
+
+		        td2.onclick = function(){
+		            $(global_control).value = "";
+		            searchDrug(document.getElementById(global_control).value);
+		     	}
+		     }else {
+				td2.onclick = function(){
+				    if(!this.innerHTML.match(/^$/)){
+				        $(global_control).value += this.innerHTML.toProperCase();
+				        $(global_control).value = $(global_control).value.toProperCase();
+				        searchDrug(document.getElementById(global_control).value);
+				    }
+				}
+		    
+		    }
+
+		    tr2.appendChild(td2);
+		}
+
+		tbl.appendChild(tr2);
+
+		var tr3 = document.createElement("tr");
+
+		for(var i = 0; i < row3.length; i++){
+		    var td3 = document.createElement("td");
+		    td3.innerHTML = row3[i];
+		    td3.align = "center";
+		    td3.vAlign = "middle";
+		    td3.style.cursor = "pointer";
+		    td3.style.fontSize = "1.5em";
+		    td3.bgColor = "#EEEEEE"
+		    td3.width = "30px";
+
+		    if(!row3[i].trim().match(/^$/)){
+		        td3.className = "btn";
+		    }
+
+		    if(row3[i] == "del"){
+		        td3.colSpan = 2;
+
+		        td3.onclick = function(){
+		            $(global_control).value = $(global_control).value.substring(0,$(global_control).value.length - 1);
+		            searchDrug(document.getElementById(global_control).value);
+		        }
+		        
+		    } else if(row3[i].trim() == "stat<br />dose"){
+		        td3.style.fontSize = "0.9em";
+		        td3.style.padding = "0px";
+		        td3.style.fontWeight = "bold";
+		        
+		        td3.onclick = function(){
+		            if ($("optionOD"))
+		                $("optionOD").click();
+		            if ($("group1_1-10"))
+		                $("group1_1-10").click();
+		            if ($("group2_1"))
+		                $("group2_1").click();
+		        }
+		    } else {
+
+		        td3.onclick = function(){
+		            if(!this.innerHTML.match(/^$/)){
+		                $(global_control).value += this.innerHTML.toProperCase();
+		                $(global_control).value = $(global_control).value.toProperCase();
+		                searchDrug(document.getElementById(global_control).value);
+		            }
+		        }
+
+		    }
+
+		    tr3.appendChild(td3);
+		}
+
+		tbl.appendChild(tr3);
+
+		div.appendChild(tbl);
+		ctrl.appendChild(div);
+
+	}
+
+	function showSmallFixedKeyboard(ctrl, global_control){
+		
+		var full_keyboard = "full";
+		
+		var div = document.createElement("div");
+		div.id = "divMenu";
+		div.style.backgroundColor = "#EEEEEE";
+		div.style.top = "0px";
+		div.style.left = "0px";
+		div.style.margin = "5px";
+
+		var row1 = ["4","5","6"];
+		var row2 = ["7", "8","9"];
+		var row3 = ["del","0"];
+		var row5 = ["1","2","3"];
+
+		var tbl = document.createElement("table");
+		tbl.bgColor = "#fff";
+		tbl.cellSpacing = 2;
+		tbl.cellPadding = 10;
+		tbl.id = "tblKeyboard";
+		tbl.width = "100%";
+
+		var tr5 = document.createElement("tr");
+
+		for(var i = 0; i < row5.length; i++){
+		    var td5 = document.createElement("td");
+		    td5.innerHTML = row5[i];
+		    td5.align = "center";
+		    td5.vAlign = "middle";
+		    td5.style.cursor = "pointer";
+		    td5.style.fontSize = "1.5em";
+		    td5.bgColor = "#EEEEEE"
+		    td5.width = "30px";
+		    td5.className = "btn";
+
+		    td5.onclick = function(){
+		        
+		        if(!this.innerHTML.match(/^$/)){
+		            global_control.value += this.innerHTML.toProperCase();
+		            global_control.value = global_control.value.toProperCase();
+		            //searchDrug(global_control.value);
+		        }
+		    }
+
+		    tr5.appendChild(td5);
+		}
+
+		if(full_keyboard){
+		    tbl.appendChild(tr5);
+		}
+
+		var tr1 = document.createElement("tr");
+
+		for(var i = 0; i < row1.length; i++){
+		    var td1 = document.createElement("td");
+		    td1.innerHTML = row1[i];
+		    td1.align = "center";
+		    td1.vAlign = "middle";
+		    td1.style.cursor = "pointer";
+		    td1.style.fontSize = "1.5em";
+		    td1.bgColor = "#EEEEEE"
+		    td1.width = "30px";
+		    td1.className = "btn";
+		        
+		    td1.onclick = function(){
+		        if(!this.innerHTML.match(/^$/)){
+		            global_control.value += this.innerHTML.toProperCase();
+		            global_control.value = global_control.value.toProperCase();
+		            //searchDrug(global_control.value);
+		        }
+		    }
+
+		    tr1.appendChild(td1);
+		}
+
+		tbl.appendChild(tr1);
+
+		var tr2 = document.createElement("tr");
+
+		for(var i = 0; i < row2.length; i++){
+		    var td2 = document.createElement("td");
+		    td2.innerHTML = row2[i];
+		    td2.align = "center";
+		    td2.vAlign = "middle";
+		    td2.style.cursor = "pointer";
+		    td2.style.fontSize = "1.5em";
+		    td2.bgColor = "#EEEEEE"
+		    td2.width = "30px";
+
+		    if(!row2[i].trim().match(/^$/)){
+		        td2.className = "btn";
+		    }
+
+		    td2.onclick = function(){
+		        if(!this.innerHTML.match(/^$/)){
+		            global_control.value += this.innerHTML.toProperCase();
+		            global_control.value = global_control.value.toProperCase();
+		            //searchDrug(global_control.value);
+		        }
+		    }
+
+		    tr2.appendChild(td2);
+		}
+
+		tbl.appendChild(tr2);
+
+		var tr3 = document.createElement("tr");
+
+		for(var i = 0; i < row3.length; i++){
+		    var td3 = document.createElement("td");
+		    td3.innerHTML = row3[i];
+		    td3.align = "center";
+		    td3.vAlign = "middle";
+		    td3.style.cursor = "pointer";
+		    td3.style.fontSize = "1.5em";
+		    td3.bgColor = "#EEEEEE"
+		    td3.width = "30px";
+
+		    if(!row3[i].trim().match(/^$/)){
+		        td3.className = "btn";
+		    }
+
+		    if(row3[i] == "del"){
+		        td3.colSpan = 2;
+
+		        td3.onclick = function(){
+		            global_control.value = global_control.value.substring(0,global_control.value.length - 1);
+		            //searchDrug(global_control.value);
+		        }
+		        
+		    } else if(row3[i].trim() == "stat<br />dose"){
+		        td3.style.fontSize = "0.9em";
+		        td3.style.padding = "0px";
+		        td3.style.fontWeight = "bold";
+		        
+		        td3.onclick = function(){
+		            if ($("optionOD"))
+		                $("optionOD").click();
+		            if ($("group1_1-10"))
+		                $("group1_1-10").click();
+		            if ($("group2_1"))
+		                $("group2_1").click();
+		        }
+		    } else {
+
+		        td3.onclick = function(){
+		            if(!this.innerHTML.match(/^$/)){
+		                global_control.value += this.innerHTML.toProperCase();
+		               	global_control.value = global_control.value.toProperCase();
+		                //searchDrug(global_control.value);
+		            }
+		        }
+
+		    }
+
+		    tr3.appendChild(td3);
+		}
+
+		tbl.appendChild(tr3);
+
+		div.appendChild(tbl);
+		ctrl.appendChild(div);
+
+	}
+	
+	function showFreqFixedKeyboard(ctrl, global_control){
+		
+		var full_keyboard = "full";
+		
+		var div = document.createElement("div");
+		div.id = "divMenu";
+		div.style.backgroundColor = "#EEEEEE";
+		div.style.top = "0px";
+		div.style.left = "0px";
+		div.style.margin = "5px";
+		
+		var tbl = document.createElement("table");
+		tbl.bgColor = "#fff";
+		tbl.cellSpacing = 2;
+		tbl.cellPadding = 10;
+		tbl.id = "tblKeyboard";
+		tbl.width = "100%";
+
+		var f = [[ "Once a day(OD)", "Twice a day(BD)"],
+		["Three a day(TDS)", "Four times a day(QID)"],
+		["Five times a day(5X/D)", "Six times a day(Q4hrs)"],
+		["Once a week(QWK)", ""],
+		["5X/D", "Every other day(QOD)"],
+		["Once a day at night(QHS)", "Once a day at noon(Qnoon)"],
+		["In the morning(QAM)", ""],
+		["QOD", "In the evening(QPM)"]];
+
+		var f = [["Once a day(OD)", "Twice a day(BD)"],
+		["Three a day(TDS)","Four times a day(QID)"],
+		["Five times a day(5X/D)","Six times a day(Q4hrs)"],
+		["Once a week(QWK)","Every other day(QOD)"],
+		["Once a day at night(QHS)", "Once a day at noon(Qnoon)"],
+		["In the morning(QAM)","In the evening(QPM)"]];
+
+		for(var r=0; r<f.length; r++ ) {
+			var tr = document.createElement("tr");
+			row = [f[r][0],f[r][1]];
+			for(var i = 0; i < row.length; i++){
+				var td = document.createElement("td");
+				td.innerHTML = row[i];
+				td.align = "center";
+				td.vAlign = "middle";
+				td.style.cursor = "pointer";
+				td.style.fontSize = "1.5em";
+				td.bgColor = "#EEEEEE"
+				td.width = "30px";
+				td.className = "btn";
+
+				td.onclick = function(){
+					
+					if(!this.innerHTML.match(/^$/)){
+					    global_control.value = this.innerHTML;
+					    
+						document.getElementById("freqkeyboard").style.display = "none";
+						freqDisplayKeyBoard=true;
+
+					    //global_control.value = global_control.value.toProperCase();						
+					    //searchDrug(global_control.value);
+					}
+				}
+
+				tr.appendChild(td);
+			}
+
+			if(full_keyboard){
+				tbl.appendChild(tr);
+			}
+		}
+
+
+		var row3 = ["del"];
+		var tr3 = document.createElement("tr");
+
+		for(var i = 0; i < row3.length; i++){
+		    var td3 = document.createElement("td");
+		    td3.innerHTML = row3[i];
+		    td3.align = "center";
+		    td3.vAlign = "middle";
+		    td3.style.cursor = "pointer";
+		    td3.style.fontSize = "1.5em";
+		    td3.bgColor = "#EEEEEE"
+		    td3.width = "30px";
+
+		    if(!row3[i].trim().match(/^$/)){
+		        td3.className = "btn";
+		    }
+
+		    if(row3[i] == "del"){
+		        td3.colSpan = 2;
+
+		        td3.onclick = function(){
+		            global_control.value = "";
+		            //searchDrug(global_control.value);
+		        }
+		        
+		    } else if(row3[i].trim() == "stat<br />dose"){
+		        td3.style.fontSize = "0.9em";
+		        td3.style.padding = "0px";
+		        td3.style.fontWeight = "bold";
+		        
+		        td3.onclick = function(){
+		            if ($("optionOD"))
+		                $("optionOD").click();
+		            if ($("group1_1-10"))
+		                $("group1_1-10").click();
+		            if ($("group2_1"))
+		                $("group2_1").click();
+		        }
+		    } else {
+
+		        td3.onclick = function(){
+		            if(!this.innerHTML.match(/^$/)){
+		                global_control.value += this.innerHTML.toProperCase();
+		               	global_control.value = global_control.value.toProperCase();
+		                //searchDrug(global_control.value);
+		            }
+		        }
+
+		    }
+
+		    tr3.appendChild(td3);
+		}
+
+		tbl.appendChild(tr3);
+
+		div.appendChild(tbl);
+		ctrl.appendChild(div);
+
+	}
+
+	
+	function showSmallKeyBoard(obj) {
+	
+		smallKeyBoardObj = document.getElementById("smallkeyboard");
+		smallKeyBoardObj.innerHTML="";
+		showSmallFixedKeyboard(smallKeyBoardObj, obj);
+		
+		//Hide keyboards
+		
+		document.getElementById("keyboard").style.display = "none";
+		document.getElementById("freqkeyboard").style.display = "none";
+		displayKeyBoard=true;
+		freqDisplayKeyBoard=false;
+		
+		var objTmp = document.getElementById("tmpV");
+		
+		if(document.getElementById("tmpV")==null) {
+			obj.parentNode.style.backgroundColor = "#3399CC";
+			obj.id="tmpV";
+		}else {
+			objTmp.parentNode.style.backgroundColor = obj.parentNode.parentNode.style.backgroundColor
+			obj.parentNode.style.backgroundColor = "#3399CC";
+			objTmp.id="";
+			obj.id="tmpV";
+		}
+		
+		if(smallDisplayKeyBoard) {
+			smallDisplayKeyBoard=false;
+		} else {
+			smallDisplayKeyBoard=true;
+		}
+		document.getElementById("smallkeyboard").style.display = "block";
+	}
+	
+	function showFreqKeyBoard(obj) {
+	
+		freqKeyBoardObj = document.getElementById("freqkeyboard");
+		freqKeyBoardObj.innerHTML="";
+		showFreqFixedKeyboard(freqKeyBoardObj, obj);
+		
+		//Hide Other keyboards
+		
+		document.getElementById("keyboard").style.display = "none";
+		document.getElementById("smallkeyboard").style.display = "none";
+		displayKeyBoard=true;
+		smallDisplayKeyBoard=true;
+		
+		var objTmp = document.getElementById("freqV");
+		
+		if(document.getElementById("freqV")==null) {
+			obj.parentNode.style.backgroundColor = "#3399CC";
+			obj.id="freqV";
+		}else {
+			objTmp.parentNode.style.backgroundColor = obj.parentNode.parentNode.style.backgroundColor
+			obj.parentNode.style.backgroundColor = "#3399CC";
+			objTmp.id="";
+			obj.id="freqV";
+		}
+		
+		if(freqDisplayKeyBoard) {
+			freqDisplayKeyBoard=false;
+		} else {
+			freqDisplayKeyBoard=true;
+		}
+		document.getElementById("freqkeyboard").style.display = "block";
+	}
+	
+	
+	function selectd(obj) {
+		var ch = obj.parentNode.parentNode.children;
+		
+		var drug = ch[0].innerHTML;
+		var dosage = ch[1].innerHTML;
+		var variable = false;
+		var frequency = ch[3].children[0].value;
+		var duration = ch[4].children[0].value;
+
+		tmp = "<li> <div class='sdlist sdli'>" + drug + ": frequency(" + frequency +
+			"), duration(" + duration + 'days)</div><div class="sdlist cb"><div class="clbtn" onclick="deleteMe(this)"></div></div>' + " </li>";
+
+		document.getElementById('dul').innerHTML =  document.getElementById('dul').innerHTML + tmp; 
+		loadHighlight('#dul>li');
+		document.getElementById('srchin').value="";
+		
+		document.getElementById("keyboard").style.display = "none";
+		document.getElementById("smallkeyboard").style.display = "none";
+		document.getElementById("freqkeyboard").style.display = "none";
+		displayKeyBoard=true;
+		smallDisplayKeyBoard=true;
+		freqDisplayKeyBoard=true;
+		
+	}
+	
+	function deleteMe(me) {
+		me.parentNode.parentNode.style.display="none";
+		loadHighlight('#dul>li');
+	}
+	
+	function clrSd(id) {
+		var elmnt = document.getElementById(id);
+		elmnt.innerHTML = "";
+	}
+	
+	//AJAX
+	
+	function findDrug(srchV){
+		$('druglist').innerHTML = "";
+		var search_path = "/prescriptions/ajax_psb_challenge";
+		ajaxDFRequest(search_path + "?s=" + srchV);
+	}
+
+	function ajaxDFRequest(aUrl) {
+		var httpRequest = new XMLHttpRequest();
+		httpRequest.onreadystatechange = function() {
+		    handleDFResult(httpRequest);
+		};
+		try {
+		    httpRequest.open('GET', aUrl, true);
+		    httpRequest.send(null);
+		} catch(e){
+		}
+	}
+	
+	function handleDFResult(aXMLHttpRequest) {
+		if (!aXMLHttpRequest) return;
+
+		if (aXMLHttpRequest.readyState == 4) {
+		    var dosesFreqs = aXMLHttpRequest.responseText.split(";");
+		    var drugDose;
+		    for(var i=0; i<dosesFreqs.length-1; i++) {
+		    	drugDose = dosesFreqs[i].split("@!");
+		    	$('druglist').innerHTML = $('druglist').innerHTML + 
+				'<li>' +
+					'<div class="dlist bdiv" >' + drugDose[0] + '</div>' +
+					'<div class="dlist cdiv" >' + drugDose[1] + '</div>' +
+					'<div class="dlist ddiv" > <input type="checkbox" />  </div>' +
+					'<div class="dlist ediv" >' +
+						'<input onmousedown="showFreqKeyBoard(this)" class="din" type="text">' +
+					'</div>' +
+					'<div class="dlist fdiv" >  <input onmousedown="showSmallKeyBoard(this)" class="din" type="text"> days</div>' +
+					'<div class="dlist gdiv" >  <input class="btn"  onclick="selectd(this)" value="Select" type="button" /> </div>' +
+				'</li>'
+		    }
+		}
+		loadHighlight('li');
+	}
+
+
+</script>
+
+<div>
+	<span id="srch">Search Drug</span>
+	<input id="srchin" type="text" onmousedown="showKeyBoard()" onkeydown="searchDrug(this.value)"> </input>
+</div>
+
+<div id="scont">
+	<div id="sdrug">
+		<ul id="dul">
+		</ul>
+	</div>
+
+	<div id="seff">
+		<div class="sbmt">  <input class="btn sbmtSz"  onclick="sbmtSd(this)" value="Submit" type="button" /> </div>
+		<div class="sbmt"> <input class="btn sbmtSz"  onclick="clrSd('dul')" value="Clear All" type="button" /> </div>
+	</div>
+</div>
+
+<div id="a">
+
+	<div id="b" class="z" >
+	Drug
+	</div>
+
+	<div id="c" class="z">
+	Dosage
+	</div>
+
+	<div id="d" class="z" >
+	Variable
+	</div>
+
+	<div id="e" class="z">
+		<div id="freq"> Frequency </div>
+	</div>
+
+	<div id="f" class="z" >
+		Duration
+	</div>
+
+	<div id="g" class="z">
+	</div>
+</div>
+
+<ul id="druglist">
+	<% @drugs.each do |d|%>
+		<li>
+			<div class="dlist bdiv" > <%= d.name+" " %> </div>
+			<div class="dlist cdiv" > <%= d.dose_strength.to_s + " " + d.units.to_s %> </div>
+			<div class="dlist ddiv" > <input type="checkbox" />  </div>
+			<div class="dlist ediv" >
+				<input onmousedown="showFreqKeyBoard(this)" class="din" type="text">
+			</div>
+			<div class="dlist fdiv" >  <input onmousedown="showSmallKeyBoard(this)" class="din" type="text"> days</div>
+			<div class="dlist gdiv" >  <input class="btn"  onclick="selectd(this)" value="Select" type="button" /> </div>
+		</li>
+	<% end %>
+<ul>
+
+<script>
+	loadHighlight('li');
+
+	var keyboard = "<div id='keyboard' ></div>";
+	var smallKeyBoard =   "<div id='smallkeyboard' ></div>";
+	var freqkeyboard = "<div id='freqkeyboard'> </div>";
+
+	document.getElementById("scont").innerHTML = document.getElementById("scont").innerHTML + keyboard + smallKeyBoard + freqkeyboard;
+	showFixedKeyboard(document.getElementById("keyboard"), "srchin");
+</script>

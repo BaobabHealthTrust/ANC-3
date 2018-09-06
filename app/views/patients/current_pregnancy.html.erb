@@ -1,0 +1,423 @@
+<style>
+
+  .header{
+    -moz-user-select: none;
+    font-size: 2em;
+    padding-left: 25px;
+    padding-top: 5px;
+  }
+  
+  ul
+  {
+  list-style-type: none;
+  }
+  li {
+    -webkit-transition: background-color 0.3s linear;
+    -moz-transition: background-color 0.3s linear;
+    -ms-transition: background-color 0.3s linear;
+    -o-transition: background-color 0.3s linear;
+    transition: background-color 0.3s linear;
+}
+
+
+</style>
+  <script type="text/css" charset="utf8" src="/stylesheets/keyboard.css"></script>
+<script type="text/javascript" language="javascript">
+  <!--
+  tt_cancel_show = "/patients/show/<%= @patient.id %>";
+<% if params["from_confirmation"]%>
+    tt_cancel_destination = "<%= request.referrer%>";
+<%else%>
+    tt_cancel_destination = "/patients/show/<%= @patient.id %>";
+<%end%>
+   var keyboard;
+      var search;
+  var timedEvent;
+  var bed_options = ["","Given Today",
+      "Given during previous ANC visit for current pregnancy",
+      "Not given today or during current pregnancy"]
+
+  var d = new Date("<%= (session[:datetime] ? session[:datetime].to_date.strftime("%Y-%m-%d") : 
+    Date.today.strftime("%Y-%m-%d")) %>");
+
+  d.setDate(d.getDate() - 7);
+
+  var tstEstimatedLMPDate = d.getFullYear() + "-" + padZeros((d.getMonth() + 1),2) + "-" + padZeros(d.getDate(),2);
+
+  function padZeros(number, positions){
+    var zeros = parseInt(positions) - String(number).length;
+    var padded = "";
+    
+    for(var i = 0; i < zeros; i++){
+      padded += "0";
+    }
+    
+    padded += String(number);
+    
+    return padded;
+  }
+
+  function calculateEDOD(){
+    try{
+      var edod = "";
+      var gestation = "";
+      var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      if(!$('expected_date_of_delivery')){
+        var div = document.createElement("div");
+        div.id = "expected_date_of_delivery";
+        div.className = "statusLabel";
+
+        $("inputFrame" + tstCurrentPage).appendChild(div);
+      }
+
+      if($("touchscreenInput" + tstCurrentPage).value.trim().length > 0 &&
+        $("touchscreenInput" + tstCurrentPage).value.trim() != "Unknown"){
+
+        var theDate = new Date($("touchscreenInput" + tstCurrentPage).value.trim());
+
+        theDate.setDate(theDate.getDate() + 7);
+
+        var today = new Date("<%= (session[:datetime] ? session[:datetime].to_date : Date.today).strftime("%Y-%m-%d") %>");
+
+        var s = today - theDate;
+
+        gestation = String(Math.floor(s / (24 * 60 * 60 * 7 * 1000)));
+
+        __$("week_of_first_visit").value = gestation;
+
+        theDate.setMonth(theDate.getMonth() + 9);
+
+        edod = (theDate.getDate() + "-" + month[theDate.getMonth()] + "-" + theDate.getFullYear());
+
+      }
+
+      $("expected_date_of_delivery").innerHTML = "Expected Date Of Delivery: <i style='font-size: 1.2em; float: right;'>" +
+        edod + "</i><br /><br />Gestation Weeks: " + (gestation < 32 &&
+        gestation.trim().length > 0 ? "" : 
+        (gestation > 42 && gestation.trim().length > 0 ? "<i style='color: red'>(Abnormal)</i>" : "")) +
+        "<i style='font-size: 1.2em; float: right; width: 100px;'>" + gestation + "</i>";
+
+      timedEvent = setTimeout('calculateEDOD()', 500);
+    } catch(e){}
+  }
+
+  function checkHIVTestUnkown(){
+    if($("new_test_result_at_current_facility").value.toLowerCase() == "not done"){
+
+      showMessage("Patient needs to be tested now!", true);
+      return true;
+    }
+    return false;
+  }
+
+  function checkHIVTestDate(){
+    if(__$("previous_test_status_from_before_currrent_facility_visit").value == "Negative in the last 3 months"){
+      
+      var hiv_test_date_str = __$("touchscreenInput" + tstCurrentPage).value.replace(/-/g, '/');
+
+      var hiv_test_date     = new Date(hiv_test_date_str);
+      var today             = new Date("<%= (session[:datetime] ? session[:datetime].to_date : Date.today).strftime("%Y-%m-%d") %>");
+
+      var weeks_ago = parseInt((today.getTime()- hiv_test_date.getTime())/ (1000 * 60 * 60 * 24 * 7));
+
+      if (weeks_ago > 12){
+        showMessage("Patient needs to be tested again");
+        return true;
+      }
+      
+    }
+    return false;
+  }
+
+  function checkLMP(){
+    if(__$("lmp").value == "Unknown"){
+      var value = __$("touchscreenInput" + tstCurrentPage).value;
+      var range = {"0-12":6, "13-24":18, "25-28":26, "28+":29};
+      var date = new Date();
+
+      date.setDate(date.getDate() - (7 * range[value]) - 7);
+    
+      __$("lmp").value = (date.getFullYear() + "-" + padZeros((date.getMonth() + 1), 2) + "-" + padZeros(date.getDate(), 2));
+    }
+  }
+
+  function setDate(period){
+    var year = "<%=  (session[:datetime] ? session[:datetime].to_date : Date.today).year rescue Date.today.year%>"
+    var month = "<%=  (session[:datetime] ? session[:datetime].to_date : Date.today).month rescue Date.today.month%>"
+    var day = "<%=  (session[:datetime] ? session[:datetime].to_date : Date.today).day rescue Date.today.day%>"
+    var d = new Date();
+
+    d.setDate(parseInt(day));
+    d.setYear(parseInt(year));
+    d.setMonth(parseInt(month) - 1); 
+
+    d.setMonth(d.getMonth() - parseInt(period));
+    
+    __$("lmp").value = d.getFullYear() + "-" + padZeros((d.getMonth() + 1), 2) + "-" + padZeros(d.getDate(),2);
+    __$("week_of_first_visit").value = Math.round(parseInt(period) * 30 / 7);
+    
+  }
+
+  function initializeDate(){
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    year = "<%=  (session[:datetime] ? session[:datetime].to_date : Date.today).year rescue Date.today.year%>"
+    month = "<%=  (session[:datetime] ? session[:datetime].to_date : Date.today).month rescue Date.today.month%>"
+    day = "<%=  (session[:datetime] ? session[:datetime].to_date : Date.today).day rescue Date.today.day%>"
+
+    setTimeout(__$("today").onmousedown, 0);
+    setTimeout(function(){
+      __$("touchscreenInput" + tstCurrentPage).value = "";
+    }, 3);
+
+    var year_plus = __$("dateselector_nextYear").onmousedown
+    __$("dateselector_nextYear").onmousedown = function(){
+      if(parseInt(year) <= parseInt(__$("dateselector_year").value)){
+      }else{
+        setTimeout(year_plus, 0);
+      }
+    }
+
+    var month_plus = __$("dateselector_nextMonth").onmousedown
+    __$("dateselector_nextMonth").onmousedown = function(){
+      if((parseInt(year) <= parseInt(__$("dateselector_year").value)) && (parseInt(month) <= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+      }else{
+        setTimeout(month_plus, 0);
+      }
+    }
+
+    var day_plus = __$("dateselector_nextDay").onmousedown
+    __$("dateselector_nextDay").onmousedown = function(){
+      if((parseInt(day) <= parseInt(__$("dateselector_day").value)) && (parseInt(year) <= parseInt(__$("dateselector_year").value)) && (parseInt(month) <= parseInt(months.indexOf(__$("dateselector_month").value) + 1))){
+      }else{
+        setTimeout(day_plus, 0);
+
+      }
+    }
+  }
+  function generateController(){
+    html = "<table width='98%'><tr class='header'><td width='50%' align='center' style='background:#e0ffff;'>Bed Net</td><td width='50%' align='center' style='background:#e0ffff;'>Previous TTV Doses before this pregnancy</td></tr>";
+    html += "<tr valign='top'><td width='50%'>";
+    html += "<table><tr class='header'><td width='50%'>"
+    html += "<ul width='100%'>";
+    for (i = 0; i < bed_options.length; i++){
+      html += '<li id="' + i + '_list" onClick="updateElement(' + i + ')" width="100%" value="' + bed_options[i] + '">' + bed_options[i] + '</li>';
+    }
+    html += "</ul></td></tr></table></td>";
+    html += "<td><table><tr class='header' valign='top'><td>"
+     
+    html += "<input  size='10' type'text' id='previous_ttv' name='previous_ttv' class='header'/>";
+    html += "</td></tr><tr><td><div id='keyboard'></div></td></tr></table></td></tr>";
+    html += "</table>";
+    document.getElementById('inputFrame'+tstCurrentPage).innerHTML = html
+    //document.getElementById('keyboard').setAttribute('width', '23% ! important')
+    //document.getElementById('keyboard').setAttribute('width', '23%')
+    //document.getElementById('keyboard').setAttribute('left', '3% ! important')
+    initialise()
+    updateElement(0)
+  }
+  
+  function pressed(pressedChar){
+   search = document.getElementById("previous_ttv")
+
+    switch (pressedChar) {
+      case 'backspace':
+        search.value = search.value.substring(0,search.value.length-1);
+        document.getElementById('tt statt_status_value').value = search.value
+        //search_box.fnFilter(search.value)
+        return;
+      case 'Space':
+        search.value+= " "
+        //search_box.fnFilter(search.value)
+        return
+      case 'clear':
+        search.value = ""
+        //search_box.fnFilter(search.value)
+        return
+      case 'num':
+        showNumericKeypad();
+        return
+      case 'slash':
+        if (search.name.match(/date/i)){
+          return
+        }
+        search.value+= "/"
+        //search_box.fnFilter(search.value)
+        return
+      case 'dash':
+        search.value+= "-"
+        //search_box.fnFilter(search.value)
+        return
+      case 'abc':
+        showAlphaKeypad();
+        return
+      case 'enter':
+        keyboard.style.display = "none";
+        return
+    }
+
+
+    search.value+= pressedChar
+    document.getElementById('tt_status_value').value = search.value
+    //search_box.fnFilter(search.value)
+  }
+  
+  function initialise(){
+    for (i = 1; i <= 9; i ++){
+      ele = document.getElementById(i) 
+      ele.setAttribute("onmousedown", "pressed(" + i + ")")
+    }
+     ele = document.getElementById("backspace")
+     ele.setAttribute("onmousedown", "pressed('backspace')")
+     ele = document.getElementById("zero")
+     ele.setAttribute("onmousedown", "pressed('0')")
+  }
+
+  function updateElement(index){
+       var x = 'even'
+       var string = '' + index + '_list'
+       
+     for (i = 0; i < bed_options.length; i++){
+        item = '' + i + '_list'
+    	if (x == 'even'){
+    		document.getElementById(item).style.backgroundColor = '#eee'
+    		x = 'old'
+    	} else{
+    	 	document.getElementById(item).style.backgroundColor = '#ddd'
+    	 	x = 'even'
+    	}
+          
+    }
+       document.getElementById(string).style.backgroundColor = "lightblue"
+     document.getElementById('bed_net').value = bed_options[index]
+     
+  }
+  
+  //-->
+</script>
+
+<style type="text/css">
+  .Date #num {
+    display: none;
+  }
+
+  .exclude #today {
+    display: none;
+  }
+</style>
+
+<% form_tag :controller => "encounters", :action => "create" do |f| %>
+
+  <%session_date = session[:datetime] || Time.now() %>
+  <%= hidden_field_tag "encounter[encounter_type_name]", "CURRENT PREGNANCY" %>
+  <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
+  <%= hidden_field_tag "encounter[encounter_datetime]", session_date %>
+  <%= hidden_field_tag "encounter[provider_id]", current_user.user_id %>
+  <%= (touch_hidden_tag "BED NET", @patient, nil, {:id => "bed_net"}).html_safe %>
+  <%#= touch_hidden_tag "TT STATUS", @patient, nil, {:id => "tt_status_value"}%>
+
+
+  <% if !@patient.patient_programs.current.local.map(&:program).map(&:name).include?('ANC PROGRAM') %>
+    <%= hidden_field_tag("programs[][patient_program_id]", nil) %>
+    <%= hidden_field_tag("programs[][program_id]", Program.find_by_name('ANC PROGRAM').id)%>
+    <%= hidden_field_tag("programs[][location_id]", Location.current_health_center.id) %>
+    <%= hidden_field_tag("programs[][date_enrolled]", session[:datetime] || Date.today ) %>
+    <%= hidden_field_tag("programs[][states][][state]", "Currently in treatment") %>
+  <%end%>
+
+  <% default={
+    :allowFreeText => 'true',
+  } %>
+
+  <%= (touch_date_tag "LAST MENSTRUAL PERIOD", @patient, nil,
+    {:id => "lmp",
+    :helptext => "Last Menstrual Period  <span class='helper'> Current Pregnancy</span>",
+    :tt_onLoad => "timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()",
+    :tt_onUnLoad => 'clearTimeout(timedEvent);
+    // if (__$("touchscreenInput" + tstCurrentPage).value == "Unknown" ) __$("lmp").value = tstEstimatedLMPDate;',
+    :tt_pageStyleClass => "exclude",
+    :min => ((session[:datetime] || Date.today).to_date - 42.week),
+    :absoluteMin => ((session[:datetime] || Date.today).to_date - 45.week),
+    :absoluteMax => ((session[:datetime] || Date.today).to_date - 1.day)
+  }).html_safe %>
+
+  <%= text_field_tag "Estimate LMP", nil,
+    {:id => "estimate_lmp",
+    :condition => "__$('lmp').value == 'Unknown'",
+    :helpText => "Gestation (months)  <span class='helper'> Current Pregnancy</span>",
+    :field_type => "number",
+    :tt_pageStyleClass => "NumbersOnly",
+    :tt_onUnload => "setDate(__$('touchscreenInput' + tstCurrentPage).value);",
+    :max => 6,
+    :absoluteMax => 10
+  }
+%>
+
+  <%#= touch_select_tag "Week of First Visit", @patient,
+  options_for_select(["", "0-12", "13-24", "25-28", "28+"]),
+  {:id => "week_of_first_visit",
+  :helptext => "Week of First Visit",
+  :tt_onUnload => "checkLMP()" } %>
+
+  <%= (touch_text_field_tag "Planned delivery place", @patient, nil,
+    {:id => "planned_delivery_place",
+    :helptext => "Planned delivery place  <span class='helper'> Current Pregnancy</span>",
+    :ajaxURL => "/encounters/static_locations?search_string=",
+    :tt_onLoad => "addHereButton();",
+    :tt_onUnLoad => "removeHereButton()" }).html_safe %>
+
+  <%#= text_field_tag :bed_net_ttv, nil,
+    {
+    :id => 'bed_net_ttv',
+    :tt_onLoad => "generateController();",
+    :field_type => "number",
+    :optional => "false",
+    :tt_pageStyleClass => "NumbersOnly"
+  } %>
+
+  <%= select_tag "Bed Net Available", options_for_select([["", ""],
+      ["Yes", "Yes"],
+      ["No", "No"]
+    ]),
+    {
+      :id => "bed_net_available",
+      :helptext => "Mosquito net in good condition available for own use <span class='helper'> Current Pregnancy</span>" } %>
+
+  <%= (touch_select_tag "Bed Net", @patient, options_for_select([["", ""],
+      ["Yes", "Yes"],
+      ["No", "No"]
+    ]),
+    {
+      :id => "bed_net_given",
+      :helptext => "Bed Net Given Today <span class='helper'> Current Pregnancy</span>",
+      :condition => "__$('bed_net_available').value == 'No'" }).html_safe %>
+
+  <!-- %= touch_date_tag "Date received", @patient, nil,
+  {:id => "bed_date",
+    :helptext => "Date Bet Net Given",
+    :condition => "__$('bed_net_1').value == 'Yes'"
+  } %-->
+
+  <% options = {
+    :id => "tt_status_value",
+    :helptext => "Previous TTV Doses before this pregnancy  <span class='helper'> Current Pregnancy</span>",
+    :field_type => "number",
+    :absoluteMin => "0",
+    :max => "5",
+    # :flag => '{"condition":"^1$|^0$","message":"TT is inadequate"}',
+    :tt_pageStyleClass => "NumbersOnly"
+  } %>
+
+  <%= hidden_field_tag("observations[][concept_name]",  "TT STATUS", {:id => 'tt_status_concept_name'}) %>
+  <%= text_field_tag("observations[][value_numeric]",   nil, options) %>
+  <%= hidden_field_tag("observations[][patient_id]",    @patient.id) %>
+  <%= hidden_field_tag("observations[][obs_datetime]",  session_date) %>
+
+  <%= hidden_field_tag("observations[][concept_name]",  "Week of First Visit") %>
+  <%= hidden_field_tag("observations[][value_numeric]",   nil, {
+      :id => "week_of_first_visit"}) %>
+  <%= hidden_field_tag("observations[][patient_id]",    @patient.id) %>
+  <%= hidden_field_tag("observations[][obs_datetime]",  session_date) %>
+
+  <%= submit_tag 'Finish' %>
+<% end %>

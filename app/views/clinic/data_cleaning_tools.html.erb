@@ -1,0 +1,44 @@
+<head>
+<style type="text/css">
+     button {
+        min-height: 50px;
+        min-width: 350px;
+        margin: 5px;
+        margin-bottom: 10px;
+        font-size: 1.2em;
+        background-color: #6281a7;
+        color: #FFF;
+        font-weight: normal;
+        border-radius: 30px;
+        border: 5px outset #000;
+        padding: 10px;
+        cursor: pointer;
+      }
+ 	 h2 {
+		padding-top: 50px;
+	  }
+</style>
+</head>
+<body>
+  <center>
+<h2 style="color: #6281a7;">Data Cleaning Tools</h2>
+    <button onclick="parent.window.location = '/people/verify_patient_npids/<%= current_user.user_id %>';">
+      Missing ART Status
+    </button>
+    <!-- Mearge Duplicates Button 
+    <button onclick="parent.window.location = '/patients/merge_menu'">
+      Merge Duplicate Patients
+    </button>
+    -->
+    <button onclick="parent.window.location = '/patients/incomplete_visits/1'">
+     View Incomplete Visits
+    </button>
+    <button onclick="parent.window.location = '/encounters/duplicate_encounters';">
+      View Duplicate Encounters
+    </button>
+    <button onclick="parent.window.location = '/patients/void_patients';">
+      Void Patients
+    </button>
+  </center>
+</body>
+

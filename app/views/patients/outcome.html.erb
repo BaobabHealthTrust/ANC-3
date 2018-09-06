@@ -1,0 +1,83 @@
+
+<script type="text/javascript" language="javascript">
+  <!--
+  tt_cancel_show = "/patients/show/<%= @patient.id %>";
+  tt_cancel_destination = "/patients/show/<%= @patient.id %>";
+
+  function readableMessage(){
+
+    var conceptName = conceptHash[tstCurrentPage];
+    
+    conceptName = (conceptName.match(/referral clinic if referred/i)) ? "Referral Clinic" : conceptName;
+    
+    try{
+      conceptName = conceptName.charAt(0).toUpperCase() + conceptName.slice(1).toLowerCase();
+      if(__$("messageBar") && !__$("messageBar").innerHTML.match(conceptName)){
+        __$("messageBar").innerHTML = __$("messageBar").innerHTML.replace("Value", conceptName + " Value").replace("value", conceptName + " value").replace("a " + conceptName + " value", conceptName + " value")
+      }
+    }catch(ex){}
+
+    setTimeout(function(){ readableMessage()}, 50);
+  }
+
+  function buildConceptsHash(){
+    var count = 0;
+    var inputArr = document.getElementsByTagName("input")
+    conceptHash = {};
+    for (var i = 0; i < inputArr.length; i ++){
+      if (inputArr[i].name && inputArr[i].name.match("concept_name") && inputArr[i].name.match("observations")){
+        conceptHash[count] = inputArr[i].value;
+        count ++;
+      }
+    }
+  }
+
+  function transformMessages(){
+    buildConceptsHash();
+    setTimeout(function(){ readableMessage()}, 50);
+  }
+  //-->
+</script>
+
+<% form_tag :controller => "encounters", :action => "create" do |f| %>
+  <%= hidden_field_tag "encounter[encounter_type_name]", "UPDATE OUTCOME" %>
+  <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
+  <%= hidden_field_tag "encounter[encounter_datetime]", DateTime.now() %>
+  <%= hidden_field_tag "encounter[provider_id]", session[:user_id] %>
+  <%  session_date = session[:datetime] || Time.now() %>
+
+  <%= hidden_field_tag("programs[][patient_program_id]", @program_id) %>
+  <%= hidden_field_tag("programs[][program_id]", Program.find_by_name('ANC PROGRAM').id)%>
+  <%= hidden_field_tag("programs[][location_id]", Location.current_health_center.id) %>
+  <%= hidden_field_tag("programs[][date_enrolled]", session[:datetime] || Date.today ) %>
+  <%= hidden_field_tag("programs[][states][][state]", "Admitted") %>
+
+  <!--select id="outcome_available" name="outcome_available" helpText="Update Outcome?"
+    tt_onLoad="showCategory('Update Outcome');">
+    <option value="YES">Yes</option>
+    <option value="NO">No</option>
+  </select-->
+
+  <%= (touch_select_tag "OUTCOME", @patient,
+    options_for_select([["", ""], ["Sent Home", "Sent Home"], ["Admitted", "Admitted"], ["Referred", "Referred"]]),
+    {:id => "outcome",
+    :helptext => "Outcome <span class='helper'> Outcome</span>",
+    :tt_onLoad => "transformMessages();"
+    # :condition => "__$('outcome_available').value.toUpperCase() == 'YES'"
+  }).html_safe %>
+
+  <%#= touch_select_tag "Admission Section", @patient,
+  options_for_select([["", ""], ["Labour Ward", "Labour Ward"], ["AnteNatal Ward", "AnteNatal Ward"],
+  ["Gynaecology Ward", "Gynaecology Ward"], ["Theatre", "Theatre"]]),
+  {:id => "section",
+  :helptext => "Admission Section",
+  :condition => "__$('outcome').value == 'Admitted'" } %>
+
+  <%= (touch_select_tag "REFERRAL CLINIC IF REFERRED", @patient, nil,
+    {:id => "referral",
+    :helptext => "Referral Facility <span class='helper'> Outcome</span>",
+    :condition => "__$('outcome').value == 'Referred'",
+    :ajaxURL => "/encounters/static_locations?search_string=" }).html_safe %>
+
+  <%= submit_tag 'Finish' %>
+<% end %>

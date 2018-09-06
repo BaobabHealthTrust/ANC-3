@@ -1,0 +1,158 @@
+<style type="text/css">
+  button.blue {
+    width: 350px;
+    margin: 15px;
+    margin-left: 60px;
+  }
+  button.gray {
+    width: 350px;
+    margin: 15px;
+    margin-left: 60px;
+  }
+  #nav {
+    background-color: #333333;
+    border-top:3px solid #99AAB7;
+    color:#CADCEA;
+    height:80px;
+    width:100%;
+    bottom:-5px;
+    position:absolute;
+    overflow:hidden;
+    z-index: 1000;
+  }
+  #footer {
+    background-color: #333333;
+  }
+</style>
+<div id='content'>
+  <div id='description' style='color:#777;position:absolute;margin-top:-70px;'>
+  </div>
+  <center>
+    <div style="position: absolute; left: 60px; top: 30px; padding: 15px; background-color: #fff;
+         border: 1px solid #ccc; border-radius: 30px; width: 350px;">
+      <h1>Current Visit Activities</h1>
+    </div>
+    <div style="display: table; border-radius: 30px;
+         border: 1px solid #eee; padding: 15px; width: 95%; margin-top: 100px;">
+      <div style="display: table-row">
+        <div style="display: table-cell">
+          &nbsp;
+        </div>
+        <div style="display: table-cell; padding: 20px;">
+          &nbsp;
+        </div>
+      </div>
+      <div style="display: table-row">
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("Weight and Height") || current_user.activities.include?("BP") %>
+            <button class="<%= (@encounters.include?("VITALS") ? "gray" : "blue") %>"
+                    onclick="<%= (@encounters.include?("VITALS") ? "" :
+                        "window.location = '/encounters/new/vitals?patient_id=#{@patient.id}&weight=1&height=1&bp=1'") %> ">
+              <span>Vitals</span>
+            </button>
+          <% end %>
+        </div>
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("Manage Appointments") %>
+            <button class="<%= (@encounters.include?("PLAN") || @encounters.include?("APPOINTMENT") ? "gray" : "blue") %>"
+                    onclick="<%= (@encounters.include?("PLAN") || @encounters.include?("APPOINTMENT") ? "" :
+                        "window.location = '/encounters/new/appointment?patient_id=#{@patient.id}'") %> ">
+              <span>Next ANC Visit</span>
+            </button>
+          <% end %>
+          &nbsp;
+        </div>
+      </div>
+      <div style="display: table-row">
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("Lab Results") %>
+            <button class="blue" onclick="<%= (@all_encounters.include?("LAB RESULTS") ?
+                "window.location = '/encounters/new/lab_results?patient_id=#{@patient.id}&update=true'" :
+                        "window.location = '/encounters/new/lab_results?patient_id=#{@patient.id}&update=true'") %> ">
+              <span><%= (@all_encounters.include?("LAB RESULTS") ? "Update Lab Results" : "Lab Results") %></span>
+            </button>
+          <% end %>
+        </div>
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("Give Drugs") %>
+            <button class="blue"
+                    onclick="window.location = '/prescriptions/give_drugs/?patient_id=<%= @patient.id %>&auto_flow=false'">
+              <span>Give Drugs</span>
+            </button>
+          <% end %>
+        </div>
+      </div>
+      <div style="display: table-row">
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("ANC Examination") %>
+            <button class="<%= (@encounters.include?("OBSERVATIONS") ? "gray" : "blue") %>"
+                    onclick="<%= (@encounters.include?("OBSERVATIONS") ? "" :
+                        "window.location = '/patients/observations/?patient_id=#{@patient.id}'") %> ">
+              <span>ANC Examinations</span>
+            </button>
+          <% end %>
+        </div>
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("Update Outcome") %>
+            <button class="<%= (@encounters.include?("UPDATE OUTCOME") ? "gray" : "blue") %>"
+                    onclick="<%= (@encounters.include?("UPDATE OUTCOME") ? "" :
+                        "window.location = '/patients/outcome/?patient_id=#{@patient.id}'") %>">
+              <span>Update Outcome</span>
+            </button>
+          <% end %>
+          &nbsp;
+        </div>
+      </div>
+      <div style="display: table-row">
+        <div style="display: table-cell">
+          <% if current_user.activities.include?("Current Pregnancy") %>
+            <% if !@names.include?("CURRENT PREGNANCY") %>
+
+              <button class="blue" onclick="window.location ='/patients/current_pregnancy/?patient_id=<%= @patient.id  %>'">
+                <span>Current Pregnancy</span>
+              </button>
+
+            <% else %>
+
+              <button class="blue" onclick="window.location ='/patients/hiv_status/?patient_id=<%= @patient.id  %>'">
+                <span>Pregnancy Update</span>
+              </button>
+
+            <% end %>
+          <% end %>
+        </div>
+        <div style="display: table-cell">
+          &nbsp;
+        </div>
+      </div>
+    </div>
+  </center>
+  <div id="nav">
+    <button class="green" onclick="window.location = '/patients/show/<%= @patient.id %>'"
+            style="float: right; margin: 10px; width: 150px;">
+      <span>
+        Finish
+      </span>
+    </button>
+    <% if current_user.activities.include?("Lab Results") %>
+      <button onclick="window.location = '/patients/exam_label/?patient_id=<%= @patient.id %>&force=true'"
+              style="float: right; margin: 10px; margin-right: 0px;">
+        <span>Print Lab Results</span>
+      </button>
+    <% end %>
+
+    <% if current_user.activities.include?("ANC Examination") %>
+      <button onclick="window.location = '/patients/print_visit_label/?patient_id=<%= @patient.id %>'"
+              style="float: right; margin: 10px; margin-right: 0px;">
+        <span>Print Visit Summary</span>
+      </button>
+    <% end %>
+
+<!--button class="green" onclick="window.location = '/encounters/diagnoses_index?patient_id=<%= @patient.id %>'"
+style="float: right; margin: 10px;">
+<span>
+Finish
+</span>
+</button-->
+  </div>
+</div>
