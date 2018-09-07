@@ -18,7 +18,7 @@ require 'rest-client'
 module DDE2Service
 
   def self.dde2_configs
-    YAML.load_file("#{Rails.root}/config/dde_connection.yml")[Rails.env]
+    YAML.load_file("#{Rails.root.to_s}/config/dde_connection.yml")[Rails.env]
   end
 
   def self.dde2_url
@@ -328,7 +328,7 @@ module DDE2Service
 
   def self.search_all_by_identifier(npid)
     identifier = npid.gsub(/\-/, '').strip
-    people = PatientIdentifier.find_all_by_identifier_and_identifier_type(identifier, 3).map{|id|
+    people = PatientIdentifier.where(["identifier =? AND identifier_type =?", identifier, 3]).map{|id|
       id.patient.person
     } unless identifier.blank?
 
@@ -352,8 +352,7 @@ module DDE2Service
     passed_national_id = p["npid"]
 
     unless passed_national_id.blank?
-      patient = PatientIdentifier.find(:first,
-                                       :conditions =>["voided = 0 AND identifier = ? AND identifier_type = 3",passed_national_id]).patient rescue nil
+      patient = PatientIdentifier.where(["voided = 0 AND identifier = ? AND identifier_type = 3",passed_national_id]).first.patient rescue nil
       return [patient.person] unless patient.blank?
     end
 
@@ -428,7 +427,7 @@ module DDE2Service
 			next if v.blank? 
 			type = PersonAttributeType.find_by_name(k.humanize).id rescue nil 
 			next if type.blank?
-			attribute = PersonAttribute.find_by_person_id_and_person_attribute_type_id(person.id, type)
+			attribute = PersonAttribute.where(["person_id =? AND person_attribute_type_id =?", person.id, type]).last
 			attribute = PersonAttribute.new if attribute.blank? 
 
 			attribute.person_attribute_type_id = type
@@ -500,8 +499,7 @@ module DDE2Service
 
       if !data.blank?
         npid_type = PatientIdentifierType.find_by_name('National id').id
-        npid = PatientIdentifier.find_by_identifier_and_identifier_type_and_patient_id(patient_bean.national_id,
-                npid_type, patient_bean.patient_id)
+        npid = PatientIdentifier.where(["identifier =? AND identifier_type =? AND patient_id", patient_bean.national_id, npid_type, patient_bean.patient_id]).last
 
         npid.update_attributes(
             :voided => true,

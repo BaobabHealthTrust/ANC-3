@@ -3,8 +3,8 @@ module DDEService
   
   def self.dde_settings
     data = {}
-    program_id    = YAML.load_file("#{Rails.root}/config/dde_connection.yml")[Rails.env]["program_id"]
-    dde_protocol  = YAML.load_file("#{Rails.root}/config/dde_connection.yml")[Rails.env]["dde_protocol"]
+    program_id    = YAML.load_file("#{Rails.root.to_s}/config/dde_connection.yml")[Rails.env]["program_id"]
+    dde_protocol  = YAML.load_file("#{Rails.root.to_s}/config/dde_connection.yml")[Rails.env]["dde_protocol"]
     dde_user = DdeApplicationUsers.find_by_program_id(program_id)
     
     dde_ip = dde_user.ipaddress
@@ -23,8 +23,7 @@ module DDEService
   end
 
   def self.search_local_by_identifier(identifier)
-    Person.find(:all, :conditions =>["i.identifier = ?", identifier],
-      :joins => "INNER JOIN patient_identifier i ON i.patient_id = person.person_id")
+    Person.joins("INNER JOIN patient_identifier i ON i.patient_id = person.person_id").where(["i.identifier = ?", identifier])
   end
 
   def self.initial_dde_authentication_token
@@ -416,8 +415,8 @@ module DDEService
     national_patient_identifier_type_id = PatientIdentifierType.find_by_name("National id").patient_identifier_type_id
     old_patient_identifier_type_id = PatientIdentifierType.find_by_name("Old Identification Number").patient_identifier_type_id
 
-    patient_national_identifier = person.patient.patient_identifiers.find(:last, :conditions => ["identifier_type =?",
-        national_patient_identifier_type_id])
+    patient_national_identifier = person.patient.patient_identifiers.where(["identifier_type =?",
+        national_patient_identifier_type_id]).last
 
     ActiveRecord::Base.transaction do
       new_old_identification_identifier = person.patient.patient_identifiers.new
@@ -576,15 +575,14 @@ module DDEService
   
   def self.get_patient_identifier(patient, identifier_type)
     patient_identifier_type_id = PatientIdentifierType.find_by_name(identifier_type).patient_identifier_type_id rescue nil
-    patient_identifier = PatientIdentifier.find(:first, :select => "identifier",
-      :conditions  =>["patient_id = ? and identifier_type = ?", patient.id, patient_identifier_type_id],
-      :order => "date_created DESC" ).identifier rescue nil
+    patient_identifier = PatientIdentifier.find(["patient_id = ? and identifier_type = ?", patient.id,
+        patient_identifier_type_id]).order("date_created DESC").select("identifier").first.identifier rescue nil
     return patient_identifier
   end
   
   def self.get_attribute(person, attribute)
-    PersonAttribute.find(:first,:conditions =>["voided = 0 AND person_attribute_type_id = ? AND person_id = ?",
-        PersonAttributeType.find_by_name(attribute).id, person.id]).value rescue nil
+    PersonAttribute.where(["voided = 0 AND person_attribute_type_id = ? AND person_id = ?",
+        PersonAttributeType.find_by_name(attribute).id, person.id]).first.value rescue nil
   end
 
 
