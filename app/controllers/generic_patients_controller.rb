@@ -1,5 +1,5 @@
 class GenericPatientsController < ApplicationController
-	before_filter :find_patient, :except => [:void]
+	before_action :find_patient, :except => [:void]
   
 	def show
 		return_uri = session[:return_uri]

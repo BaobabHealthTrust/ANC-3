@@ -1,6 +1,6 @@
 class HeartbeatController < ApplicationController
 
-   before_filter :authorize, :except => ['update']
+   before_action :authorize, :except => ['update']
 
   def update
     ip = request.env['REMOTE_ADDR']

@@ -88,7 +88,7 @@ protected
 
   def self.should_have_recent_encounter(since = 5.minutes.ago)
     notify this_method.capitalize.gsub(/_/, " ")
-  	last_encounter_time = Encounter.find(:first, :order => 'encounter_id DESC').date_created
+  	last_encounter_time = Encounter.order("encounter_id DESC").first.date_created
 	  self.alert "Last encounter occurred > five minutes ago (#{last_encounter_time.hour}:#{last_encounter_time.min})" if last_encounter_time < since
 	end
 
@@ -152,7 +152,7 @@ protected
   end
 
   def self.end_of_day_summary
-    todays_encounters = Encounter.find(:all, :conditions => ["DATE(encounter_datetime) = ?", Date.today])
+    todays_encounters = Encounter.where(["DATE(encounter_datetime) = ?", Date.today])
     number_of_uniq_patients_with_encounters = todays_encounters.map{|e|e.patient_id}.uniq.length
     subject = "Number of unique #{self.current_location} patients for today: = #{number_of_uniq_patients_with_encounters}"
     message = ""

@@ -1,5 +1,5 @@
 class ProgramsController < ApplicationController
-  before_filter :find_patient, :except => [:void, :states]
+  before_action :find_patient, :except => [:void, :states]
   
   def new
     session[:return_to] = nil

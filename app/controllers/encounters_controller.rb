@@ -1,5 +1,5 @@
 class EncountersController < ApplicationController
-  before_filter :find_patient, :except => [:void, :probe_lmp]
+  before_action :find_patient, :except => [:void, :probe_lmp]
 
   def create
     #raise params.inspect
