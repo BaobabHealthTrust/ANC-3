@@ -1,4 +1,4 @@
-class CreateDdeApplicationUsers < ActiveRecord::Migration
+class CreateDdeApplicationUsers < ActiveRecord::Migration[4.2]
   def self.up
     create_table :dde_application_users, :id => false do |t|
       t.integer         :application_id,  :null =>  false

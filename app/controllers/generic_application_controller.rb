@@ -18,12 +18,12 @@ class GenericApplicationController < ActionController::Base
   Relationship
   ConceptName
   Concept
-  Settings
+  #Settings
 	require "fastercsv"
 
 	helper :all
 	helper_method :next_task
-	filter_parameter_logging :password
+	#filter_parameter_logging :password
 	before_action :authenticate_user!, :except => ['normal_visits','transfer_in_visits', 're_initiation_visits','patients_without_any_encs','login', 'logout','remote_demographics','art_stock_info',
     'create_remote', 'mastercard_printable', 'get_token', 'given_names',
     'cohort','demographics_remote', 'export_on_art_patients', 'art_summary',
@@ -69,8 +69,10 @@ class GenericApplicationController < ActionController::Base
 	before_action :set_return_uri, :except => ['create_person_from_anc', 'create_person_from_dmht',
     'find_person_from_dmht', 'reassign_remote_identifier', 'create', 'render_date_enrolled_in_art', 'search_remote_people']
 
-  before_filter :set_dde_token
+  before_action :set_dde_token
 
+  skip_before_action :verify_authenticity_token
+  
   def set_dde_token
     if create_from_dde_server
       unless current_user.blank?
@@ -100,16 +102,16 @@ class GenericApplicationController < ActionController::Base
 		@backtrace = exception.backtrace.join("\n") unless exception.nil?
 		logger.info @message
 		logger.info @backtrace
-		render :file => "#{RAILS_ROOT}/app/views/errors/error.rhtml", :layout=> false, :status => 404
-	end if RAILS_ENV == 'development' || RAILS_ENV == 'test'
+		render :file => "#{Rails.root.to_s}/app/views/errors/error.html.erb", :layout=> false, :status => 404
+	end if Rails.env == 'development' || Rails.env == 'test'
 
   def rescue_action(exception)
     @message = exception.message
     @backtrace = exception.backtrace.join("\n") unless exception.nil?
     logger.info @message
     logger.info @backtrace
-    render :file => "#{RAILS_ROOT}/app/views/errors/error.rhtml", :layout=> false, :status => 404
-  end if RAILS_ENV == 'production'
+    render :file => "#{Rails.root.to_s}/app/views/errors/error.html.erb", :layout=> false, :status => 404
+  end if Rails.env == 'production'
 
   def print_and_redirect(print_url, redirect_url, message = "Printing, please wait...", show_next_button = false, patient_id = nil)
     @print_url = print_url
@@ -215,8 +217,8 @@ class GenericApplicationController < ActionController::Base
   end
 
   def current_user_roles
-    user_roles = UserRole.find(:all,:conditions =>["user_id = ?", current_user.id]).collect{|r|r.role}
-    RoleRole.find(:all,:conditions => ["child_role IN (?)", user_roles]).collect{|r|user_roles << r.parent_role}
+    user_roles = UserRole.where(["user_id = ?", current_user.id]).collect{|r|r.role}
+    RoleRole.where(["child_role IN (?)", user_roles]).collect{|r|user_roles << r.parent_role}
     return user_roles.uniq
   end
 
@@ -274,7 +276,7 @@ class GenericApplicationController < ActionController::Base
   #
   # We can return to this location by calling #redirect_back_or_default.
   def store_location
-    session[:return_to] = request.request_uri
+    session[:return_to] = request.original_url
   end
 
   # Redirect to the URI stored by the most recent store_location call or
@@ -318,9 +320,9 @@ class GenericApplicationController < ActionController::Base
 
   def has_patient_been_on_art_before(patient)
     on_art = false
-    patient_states = PatientProgram.find(:first, :conditions => ["program_id = ? AND location_id = ? AND patient_id = ?",      
+    patient_states = PatientProgram.where(["program_id = ? AND location_id = ? AND patient_id = ?",
         Program.find_by_concept_id(Concept.find_by_name('HIV PROGRAM').id).id,
-        Location.current_health_center,patient.id]).patient_states rescue []
+        Location.current_health_center,patient.id]).first.patient_states rescue []
 
     (patient_states || []).each do |state|
       if state.program_workflow_state.concept.fullname.match(/antiretrovirals/i)

@@ -1,3 +1,4 @@
+=begin
 gem 'test-unit', '1.2.3' if RUBY_VERSION.to_f >= 1.9
 
 # Don't load rspec if running "rake gems:*"
@@ -163,3 +164,4 @@ namespace :spec do
 end
 
 end
+=end

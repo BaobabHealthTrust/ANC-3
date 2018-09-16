@@ -1,4 +1,4 @@
-class CreateValidationRules < ActiveRecord::Migration
+class CreateValidationRules < ActiveRecord::Migration[4.2]
   def self.up                                                                   
     create_table :validation_rules do |t|                                       
       t.string  :expr                                                           

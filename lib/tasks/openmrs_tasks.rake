@@ -1,3 +1,4 @@
+=begin
 namespace :openmrs do
 
   def setup_openmrs
@@ -78,3 +79,4 @@ namespace :openmrs do
     end
   end  
 end
+=end

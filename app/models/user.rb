@@ -30,10 +30,6 @@ class User < ActiveRecord::Base
 	has_many :user_roles, foreign_key: :user_id, dependent: :delete_all # no default scope
 	#has_many :names, :class_name => 'PersonName', :foreign_key => :person_id, :dependent => :destroy, :order => 'person_name.preferred DESC', :conditions => {:voided =>  0}
   # a method that saves a new authentication token when called
-	def reset_authentication_token!
-		update_column(:authentication_token, Devise.friendly_token)
-	end
-  
 
   def set_password
 		# We expect that the default OpenMRS interface is used to create users
@@ -43,11 +39,15 @@ class User < ActiveRecord::Base
 
   #An effort to remove email field requirement
 	def email_required?
-		false
+		return false
 	end
 
 	def email_changed?
-		false
+		return false
+	end
+
+  def reset_authentication_token
+		update_column(:authentication_token, Devise.friendly_token)
 	end
   
 		has_one :activities_property, -> { where (['property = ?', 'Activities'])}, class_name: :UserProperty, foreign_key: :user_id
@@ -170,5 +170,13 @@ class User < ActiveRecord::Base
 		prop.user_id = self.id
 		prop.save
 	end
-	
+
+  def self.current
+		Thread.current[:user]
+	end
+
+	def self.current=(user)
+		Thread.current[:user] = user
+	end
+  
 end

@@ -1,3 +1,5 @@
+=begin
+
 require 'fastercsv'
 
 namespace :openmrs do
@@ -48,3 +50,4 @@ namespace :openmrs do
     end      
   end
 end        
+=end
