@@ -61,7 +61,9 @@ class User < ActiveRecord::Base
 
 	def self.authenticate(username, password)
 		user = User.find_for_authentication(:username => username)
-		user.valid_password?(password) ? user : nil if !user.nil?
+		if !user.blank?
+			user.valid_password?(password) ? user : nil
+		end
 	end
 
 	def valid_password?(password)
@@ -132,10 +134,10 @@ class User < ActiveRecord::Base
 	# Leading zeroes
 	def encrypt(plain, salt)
 		encoding = ""
-		digest = Digest::SHA1.digest("#{plain}#{salt}") 
-		(0..digest.size-1).each{|i| encoding << digest[i].to_s(16) }
+		digest = Digest::SHA1.digest("#{plain}#{salt}")
+		(0..digest.size-1).each{|i| encoding << digest[i].to_s }
 		encoding
-	end  
+	end 
 
 	def before_create
 		super

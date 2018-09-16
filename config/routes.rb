@@ -15,7 +15,12 @@ Rails.application.routes.draw do
   post '/encounters/new/:encounter_type', controller:  'encounters', action: 'new'
   get '/encounters/new/:encounter_type/:id', controller: 'encounters', action: 'new'
   post '/encounters/new/:encounter_type/:id', controller: 'encounters', action: 'new'
-  
+  post '/user/create/:id', controller: 'user', action: 'create'
+  post '/user/update/:id', controller: 'user', action: 'update'
+  post '/user/change_password/:id', controller: 'user', action: 'change_password'
+  post '/user/add_role/:id', controller: 'user', action: 'add_role'
+  post '/user/delete_role/:id', controller: 'user', action: 'delete_role'
+
   resources :dispensations, collection: {quantities: :get}
   resources :barcodes, collection: {label: :get}
   resources :relationships, collection: {search: :get}
@@ -23,6 +28,7 @@ Rails.application.routes.draw do
   resources :encounter_types
   resources :single_sign_on, collection: {get_token: [:get, :post], load_page: [:get, :post],single_sign_in: [:get, :post]}
   resource :session
+
 
   get '/:controller/:action/:id'
   get '/:controller/:action'

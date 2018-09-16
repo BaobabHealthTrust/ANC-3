@@ -2,12 +2,10 @@
   var tt_cancel_destination = "/clinic";  //users"
 </script>
 
-<% form_tag :controller => 'user', :action => 'search_user', :method => :post do %>
+<form action="/user/search_user" method="POST">
   <%= text_field 'user',
     'username',
     :textCase =>"lower",
     :ajaxURL => '/user/username?all_roles=1&username=',
     :helpText => 'Select username' %>
-  <%= submit_tag "Find user" %>
-<% end %>
-
+</form>

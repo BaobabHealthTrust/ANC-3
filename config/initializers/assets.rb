@@ -13,6 +13,7 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 Rails.application.config.assets.precompile += %w( dateselector.js )
+#Rails.application.config.assets.precompile += %w( cancel_to_user_menu.js )
 Rails.application.config.assets.precompile += %w( barcode.js )
 Rails.application.config.assets.precompile += %w( touch-fancy.css )
 Rails.application.config.assets.precompile += %w( dashboard.css )

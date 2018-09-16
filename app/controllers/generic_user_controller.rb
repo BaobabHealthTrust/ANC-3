@@ -68,7 +68,7 @@ class GenericUserController < ApplicationController
 
   def list_clinicians
     @clinician_role = Role.find_by_role("clinician").id
-    @clinicians = UserRole.find_all_by_role_id(@clinician_role)
+    @clinicians = UserRole.where(["role_id =?", @clinician_role])
   end
 
   def logout
@@ -123,7 +123,6 @@ class GenericUserController < ApplicationController
   def create
     session[:user_edit] = nil
     existing_user = User.where({:username => params[:user][:username]}).first rescue nil
-
     if existing_user
       flash[:notice] = 'Username already in use'
       redirect_to :action => 'new'
@@ -145,9 +144,9 @@ class GenericUserController < ApplicationController
     params[:user][:password] = params[:user][:plain_password]
     params[:user][:plain_password] = nil
     person = Person.create()
-    person.names.create(params[:person_name])
+    person.names.create(params[:person_name].permit!)
     params[:user][:user_id] = nil
-    @user = RawUser.new(params[:user])
+    @user = RawUser.new(params[:user].permit!)
     @user.person_id = person.id
     if @user.save
       # if params[:user_role_admin][:role] == "Yes"
@@ -160,9 +159,13 @@ class GenericUserController < ApplicationController
       # user_role.save
       #}
       #else
-      @user.update_attributes(params[:user])
+      #@user.update(params[:user])
+      #@user.username = params[:user][:username]
+      #@user.plain_password = params[:user][:plain_password]
+      #@user.save
+
       user_role = UserRole.new
-      user_role.role = Role.find_by_role(params[:user_role][:role_id])
+      user_role.role = Role.find_by_role(params[:user_role][:role_id]).role
       user_role.user_id = @user.user_id
       user_role.save
       # end
@@ -227,26 +230,26 @@ class GenericUserController < ApplicationController
     @user = User.find(params[:id])
     unless request.get?
       user_role=UserRole.new
-      user_role.role = Role.find_by_role(params[:user_role][:role_id])
+      user_role.role = Role.find_by_role(params[:user_role][:role_id]).role
       user_role.user_id=@user.user_id
       user_role.save
       flash[:notice] = "You have successfuly added the role of #{params[:user_role][:role_id]}"
       redirect_to :action => "show", :id => params[:id]
     else
-      user_roles = UserRole.find_all_by_user_id(@user.user_id).collect{|ur|ur.role}
-      all_roles = Role.find(:all).collect{|r|r.role}
+      user_roles = UserRole.where(["user_id =?", @user.user_id]).collect{|ur|ur.role}
+      all_roles = Role.all.collect{|r|r.role}
       @roles = (all_roles - user_roles)
-      @show_super_user = true if UserRole.find_all_by_user_id(@user.user_id).collect{|ur|ur.role != "superuser" }
+      @show_super_user = true if UserRole.where(["user_id =?", @user.user_id]).collect{|ur|ur.role != "superuser" }
     end
   end
 
   def delete_role
     @user = User.find(params[:id])
     unless request.post?
-      @roles = UserRole.find_all_by_user_id(@user.user_id).collect{|ur|ur.role}
+      @roles = UserRole.where(["user_id =?", @user.user_id]).collect{|ur|ur.role}
     else
       role = Role.find_by_role(params[:user_role][:role_id]).role
-      user_role =  UserRole.find_by_role_and_user_id(role,@user.user_id)
+      user_role =  UserRole.where(["role =? AND user_id =?", role,@user.user_id]).last
       user_role.destroy
       flash[:notice] = "You have successfuly removed the role of #{params[:user_role][:role_id]}"
       redirect_to :action =>"show", :id => params[:id]
@@ -275,7 +278,7 @@ class GenericUserController < ApplicationController
       else
         params[:user][:password] = params[:user][:plain_password]
         params[:user][:plain_password] = nil
-        if @user.update_attributes(params[:user])
+        if @user.update_attributes(params[:user].permit!)
           flash[:notice] = "Password successfully changed"
           redirect_to :action => "show",:id => @user.id
           return
@@ -383,9 +386,8 @@ class GenericUserController < ApplicationController
 
   def properties
     if request.post?
-      property = UserProperty.find(:first,
-        :conditions =>["property = ? AND user_id = ?",'preferred.keyboard',
-          current_user.id])
+      property = UserProperty.where(["property = ? AND user_id = ?",'preferred.keyboard',
+          current_user.id]).first
       if property.blank?
         property = UserProperty.new()
         property.user_id = current_user.id
@@ -410,7 +412,7 @@ class GenericUserController < ApplicationController
   end
 
 	def set_role_role
-		@roles = Role.find(:all).map(&:role)
+		@roles = Role.all.map(&:role)
 	end
 
   def change_role
@@ -440,7 +442,7 @@ class GenericUserController < ApplicationController
   	@role = params[:role_role]
 		@selected_role_roles = RoleRole.where(["parent_role = ?", @role]).map(&:child_role)
 		@selected_role_roles = [] if @selected_role_roles.blank?
-		@roles = Role.find(:all).map(&:role) - [@role]
+		@roles = Role.all.map(&:role) - [@role]
   end
 
   def set_roles_for_role
