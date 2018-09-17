@@ -1,8 +1,11 @@
 class Bart2Connection::DrugOrder < ActiveRecord::Base
-  set_table_name :drug_order
-  set_primary_key :order_id
+  before_save :before_save
+  before_create :before_create
+  
+  self.table_name = "drug_order"
+  self.primary_key = "order_id"
   include Bart2Connection::Openmrs
-  belongs_to :drug, :class_name => "Bart2Connection::Drug", :foreign_key => :drug_inventory_id, :conditions => {:retired => 0}
+  belongs_to :drug,->{where(retired: 0)}, :class_name => "Bart2Connection::Drug", :foreign_key => :drug_inventory_id
 
   def order
     @order ||= Order.find(order_id)
@@ -27,15 +30,15 @@ class Bart2Connection::DrugOrder < ActiveRecord::Base
   end
 
   def self.find_common_orders(diagnosis_concept_id)
-    # Note we are not worried about drug.retired in this case
+     # Note we are not worried about drug.retired in this case
     joins = "INNER JOIN orders ON orders.order_id = drug_order.order_id AND orders.voided = 0
              INNER JOIN obs ON orders.obs_id = obs.obs_id AND obs.value_coded = #{diagnosis_concept_id} AND obs.voided = 0
-             INNER JOIN drug ON drug.drug_id = drug_order.drug_inventory_id"             
-    self.all( 
-      :joins => joins, 
-      :select => "*, MIN(drug_order.order_id) as order_id, COUNT(*) as number, CONCAT(drug.name, ':', dose, ' ', drug_order.units, ' ', frequency, ' for ', DATEDIFF(auto_expire_date, start_date), ' days', IF(prn=1, ' prn', '')) as script", 
-      :group => ['drug.name, dose, drug_order.units, frequency, prn, DATEDIFF(start_date, auto_expire_date)'], 
-      :order => "COUNT(*) DESC")
+             INNER JOIN drug ON drug.drug_id = drug_order.drug_inventory_id"
+    self.joins(joins).select(
+      "*, MIN(drug_order.order_id) as order_id, COUNT(*) as number, CONCAT(drug.name, ':', dose, ' ', drug_order.units, ' ', frequency, ' for ', DATEDIFF(auto_expire_date, start_date), ' days', IF(prn=1, ' prn', '')) as script"
+    ).group(
+      ['drug.name, dose, drug_order.units, frequency, prn, DATEDIFF(start_date, auto_expire_date)']
+    ).order("COUNT(*) DESC")
   end
   
   def self.clone_order(encounter, patient, obs, drug_order)
@@ -121,17 +124,17 @@ class Bart2Connection::DrugOrder < ActiveRecord::Base
   # We have to recalculate everything each time, because this might be the result
   # of a clinical worker voiding something. 
   def total_drug_supply(patient, encounter = nil, session_date = Date.today)
-    if encounter.blank?  
+    if encounter.blank?
       type = EncounterType.find_by_name("DISPENSING")
-      encounter = encounters.find(:first,:conditions =>["encounter_datetime BETWEEN ? AND ? AND encounter_type = ?",
-                                  session_date.to_date.strftime('%Y-%m-%d 00:00:00'),
-                                  session_date.to_date.strftime('%Y-%m-%d 23:59:59'),
-                                  type.id])
+      encounter = Encounter.where(["encounter_datetime BETWEEN ? AND ? AND encounter_type = ?",
+          session_date.to_date.strftime('%Y-%m-%d 00:00:00'),
+          session_date.to_date.strftime('%Y-%m-%d 23:59:59'),
+          type.id]).first
     end
-    
+
     return [] if encounter.blank?
-   
-    amounts_brought = Observation.all(:conditions => 
+=begin
+    amounts_brought = Observation.all(:conditions =>
       ['obs.concept_id = ? AND ' +
        'obs.person_id = ? AND ' +
        "encounter_datetime BETWEEN ? AND ? AND " +
@@ -140,12 +143,20 @@ class Bart2Connection::DrugOrder < ActiveRecord::Base
         patient.person.person_id,
         session_date.to_date.strftime('%Y-%m-%d 00:00:00'),
         session_date.to_date.strftime('%Y-%m-%d 23:59:59'),
-        drug_inventory_id], 
-      :include => [:encounter, [:order => :drug_order]])      
-    total_brought = amounts_brought.sum{|amount| amount.value_numeric}
-    amounts_dispensed = Observation.all(:conditions => ['concept_id = ? AND order_id = ? AND encounter_id = ?', ConceptName.find_by_name("AMOUNT DISPENSED").concept_id, self.order_id, encounter.encounter_id])
+        drug_inventory_id],
+      :include => [:encounter, [:order => :drug_order]])
+=end
+
+    amounts_brought = MedicationService.amounts_brought_to_clinic(patient, session_date.to_date)[drug_inventory_id]
+    amounts_brought = 0 if amounts_brought.blank?
+    total_brought = amounts_brought
+
+    #total_brought = amounts_brought.sum{|amount| amount.value_numeric}
+
+    amounts_dispensed = Observation.where(['concept_id = ? AND order_id = ? AND encounter_id = ?',
+        ConceptName.find_by_name("AMOUNT DISPENSED").concept_id, self.order_id, encounter.encounter_id])
     total_dispensed = amounts_dispensed.sum{|amount| amount.value_numeric}
-    self.quantity = total_dispensed + total_brought  
+    self.quantity = total_dispensed + total_brought
     self.save
     amounts_dispensed
   end
@@ -159,22 +170,21 @@ class Bart2Connection::DrugOrder < ActiveRecord::Base
   end
 
   def self.prescription_dates(patient,date)
-    type = EncounterType.find_by_name('TREATMENT').id                           
-    all = Encounter.find(:all,                                                  
-      :conditions =>["patient_id = ? AND encounter_datetime BETWEEN ? AND ?           
-      AND encounter_type = ?",patient.id , date.to_date.strftime('%Y-%m-%d 00:00:00'),                     
-                      date.to_date.strftime('%Y-%m-%d 23:59:59')  , type])                        
-                                                                                
-    start_date = nil ; end_date = nil                                        
-    (all || []).each do |encounter|                                             
+    type = EncounterType.find_by_name('TREATMENT').id
+    all = Encounter.where(["patient_id = ? AND encounter_datetime BETWEEN ? AND ?
+      AND encounter_type = ?",patient.id , date.to_date.strftime('%Y-%m-%d 00:00:00'),
+        date.to_date.strftime('%Y-%m-%d 23:59:59')  , type])
+
+    start_date = nil ; end_date = nil
+    (all || []).each do |encounter|
       encounter.orders.each do | order |
         start_date = order.start_date.to_date if start_date.blank?
         end_date = order.auto_expire_date.to_date if end_date.blank?
-                                                
+
         end_date = order.auto_expire_date.to_date if (order.auto_expire_date.to_date < end_date)
         start_date = order.start_date.to_date if (order.start_date.to_date < start_date)
-      end                                                                       
-    end                                                                         
+      end
+    end
     return [start_date,end_date]
   end
 

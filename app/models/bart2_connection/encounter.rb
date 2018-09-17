@@ -1,17 +1,22 @@
 class Bart2Connection::Encounter < ActiveRecord::Base
   self.establish_connection :bart2
-  set_table_name :encounter
-  set_primary_key :encounter_id
+  before_save :before_save
+  before_create :before_create
+  
+  self.table_name = "encounter"
+  self.primary_key = "encounter_id"
+
   include Bart2Connection::Openmrs
-  has_many :observations, :class_name => "Bart2Connection::Observation", :dependent => :destroy, :conditions => {:voided => 0}
-  has_many :drug_orders, :class_name => "Bart2Connection::DrugOrder",  :through   => :orders,  :foreign_key => 'order_id'
-  has_many :orders, :class_name => "Bart2Connection::Order", :dependent => :destroy, :conditions => {:voided => 0}
-  belongs_to :type, :class_name => "Bart2Connection::EncounterType", :foreign_key => :encounter_type, :conditions => {:retired => 0}
-  belongs_to :provider, :class_name => "Bart2Connection::Person", :foreign_key => :provider_id, :conditions => {:voided => 0}
-  belongs_to :patient, :class_name => "Bart2Connection::Patient", :conditions => {:voided => 0}
+  has_many :observations, -> { where voided: 0 }, :class_name => "Bart2Connection::Observation", dependent: :destroy
+  has_many :orders, -> { where voided: 0 }, :class_name => "Bart2Connection::Order", dependent: :destroy
+  has_many :drug_orders, foreign_key: "order_id", :class_name => "Bart2Connection::DrugOrder", through: "orders",  :foreign_key => 'order_id'
+  
+  belongs_to :type, -> { where retired: 0 }, :class_name => "Bart2Connection::EncounterType", :foreign_key => :encounter_type, optional: true
+  belongs_to :provider, -> { where voided: 0 }, :class_name => "Bart2Connection::Person", :foreign_key => :provider_id, optional: true
+  belongs_to :patient, -> { where voided: 0 }, :class_name => "Bart2Connection::Patient", optional: true
 
   # TODO, this needs to account for current visit, which needs to account for possible retrospective entry
-  named_scope :current, :conditions => 'DATE(encounter.encounter_datetime) = CURRENT_DATE()'
+  scope :current, -> {where('DATE(encounter.encounter_datetime) = CURRENT_DATE()')}
 
   def before_save
     self.provider = User.current.person if self.provider.blank?
@@ -102,16 +107,10 @@ EOF
   end
 
   def self.statistics(encounter_types, opts={})
-
-    encounter_types = EncounterType.all(:conditions => ['name IN (?)', encounter_types])
+encounter_types = EncounterType.where(['name IN (?)', encounter_types])
     encounter_types_hash = encounter_types.inject({}) {|result, row| result[row.encounter_type_id] = row.name; result }
-    with_scope(:find => opts) do
-      rows = self.all(
-        :select => 'count(*) as number, encounter_type',
-        :group => 'encounter.encounter_type',
-        :conditions => ['encounter_type IN (?)', encounter_types.map(&:encounter_type_id)])
-      return rows.inject({}) {|result, row| result[encounter_types_hash[row['encounter_type']]] = row['number']; result }
-    end     
+    rows = self.where(['encounter_type IN (?)', encounter_types.map(&:encounter_type_id)]).where(opts[:conditions]).group("encounter_type").select("count(*) as number, encounter_type")
+    return rows.inject({}) {|result, row| result[encounter_types_hash[row['encounter_type']]] = row['number']; result }
   end
 
 end

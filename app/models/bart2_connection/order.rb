@@ -1,27 +1,30 @@
 class Bart2Connection::Order < ActiveRecord::Base
-  set_table_name :orders
-  set_primary_key :order_id
+  before_save :before_save
+  before_create :before_create
+  
+  self.table_name = "orders"
+  self.primary_key = "order_id"
   include Bart2Connection::Openmrs
-  belongs_to :order_type, :class_name => "Bart2Connection::OrderType", :conditions => {:retired => 0}
-  belongs_to :concept, :class_name => "Bart2Connection::Concept", :conditions => {:retired => 0}
-  belongs_to :encounter, :class_name => "Bart2Connection::Encounter", :conditions => {:voided => 0}
-  belongs_to :patient, :class_name => "Bart2Connection::Patient", :conditions => {:voided => 0}
-  belongs_to :provider, :foreign_key => 'orderer', :class_name => 'Bart2Connection::User', :conditions => {:voided => 0}
-  belongs_to :observation, :foreign_key => 'obs_id', :class_name => 'Bart2Connection::Observation', :conditions => {:voided => 0}
+  belongs_to :order_type> { where retired: 0 }, :class_name => "Bart2Connection::OrderType"
+  belongs_to :concept> { where retired: 0 }, :class_name => "Bart2Connection::Concept"
+  belongs_to :encounter> { where voided: 0 }, :class_name => "Bart2Connection::Encounter"
+  belongs_to :patient> { where voided: 0 }, :class_name => "Bart2Connection::Patient"
+  belongs_to :provider> { where voided: 0 }, :foreign_key => 'orderer', :class_name => 'Bart2Connection::User'
+  belongs_to :observation> { where voided: 0 }, :foreign_key => 'obs_id', :class_name => 'Bart2Connection::Observation'
   has_one :drug_order, :class_name => "Bart2Connection::DrugOrder" # no default scope
   
-  named_scope :current, :conditions => 'DATE(encounter.encounter_datetime) = CURRENT_DATE()', :include => :encounter
-  named_scope :historical, :conditions => 'DATE(encounter.encounter_datetime) <> CURRENT_DATE()', :include => :encounter
-  named_scope :unfinished, :conditions => ['discontinued = 0 AND auto_expire_date > NOW()']
-  named_scope :finished, :conditions => ['discontinued = 1 OR auto_expire_date < NOW()']
-  named_scope :arv, lambda {|order|
+  scope :current,-> { includes(:encounter).references("encounter.encounter_id").where('DATE(encounter.encounter_datetime) = CURRENT_DATE()') }
+  scope :historical, -> { includes(:encounter).references("encounter.encounter_id").where('DATE(encounter.encounter_datetime) <> CURRENT_DATE()') }
+  scope :unfinished, -> {where("discontinued = 0 AND auto_expire_date > NOW()")}
+  scope :finished, -> {where("discontinued = 1 OR auto_expire_date < NOW()")}
+  scope :arv, lambda {|order|
     arv_concept = ConceptName.find_by_name("ANTIRETROVIRAL DRUGS").concept_id
-    arv_drug_concepts = ConceptSet.all(:conditions => ['concept_set = ?', arv_concept])
-    {:conditions => ['concept_id IN (?)', arv_drug_concepts.map(&:concept_id)]}
+    arv_drug_concepts = ConceptSet.where(['concept_set = ?', arv_concept])
+    where(['concept_id IN (?)', arv_drug_concepts.map(&:concept_id)])
   }
-  named_scope :labs, :conditions => ['drug_order.drug_inventory_id is NULL'], :include => :drug_order
-  named_scope :prescriptions, :conditions => ['drug_order.drug_inventory_id is NOT NULL'], :include => :drug_order
-  
+  scope :labs, -> {joins(:drug_order).where('drug_order.drug_inventory_id is NULL')}
+  scope :prescriptions, -> {joins(:drug_order).where("drug_order.drug_inventory_id is NOT NULL")}
+
   def after_void(reason = nil)
     # TODO Should we be voiding the associated meta obs that point back to this?
   end

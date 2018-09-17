@@ -1,11 +1,12 @@
 class Bart2Connection::ConceptName < ActiveRecord::Base
   self.establish_connection :bart2
-  set_table_name :concept_name
-  set_primary_key :concept_name_id
+  self.table_name = "concept_name"
+  self.primary_key = "concept_name_id"
+  
   include Bart2Connection::Openmrs
   
-  belongs_to :concept, :class_name => "Bart2Connection::Concept", :conditions => {:retired => 0}
-  self.default_scope :joins => :concept, :conditions => "concept_name.voided = 0 AND concept.retired = 0 AND concept_name.name != ''"
+  belongs_to :concept, -> { where retired: 0 }, :class_name => "Bart2Connection::Concept", optional: true
+  default_scope {joins(:concept).where("concept_name.voided = 0 AND concept.retired = 0 AND concept_name.name != ''")}
 
 	#TODO Need 
   # This method gets the collection of all short forms of frequencies as used into make this method a lot more generic

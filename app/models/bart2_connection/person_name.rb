@@ -1,10 +1,12 @@
 class Bart2Connection::PersonName < ActiveRecord::Base
   self.establish_connection :bart2
-  set_table_name "person_name"
-  set_primary_key "person_name_id"
+  before_save :before_save
+  before_create :before_create
+  self.table_name = "person_name"
+  self.primary_key = "person_name_id"
   include Bart2Connection::Openmrs
 
-  belongs_to :person, :class_name => "Bart2Connection::Person", :foreign_key => :person_id, :conditions => {:voided => 0}
+  belongs_to :person, ->{where(voided:0)}, :class_name => "Bart2Connection::Person", :foreign_key => :person_id
   has_one :person_name_code, :class_name => "Bart2Connection::PersonNameCode", :foreign_key => :person_name_id # no default scope
 
   def after_save

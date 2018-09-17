@@ -1,15 +1,17 @@
 class Bart2Connection::PatientIdentifier < ActiveRecord::Base
   self.establish_connection :bart2
-  set_table_name "patient_identifier"
-  set_primary_key :patient_identifier_id
+  before_save :before_save
+  before_create :before_create
+  
+  self.table_name = "patient_identifier"
+  self.primary_key = "patient_identifier_id"
   include Bart2Connection::Openmrs
 
-  belongs_to :type, :class_name => "Bart2Connection::PatientIdentifierType", :foreign_key => :identifier_type, :conditions => {:retired => 0}
-  belongs_to :patient, :class_name => "Bart2Connection::Patient", :foreign_key => :patient_id, :conditions => {:voided => 0}
+  belongs_to :type, ->{where(retired:0)}, :class_name => "Bart2Connection::PatientIdentifierType", :foreign_key => :identifier_type
+  belongs_to :patient, ->{where(voided:0)}, :class_name => "Bart2Connection::Patient", :foreign_key => :patient_id, :conditions => {:voided => 0}
 
   def self.search_or_create(identifier)
-    people = self.find_all_by_identifier_and_identifier_type(identifier,
-              Bart2Connection::PatientIdentifierType.find_by_name("National ID").id).map{|id|
+    people = self.where(["identifier =? AND identifier_type =?", identifier,Bart2Connection::PatientIdentifierType.find_by_name("National ID").id]).map{|id|
       id.patient.person
     } unless identifier.blank? #  rescue nil
 
@@ -22,40 +24,40 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
     address = patient.person.addresses.last rescue nil
 
     person = {
-        "names" =>
-            {
-                "family_name" => (name.family_name rescue nil),
-                "given_name" => (name.given_name rescue nil),
-                "middle_name" => (name.middle_name rescue nil),
-                "family_name2" => (name.family_name2 rescue nil)
-            },
-        "gender" => (patient.person.gender rescue nil),
-        "person_attributes" => {
-            "occupation" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Occupation").id).value rescue nil),
-            "cell_phone_number" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Cell Phone Number").id).value rescue nil),
-            "home_phone_number" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Home Phone Number").id).value rescue nil),
-            "office_phone_number" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Office Phone Number").id).value rescue nil),
-            "race" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Race").id).value rescue nil),
-            "country_of_residence" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Country of Residence").id).value rescue nil),
-            "citizenship" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Citizenship").id).value rescue nil)
-        },
-        "birthdate" => (patient.person.birthdate rescue nil),
-        "patient" => {
-            "identifiers" => (patient.patient_identifiers.collect { |id| {id.type.name => id.identifier}}.delete_if { |x| x.nil? } rescue [])
-        },
-        "birthdate_estimated" => ((patient.person.birthdate_estimated rescue 0).to_s.strip == '1' ? true : false),
-        "addresses" => {
-            "current_residence" => (address.address1 rescue nil),
-            "current_village" => (address.city_village rescue nil),
-            "current_ta" => (address.township_division rescue nil),
-            "current_district" => (address.state_province rescue nil),
-            "home_village" => (address.neighborhood_cell rescue nil),
-            "home_ta" => (address.county_district rescue nil),
-            "home_district" => (address.address2 rescue nil)
-        }
+      "names" =>
+        {
+        "family_name" => (name.family_name rescue nil),
+        "given_name" => (name.given_name rescue nil),
+        "middle_name" => (name.middle_name rescue nil),
+        "family_name2" => (name.family_name2 rescue nil)
+      },
+      "gender" => (patient.person.gender rescue nil),
+      "person_attributes" => {
+        "occupation" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Occupation").id).value rescue nil),
+        "cell_phone_number" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Cell Phone Number").id).value rescue nil),
+        "home_phone_number" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Home Phone Number").id).value rescue nil),
+        "office_phone_number" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Office Phone Number").id).value rescue nil),
+        "race" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Race").id).value rescue nil),
+        "country_of_residence" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Country of Residence").id).value rescue nil),
+        "citizenship" => (patient.person.person_attributes.find_by_person_attribute_type_id(PersonAttributeType.find_by_name("Citizenship").id).value rescue nil)
+      },
+      "birthdate" => (patient.person.birthdate rescue nil),
+      "patient" => {
+        "identifiers" => (patient.patient_identifiers.collect { |id| {id.type.name => id.identifier}}.delete_if { |x| x.nil? } rescue [])
+      },
+      "birthdate_estimated" => ((patient.person.birthdate_estimated rescue 0).to_s.strip == '1' ? true : false),
+      "addresses" => {
+        "current_residence" => (address.address1 rescue nil),
+        "current_village" => (address.city_village rescue nil),
+        "current_ta" => (address.township_division rescue nil),
+        "current_district" => (address.state_province rescue nil),
+        "home_village" => (address.neighborhood_cell rescue nil),
+        "home_ta" => (address.county_district rescue nil),
+        "home_district" => (address.address2 rescue nil)
+      }
     }
 
-   return self.create_from_form_new(person)
+    return self.create_from_form_new(person)
   end
 
   def self.create_from_form_new(params)
@@ -97,28 +99,28 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
     end
 
     person.person_attributes.create(
-        :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Occupation").person_attribute_type_id,
-        :value => params["person_attributes"]["occupation"]) unless params["person_attributes"]["occupation"].blank? rescue nil
+      :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Occupation").person_attribute_type_id,
+      :value => params["person_attributes"]["occupation"]) unless params["person_attributes"]["occupation"].blank? rescue nil
 
     person.person_attributes.create(
-        :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Cell Phone Number").person_attribute_type_id,
-        :value => params["person_attributes"]["cell_phone_number"]) unless params["person_attributes"]["cell_phone_number"].blank? rescue nil
+      :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Cell Phone Number").person_attribute_type_id,
+      :value => params["person_attributes"]["cell_phone_number"]) unless params["person_attributes"]["cell_phone_number"].blank? rescue nil
 
     person.person_attributes.create(
-        :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Office Phone Number").person_attribute_type_id,
-        :value => params["person_attributes"]["office_phone_number"]) unless params["person_attributes"]["office_phone_number"].blank? rescue nil
+      :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Office Phone Number").person_attribute_type_id,
+      :value => params["person_attributes"]["office_phone_number"]) unless params["person_attributes"]["office_phone_number"].blank? rescue nil
 
     person.person_attributes.create(
-        :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Home Phone Number").person_attribute_type_id,
-        :value => params["person_attributes"]["home_phone_number"]) unless params["person_attributes"]["home_phone_number"].blank? rescue nil
+      :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Home Phone Number").person_attribute_type_id,
+      :value => params["person_attributes"]["home_phone_number"]) unless params["person_attributes"]["home_phone_number"].blank? rescue nil
 
     person.person_attributes.create(
-        :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Citizenship").person_attribute_type_id,
-        :value => params["person_attributes"]["citizenship"]) unless params["person_attributes"]["citizenship"].blank? rescue nil
+      :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Citizenship").person_attribute_type_id,
+      :value => params["person_attributes"]["citizenship"]) unless params["person_attributes"]["citizenship"].blank? rescue nil
 
     person.person_attributes.create(
-        :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Country of Residence").person_attribute_type_id,
-        :value => params["person_attributes"]["country_of_residence"]) unless params["person_attributes"]["country_of_residence"].blank? rescue nil
+      :person_attribute_type_id => Bart2Connection::PersonAttributeType.find_by_name("Country of Residence").person_attribute_type_id,
+      :value => params["person_attributes"]["country_of_residence"]) unless params["person_attributes"]["country_of_residence"].blank? rescue nil
 
     # TODO handle the birthplace attribute
 
@@ -126,17 +128,17 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
       patient = person.create_patient
 
       patient_params["identifiers"].each {|p_identifier|
-		p_identifier = p_identifier.to_a.flatten	
+        p_identifier = p_identifier.to_a.flatten
 	
-		identifier_type_name = p_identifier[0]
-		identifier = p_identifier[1]
-		uuid = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
-		next if identifier.blank?
+        identifier_type_name = p_identifier[0]
+        identifier = p_identifier[1]
+        uuid = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+        next if identifier.blank?
 
         identifier_type = Bart2Connection::PatientIdentifierType.find_by_name(identifier_type_name) || Bart2Connection::PatientIdentifierType.find_by_name("Unknown id")
         patient.patient_identifiers.create("identifier" => identifier,
-                                           "identifier_type" => identifier_type.patient_identifier_type_id,
-                                           "uuid" => 	uuid = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+          "identifier_type" => identifier_type.patient_identifier_type_id,
+          "uuid" => 	uuid = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
         )
       } if patient_params["identifiers"]
 
@@ -149,7 +151,7 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
 
   def self.search_by_identifier(identifier)
 
-    people = self.find_all_by_identifier(identifier).map{|id|
+    people = self.where(["identifier =?", identifier]).map{|id|
       id.patient.person
     } unless identifier.blank? rescue nil
 
@@ -160,7 +162,7 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
     proceed = false
     if create_from_dde_server
 
-      @settings = YAML.load_file("#{Rails.root}/config/dde_connection.yml")[Rails.env] # rescue {}
+      @settings = YAML.load_file("#{Rails.root.to_s}/config/dde_connection.yml")[Rails.env] # rescue {}
       p = DDE2Service.search_by_identifier(identifier)
 
       return nil if p.blank?
@@ -178,30 +180,30 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
       gender = p["gender"] == "F" ? "Female" : "Male"
 
       passed = {
-          "person"=>{"occupation"=>p["attributes"]["occupation"],
-                     "age_estimate"=> nil,
-                     "cell_phone_number"=>p["attributes"]["cell_phone_number"],
-                     "birth_month"=> birthdate_month ,
-                     "addresses"=>{"address1"=>p["addresses"]["current_residence"],
-                                   "address2"=>p["addresses"]["home_district"],
-                                   "city_village"=>p["addresses"]["current_village"],
-                                   "state_province"=>p["addresses"]["current_district"],
-                                   "neighborhood_cell"=> p["addresses"]['home_village'],
-                                   "township_division" => p["addresses"]['current_ta'],
-                                   "county_district"=>p["addresses"]["home_ta"]
-                     },
-                     "gender"=> gender ,
-                     "patient"=>{"identifiers"=>{"National id" => p["npid"]}},
-                     "birth_day"=>birthdate_day,
-                     "home_phone_number"=>p["attributes"]["home_phone_number"],
-                     "names"=>{"family_name"=>p["names"]["family_name"],
-                               "given_name"=>p["names"]["given_name"],
-                              },
-                     "birth_year"=>birthdate_year},
-          "filter_district"=>"",
-          "filter"=>{"region"=>"",
-                     "t_a"=>""},
-          "relation"=>""
+        "person"=>{"occupation"=>p["attributes"]["occupation"],
+          "age_estimate"=> nil,
+          "cell_phone_number"=>p["attributes"]["cell_phone_number"],
+          "birth_month"=> birthdate_month ,
+          "addresses"=>{"address1"=>p["addresses"]["current_residence"],
+            "address2"=>p["addresses"]["home_district"],
+            "city_village"=>p["addresses"]["current_village"],
+            "state_province"=>p["addresses"]["current_district"],
+            "neighborhood_cell"=> p["addresses"]['home_village'],
+            "township_division" => p["addresses"]['current_ta'],
+            "county_district"=>p["addresses"]["home_ta"]
+          },
+          "gender"=> gender ,
+          "patient"=>{"identifiers"=>{"National id" => p["npid"]}},
+          "birth_day"=>birthdate_day,
+          "home_phone_number"=>p["attributes"]["home_phone_number"],
+          "names"=>{"family_name"=>p["names"]["family_name"],
+            "given_name"=>p["names"]["given_name"],
+          },
+          "birth_year"=>birthdate_year},
+        "filter_district"=>"",
+        "filter"=>{"region"=>"",
+          "t_a"=>""},
+        "relation"=>""
       }
       return [self.create_from_form(passed["person"])].first
     end
@@ -209,8 +211,7 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
     if create_from_dde_server
 
       if !old_national_id.blank? and (old_national_id != national_id)
-        art_npid = self.find_all_by_identifier_and_identifier_type(old_national_id,
-          PatientIdentifierType.find_by_name("National id").id)
+        art_npid = self.where(["identifier =? and identifier_type =?", old_national_id,PatientIdentifierType.find_by_name("National id").id])
 
         if !art_npid.blank?
           patient = art_npid.first.patient

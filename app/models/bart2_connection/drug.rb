@@ -1,9 +1,9 @@
 class Bart2Connection::Drug < ActiveRecord::Base
-  set_table_name :drug
-  set_primary_key :drug_id
+  self.table_name = "drug"
+  self.primary_key = "drug_id"
   include Bart2Connection::Openmrs
-  belongs_to :concept, :class_name => "Bart2Connection::Concept", :conditions => {:retired => 0}
-  belongs_to :form, :foreign_key => 'dosage_form', :class_name => 'Bart2Connection::Concept', :conditions => {:retired => 0}
+  belongs_to :concept,->{where(retired: 0)}, :class_name => "Bart2Connection::Concept"
+  belongs_to :form, -> {where(retired: 0)}, :foreign_key => 'dosage_form', :class_name => 'Bart2Connection::Concept'
 
 =begin
   # Need to make this a lot more generic	

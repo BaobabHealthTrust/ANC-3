@@ -1,10 +1,14 @@
 class Bart2Connection::PersonAddress < ActiveRecord::Base
   self.establish_connection :bart2
-  set_table_name "person_address"
-  set_primary_key "person_address_id"
+  self.table_name = "person_address"
+  self.primary_key = "person_address_id"
+
+  before_save :before_save
+  before_create :before_create
+  
   include Bart2Connection::Openmrs
 
-  belongs_to :person, :class_name => "Bart2Connection::Person", :foreign_key => :person_id, :conditions => {:voided => 0}
+  belongs_to :person, ->{where(voided:0)}, :class_name => "Bart2Connection::Person", :foreign_key => :person_id, optional: true
   
   # Looks for the most commonly used element in the database and sorts the results based on the first part of the string
   def self.find_most_common(field_name, search_string)

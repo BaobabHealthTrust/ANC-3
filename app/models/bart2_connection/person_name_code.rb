@@ -1,14 +1,20 @@
 class Bart2Connection::PersonNameCode < ActiveRecord::Base
   self.establish_connection :bart2
-  set_table_name "person_name_code"
-  set_primary_key "person_name_code_id"
+  before_save :before_save
+  before_create :before_create
+
+  before_save :before_save
+  before_create :before_create
+  
+  self.table_name = "person_name_code"
+  self.primary_key =  "person_name_code_id"
   include Bart2Connection::Openmrs
   
-  belongs_to :person_name, :class_name => "Bart2Connection::PersonName", :conditions => {:voided => 0}
+  belongs_to :person_name, ->{where(voided:0)}, :class_name => "Bart2Connection::PersonName"
   
   def self.rebuild_person_name_codes
     Bart2Connection::PersonNameCode.delete_all
-    names = Bart2Connection::PersonName.find(:all)
+    names = Bart2Connection::PersonName.all
     names.each {|name|
       Bart2Connection::PersonNameCode.create(
         :person_name_id => name.person_name_id,
@@ -33,7 +39,7 @@ class Bart2Connection::PersonNameCode < ActiveRecord::Base
   def self.find_most_common(field_name, search_string)
     soundex = (search_string || '').soundex
     self.find_by_sql([
-      "SELECT DISTINCT #{field_name} AS #{field_name}, person_name.person_name_id AS id
+        "SELECT DISTINCT #{field_name} AS #{field_name}, person_name.person_name_id AS id
        FROM person_name_code \
        INNER JOIN person_name ON person_name_code.person_name_id = person_name.person_name_id \
        INNER JOIN person ON person.person_id = person_name.person_id \
@@ -46,6 +52,6 @@ class Bart2Connection::PersonNameCode < ActiveRecord::Base
          COUNT(#{field_name}) DESC,  \
          #{field_name} ASC \
        LIMIT 10",
-       "#{soundex}%", search_string, search_string, soundex, soundex, soundex])
+        "#{soundex}%", search_string, search_string, soundex, soundex, soundex])
   end
 end
