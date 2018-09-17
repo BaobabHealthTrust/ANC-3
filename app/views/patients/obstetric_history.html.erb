@@ -46,13 +46,13 @@
     "Type of abortion", "Procedure done", "Gestation (weeks)"
   ];
 
-  var $$ = <%= @abortions.to_json%>;
-  var data = <%= @pregnancies.to_json%>;
-  var counts = <%= @twin_counts.to_json%>;
+  var $$ = <%= @abortions.to_json.html_safe%>;
+  var data = <%= @pregnancies.to_json.html_safe %>;
+  var counts = <%= @twin_counts.to_json.html_safe %>;
   console.log(data)
   anc_visits.push("zero");
   var parsedConceptName = "Visit Number";
-  
+
     function disablePastVisits(){
     console.log(anc_visits);
     for(var i = 0; i < anc_visits.length; i++){
@@ -64,12 +64,12 @@
   }
 
   setTimeout("disablePastVisits()", 200);
-  
+
     </script>
     <%= stylesheet_link_tag "obstetric_history" %>
   </head>
   <body>
-    <% form_tag :controller => "patients", :action => "obstetric_counts" do |f| %>
+    <%= form_tag :controller => "patients", :action => "obstetric_counts" do |f| %>
 
 
       <%= hidden_field_tag "patient_id", @patient.id %>
@@ -186,7 +186,7 @@
           :helptext => "Vacuum Extraction",
           :tt_onLoad => " parsedConceptName = 'Vacuum extraction delivery'",
           :tt_onUnLoad => "parsedConceptName = ''",
-          :condition => "false" }.html_safe %>
+          :condition => "false" }).html_safe %>
 
         <%= (touch_select_tag "EPISIOTOMY", @patient, options_for_select([["", ""], ["No", "No"], ["Yes", "Yes"]]),
           {:id => "ever_had_episiotomy",

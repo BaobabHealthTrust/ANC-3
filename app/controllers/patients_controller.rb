@@ -978,7 +978,7 @@ class PatientsController < ApplicationController
 
       @previous_encounter.observations.each do |obs|
 
-        if (@previous_encounter.encounter_datetime.to_date > 1.25.years.ago.to_date)
+        if (@previous_encounter.encounter_datetime.to_date > (1.years + 3.months).ago)
           @gravida = obs.answer_string.to_i if obs.concept_id == ConceptName.find_by_name("Gravida").concept_id
           @parity = obs.answer_string.to_i if obs.concept_id == ConceptName.find_by_name("Parity").concept_id
         end
@@ -1033,7 +1033,7 @@ class PatientsController < ApplicationController
     if params[:with_visit_type] && params[:encounter]
 
       #create visit encounter
-      encounter = Encounter.new(params[:encounter])
+      encounter = Encounter.new(params[:encounter].permit!)
       encounter.encounter_datetime = session[:datetime] unless session[:datetime].blank?
       encounter.save
 

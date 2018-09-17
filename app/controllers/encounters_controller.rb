@@ -15,7 +15,7 @@ class EncountersController < ApplicationController
 
     # Encounter handling
     #raise params[:encounter][:encounter_type_name].to_yaml
-    encounter = Encounter.new(params[:encounter])
+    encounter = Encounter.new(params[:encounter].permit!)
     encounter.encounter_datetime = session[:datetime].to_date unless session[:datetime].blank?
     encounter.save
     
@@ -72,7 +72,7 @@ class EncountersController < ApplicationController
         values.each{|value| observation[:value_coded_or_text] = value; Observation.create(observation) }
       else           
         observation.delete(:value_coded_or_text_multiple)
-        Observation.create(observation)        
+        Observation.create(observation.permit!)
       end
     end
     if params[:encounter][:encounter_type_name] == 'VITALS'
