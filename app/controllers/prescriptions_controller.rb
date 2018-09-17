@@ -173,7 +173,7 @@ class PrescriptionsController < ApplicationController
       @suggestions = params[:suggestion] || ['New Prescription']
       @patient = Patient.find(params[:patient_id] || session[:patient_id]) rescue nil
 
-      encounter = Encounter.new(params[:encounter])
+      encounter = Encounter.new(params[:encounter].permit!)
       encounter.encounter_datetime ||= session[:datetime]
       encounter.save
 
