@@ -6,7 +6,7 @@ class Bart2Connection::PersonAddress < ActiveRecord::Base
   before_save :before_save
   before_create :before_create
   
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   belongs_to :person, ->{where(voided:0)}, :class_name => "Bart2Connection::Person", :foreign_key => :person_id, optional: true
   

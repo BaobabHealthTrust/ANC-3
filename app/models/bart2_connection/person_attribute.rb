@@ -4,7 +4,7 @@ class Bart2Connection::PersonAttribute < ActiveRecord::Base
   self.primary_key = "person_attribute_id"
   before_save :before_save
   before_create :before_create
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   belongs_to :type,->{where(retired:0)}, :class_name => "Bart2Connection::PersonAttributeType", :foreign_key => :person_attribute_type_id, optional: true
   belongs_to :person,->{where(voided:0)}, :class_name => "Bart2Connection::Person", :foreign_key => :person_id, optional: true

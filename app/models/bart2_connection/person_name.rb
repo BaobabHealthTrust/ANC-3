@@ -4,7 +4,7 @@ class Bart2Connection::PersonName < ActiveRecord::Base
   before_create :before_create
   self.table_name = "person_name"
   self.primary_key = "person_name_id"
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   belongs_to :person, ->{where(voided:0)}, :class_name => "Bart2Connection::Person", :foreign_key => :person_id
   has_one :person_name_code, :class_name => "Bart2Connection::PersonNameCode", :foreign_key => :person_name_id # no default scope

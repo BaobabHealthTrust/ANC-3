@@ -8,7 +8,7 @@ class Bart2Connection::PersonNameCode < ActiveRecord::Base
   
   self.table_name = "person_name_code"
   self.primary_key =  "person_name_code_id"
-  include Bart2Connection::Openmrs
+  include Openmrs
   
   belongs_to :person_name, ->{where(voided:0)}, :class_name => "Bart2Connection::PersonName"
   

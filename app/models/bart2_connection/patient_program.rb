@@ -6,7 +6,7 @@ class Bart2Connection::PatientProgram < ActiveRecord::Base
   before_save :before_save
   before_create :before_create
   
-  include Bart2Connection::Openmrs
+  include Openmrs
   belongs_to :patient, -> {where(voided: 0)}, :class_name => 'Bart2Connection::Patient'
   belongs_to :program, -> {where(retired: 0)}, :class_name => 'Bart2Connection::Program'
   

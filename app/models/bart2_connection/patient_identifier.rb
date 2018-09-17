@@ -5,10 +5,10 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
   
   self.table_name = "patient_identifier"
   self.primary_key = "patient_identifier_id"
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   belongs_to :type, ->{where(retired:0)}, :class_name => "Bart2Connection::PatientIdentifierType", :foreign_key => :identifier_type
-  belongs_to :patient, ->{where(voided:0)}, :class_name => "Bart2Connection::Patient", :foreign_key => :patient_id, :conditions => {:voided => 0}
+  belongs_to :patient, ->{where(voided:0)}, :class_name => "Bart2Connection::Patient", :foreign_key => :patient_id
 
   def self.search_or_create(identifier)
     people = self.where(["identifier =? AND identifier_type =?", identifier,Bart2Connection::PatientIdentifierType.find_by_name("National ID").id]).map{|id|

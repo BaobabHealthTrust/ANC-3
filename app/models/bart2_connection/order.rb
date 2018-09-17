@@ -4,7 +4,7 @@ class Bart2Connection::Order < ActiveRecord::Base
   
   self.table_name = "orders"
   self.primary_key = "order_id"
-  include Bart2Connection::Openmrs
+  include Openmrs
   belongs_to :order_type> { where retired: 0 }, :class_name => "Bart2Connection::OrderType"
   belongs_to :concept> { where retired: 0 }, :class_name => "Bart2Connection::Concept"
   belongs_to :encounter> { where voided: 0 }, :class_name => "Bart2Connection::Encounter"

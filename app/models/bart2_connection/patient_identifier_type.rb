@@ -6,7 +6,7 @@ class Bart2Connection::PatientIdentifierType < ActiveRecord::Base
   before_save :before_save
   before_create :before_create
   
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   def next_identifier(options = {})
     return nil unless options[:patient]

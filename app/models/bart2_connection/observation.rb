@@ -5,7 +5,7 @@ class Bart2Connection::Observation < ActiveRecord::Base
   
   self.table_name = "obs"
   self.primary_key = "obs_id"
-  include Bart2Connection::Openmrs
+  include Openmrs
   belongs_to :encounter, -> {where(voided: 0)}, :class_name => "Bart2Connection::Encounter"
   belongs_to :concept, -> {where(retired: 0)}, :class_name => "Bart2Connection::Concept"
   belongs_to :concept_name, -> {where(voided: 0)}, :class_name => "Bart2Connection::ConceptName", :foreign_key => "concept_name"

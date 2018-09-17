@@ -3,7 +3,7 @@ class Bart2Connection::ConceptName < ActiveRecord::Base
   self.table_name = "concept_name"
   self.primary_key = "concept_name_id"
   
-  include Bart2Connection::Openmrs
+  include Openmrs
   
   belongs_to :concept, -> { where retired: 0 }, :class_name => "Bart2Connection::Concept", optional: true
   default_scope {joins(:concept).where("concept_name.voided = 0 AND concept.retired = 0 AND concept_name.name != ''")}

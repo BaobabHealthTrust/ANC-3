@@ -6,7 +6,7 @@ class Bart2Connection::Encounter < ActiveRecord::Base
   self.table_name = "encounter"
   self.primary_key = "encounter_id"
 
-  include Bart2Connection::Openmrs
+  include Openmrs
   has_many :observations, -> { where voided: 0 }, :class_name => "Bart2Connection::Observation", dependent: :destroy
   has_many :orders, -> { where voided: 0 }, :class_name => "Bart2Connection::Order", dependent: :destroy
   has_many :drug_orders, foreign_key: "order_id", :class_name => "Bart2Connection::DrugOrder", through: "orders",  :foreign_key => 'order_id'

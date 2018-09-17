@@ -4,7 +4,7 @@ class Bart2Connection::DrugOrder < ActiveRecord::Base
   
   self.table_name = "drug_order"
   self.primary_key = "order_id"
-  include Bart2Connection::Openmrs
+  include Openmrs
   belongs_to :drug,->{where(retired: 0)}, :class_name => "Bart2Connection::Drug", :foreign_key => :drug_inventory_id
 
   def order

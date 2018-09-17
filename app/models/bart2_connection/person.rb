@@ -6,7 +6,7 @@ class Bart2Connection::Person < ActiveRecord::Base
   before_save :before_save
   before_create :before_create
   
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   cattr_accessor :session_datetime
   cattr_accessor :migrated_datetime

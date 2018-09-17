@@ -3,7 +3,7 @@ class Bart2Connection::Concept < ActiveRecord::Base
   self.table_name = "concept"
   self.primary_key = "concept_id"
 
-  include Bart2Connection::Openmrs
+  include Openmrs
 
   has_many :answer_concept_names, -> { where voided: 0 }, :class_name => 'Bart2Connection::ConceptName'
   has_many :concept_names, -> { where voided: 0 }, :class_name => "Bart2Connection::ConceptName"
