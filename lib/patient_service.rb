@@ -1035,11 +1035,11 @@ EOF
 
   def self.art_guardian(patient)
     person_id = Relationship.where(["person_a = ?",patient.person.id]).order("date_created DESC").first.person_b rescue nil
-    guardian_name = name(Person.find(person_id))
+    guardian_name = person_name(Person.find(person_id))
     guardian_name rescue nil
   end
 
-  def self.name(person)
+  def self.person_name(person)
     "#{person.names.first.given_name} #{person.names.first.family_name}".titleize rescue nil
   end
 
@@ -1172,7 +1172,7 @@ EOF
       person_params["gender"] = 'M'
 		end
 
-		person = Person.create(person_params)
+		person = Person.create(person_params.permit!)
 
 		unless birthday_params.empty?
 		  if birthday_params["birth_year"] == "Unknown"
@@ -1188,8 +1188,8 @@ EOF
 
 		person.save
 
-		person.names.create(names_params)
-		person.addresses.create(address_params) unless address_params.empty? rescue nil
+		person.names.create(names_params.permit!)
+		person.addresses.create(address_params.permit!) unless address_params.empty? rescue nil
 
 		person.person_attributes.create(
 		  :person_attribute_type_id => PersonAttributeType.find_by_name("Occupation").person_attribute_type_id,
@@ -1217,7 +1217,7 @@ EOF
     # TODO handle the birthplace attribute
 
 		if (!patient_params.nil?)
-		  patient = person.create_patient
+		  patient = Patient.create(patient_id: person.id)
       params["identifiers"].each{|identifier_type_name, identifier|
         next if identifier.blank?
         identifier_type = PatientIdentifierType.find_by_name(identifier_type_name) || PatientIdentifierType.find_by_name("Unknown id")

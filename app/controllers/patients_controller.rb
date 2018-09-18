@@ -1702,8 +1702,8 @@ class PatientsController < ApplicationController
       observation[:person_id] ||= encounter.patient_id
       observation.delete(:patient_id)
       observation.delete(:value_coded_or_text_multiple)
-
-      o = Observation.create(observation)
+      observation.delete(:parent_concept_name)
+      o = Observation.create(observation.permit!)
     end
 
     @data.keys.each do |preg|

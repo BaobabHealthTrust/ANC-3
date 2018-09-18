@@ -72,6 +72,7 @@ class EncountersController < ApplicationController
         values.each{|value| observation[:value_coded_or_text] = value; Observation.create(observation) }
       else           
         observation.delete(:value_coded_or_text_multiple)
+        observation.delete(:parent_concept_name)
         Observation.create(observation.permit!)
       end
     end
