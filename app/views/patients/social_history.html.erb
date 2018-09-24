@@ -215,7 +215,7 @@
 
 </style>
 
-<% form_tag :controller => "encounters", :action => "create" do %>
+<%= form_tag :controller => "encounters", :action => "create" do %>
   <%= hidden_field_tag "encounter[encounter_type_name]", "SOCIAL HISTORY" %>
   <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
   <%= hidden_field_tag "encounter[encounter_datetime]", DateTime.now() %>
@@ -227,22 +227,22 @@
   <%session_date = session[:datetime] || Time.now() %>
 
 
-  <%= touch_select_tag "Patient currently smokes", @patient, options_for_select([["", ""], ["Yes", "Yes"], ["No", "No"]]),
+  <%= (touch_select_tag "Patient currently smokes", @patient, options_for_select([["", ""], ["Yes", "Yes"], ["No", "No"]]),
     {:id => "smoker", :tt_requireNextClick => false,
     :helptext => "Currently Smoking ",
     :condition => 'false',
-    :tt_onLoad => "" } %>
-  <%= touch_select_tag "Patient currently consumes alcohol", @patient, options_for_select([["", ""], ["Yes", "Yes"], ["No", "No"]]),
+    :tt_onLoad => "" }).html_safe %>
+  <%= (touch_select_tag "Patient currently consumes alcohol", @patient, options_for_select([["", ""], ["Yes", "Yes"], ["No", "No"]]),
     {:id => "alcohol",
     :tt_requireNextClick => false,
     :tt_onLoad => "",
     :condition => 'false',
-    :helptext => "Currently Taking alcohol" } %>
+    :helptext => "Currently Taking alcohol" }).html_safe %>
   <%#= touch_select_tag "Nutrition status", @patient, options_for_select([["", ""], ["Good", "Good"], ["Malnourished", "Malnourished"], ["Obese", "Obese"]]),
   {:id => "nutrition",
   :helptext => "Nutrition status" } %>
 
-  <%= touch_select_tag "Civil status", @patient,
+  <%= (touch_select_tag "Civil status", @patient,
     options_for_select([["", ""], ["Never Married", "Never Married"], ["Engaged", "Engaged"],
       ["Married", "Married"], ["Separated", "Separated"], ["Divorced", "Divorced"],
       ["Widowed", "Widowed"], ["Other", "Other"]]),
@@ -250,22 +250,22 @@
     :tt_requireNextClick => false,
     :condition => 'false',
     :tt_onLoad => "",
-    :helptext => "Marital status" } %>
+    :helptext => "Marital status" }).html_safe %>
 
-  <%= touch_select_tag "Religion", @patient, options_for_select([""] + @religions),
+  <%= (touch_select_tag "Religion", @patient, options_for_select([""] + @religions),
     {:id => "religion",
     :tt_onLoad => "",
     :condition => 'false',
     :tt_pageStyleClass => "Keyboard",
-    :helptext => "Religion" } %>
+    :helptext => "Religion" }).html_safe %>
 
 
-  <%= touch_text_field_tag "", @patient, nil,
+  <%= (touch_text_field_tag "", @patient, nil,
     {:id => "social_information",
     :helptext => "Social Information <span class='helper'>Social History</span>",
     :tt_onLoad => "jQuery('#backButton, #clearButton').css('display', 'none'); loadSplitSelections(); validationInterval = addValidationInterval();",
     :tt_onUnLoad => "clearInterval(validationInterval)"
-  } %>
+  }).html_safe %>
 
 
   <%#= touch_select_tag "Nutrition status", @patient, options_for_select([["", ""], ["Good", "Good"], ["Malnourished", "Malnourished"], ["Obese", "Obese"]]),

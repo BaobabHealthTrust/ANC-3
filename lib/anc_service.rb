@@ -356,7 +356,7 @@ module ANCService
 
         if pos <= 3
 
-          label.draw_text(pos,28,(85 + (60 * pos)),0,2,1,1,false)
+          label.draw_text(pos.to_s,28,(85 + (60 * pos)),0,2,1,1,false)
 
           label.draw_text((@obstetrics[pos] ? (@obstetrics[pos]["YEAR OF BIRTH"] ?
                   (@obstetrics[pos]["YEAR OF BIRTH"].to_i > 0 ? @obstetrics[pos]["YEAR OF BIRTH"].to_i :
@@ -368,7 +368,7 @@ module ANCService
             @place = paragraphate(@place)
 
             (0..(@place.length)).each{|p|
-              label.draw_text(@place[p],111,(70 + (60 * pos) + (18 * p)),0,2,1,1,false)
+              label.draw_text(@place[p].to_s,111,(70 + (60 * pos) + (18 * p)),0,2,1,1,false)
             }
           end
 

@@ -391,11 +391,13 @@ class PatientsController < ApplicationController
   end
 
   def national_id_label
+    raise "hehehheheh"
     if params[:old_patient]
       old_patient = Patient.find(params[:patient_id])
       anc_patient = ANCService::ANC.new(old_patient) rescue nil
       print_string = anc_patient.national_id_label rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate a national id label for that patient")
     else
+      raise @anc_patient.national_id_labelinspect
       print_string = @anc_patient.national_id_label rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate a national id label for that patient")
     end
     send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:patient_id]}#{rand(10000)}.lbl", :disposition => "inline")
@@ -1342,9 +1344,10 @@ class PatientsController < ApplicationController
   end
 
   def obstetric_medical_examination_label
+    #raise @anc_patient.obstetric_medical_history_label.inspect
     print_string = "#{(@anc_patient.gravida(session[:datetime] || Time.now()).to_i > 1 ?
     @anc_patient.detailed_obstetric_history_label : "")}" +
-      "#{@anc_patient.obstetric_medical_history_label}" rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate an obstetric and medical history label for that patient")
+      "#{@anc_patient.obstetric_medical_history_label}" #rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate an obstetric and medical history label for that patient")
     send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:patient_id]}#{rand(10000)}.lbl", :disposition => "inline")
   end
 

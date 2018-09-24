@@ -13,11 +13,11 @@
     //barcodeScanAction = gotoNextPage;
 
     function inform() {
-      $('infoBar'+tstCurrentPage).innerHTML = "<%= welcome_message %>";  
+      $('infoBar'+tstCurrentPage).innerHTML = "<%= welcome_message.html_safe %>";
     }           
   </script>
 
-  <%= error_messages_for 'user' %>
+  <%#= error_messages_for 'user' %>
   
 <form id='sessions' action="/sessions/create" method='post'>
 

@@ -55,7 +55,7 @@
 
 </style>
 
-<% form_tag :controller => "encounters", :action => "create" do %>
+<%= form_tag :controller => "encounters", :action => "create" do %>
   <%= hidden_field_tag "encounter[encounter_type_name]", "SURGICAL HISTORY" %>
   <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
   <%= hidden_field_tag "encounter[encounter_datetime]", DateTime.now() %>
@@ -69,19 +69,19 @@
   } %>
 
   <% str = (@csections > 0) ? "excludecs=true&" : "" %>
-  <%= touch_text_field_tag "Procedure Done", @patient, nil,
+  <%= (touch_text_field_tag "Procedure Done", @patient, nil,
     {:id => "surgical1",
     :helptext => "Surgical procedure  <span class='helper'> Surgical History</span>",
     :ajaxURL => "/encounters/procedure_done?#{str}search_string=",
     :condition => "__$('surgicals_available').value.toUpperCase() == 'YES'",
     :tt_pageStyleClass => "NoKeyboard"
-  } %>
+  }).html_safe %>
 
-  <%= touch_date_tag "Date received", @patient, nil,
+  <%= (touch_date_tag "Date received", @patient, nil,
     {:id => "date_done1",
     :helptext => "Date Procedure Done  <span class='helper'> Surgical History</span>",
     :tt_onLoad => "initializeDate();",
-    :condition => "__$('surgical1').value.toLowerCase().trim() != 'none' && __$('surgical1').value != '' && __$('surgicals_available').value.toUpperCase() == 'YES'" } %>
+    :condition => "__$('surgical1').value.toLowerCase().trim() != 'none' && __$('surgical1').value != '' && __$('surgicals_available').value.toUpperCase() == 'YES'" }).html_safe %>
 
   <% (2..8).each do |e| %>
 
@@ -99,21 +99,21 @@
     end
   %>
 
-    <%= touch_text_field_tag "Procedure Done", @patient, nil,
+    <%= (touch_text_field_tag "Procedure Done", @patient, nil,
       {:id => "surgical#{e}",
       :helptext => "#{e}#{indice} Surgical procedure   <span class='helper'> Surgical History</span>",
       :condition => "__$('surgical#{e - 1}').value.toLowerCase().trim() != 'none' && __$('surgical#{e - 1}').value.toLowerCase().trim() != '' && __$('surgicals_available').value.toUpperCase() == 'YES'",
       :ajaxURL => "/encounters/procedure_done?nonone=true&search_string=",
       :tt_onLoad => " setTimeout(updateNextFinish, 20)",
       :optional => "true"
-    } %>
+    }).html_safe %>
 
-    <%= touch_date_tag "Date received", @patient, nil,
+    <%= (touch_date_tag "Date received", @patient, nil,
       {:id => "date_done#{e}",
       :helptext => "Date #{e}#{indice} Procedure Done  <span class='helper'> Surgical History</span>",
       :tt_onLoad => "initializeDate();",
       :condition => "__$('surgical#{e}').value.toLowerCase().trim() != 'none' && __$('surgical#{e}').value.toLowerCase().trim() != '' && __$('surgicals_available').value.toUpperCase() == 'YES'"
-    } %>
+    }).html_safe %>
 
   <% end %>
 
