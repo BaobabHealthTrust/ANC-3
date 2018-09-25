@@ -391,13 +391,11 @@ class PatientsController < ApplicationController
   end
 
   def national_id_label
-    raise "hehehheheh"
     if params[:old_patient]
       old_patient = Patient.find(params[:patient_id])
       anc_patient = ANCService::ANC.new(old_patient) rescue nil
       print_string = anc_patient.national_id_label rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate a national id label for that patient")
     else
-      raise @anc_patient.national_id_labelinspect
       print_string = @anc_patient.national_id_label rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate a national id label for that patient")
     end
     send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:patient_id]}#{rand(10000)}.lbl", :disposition => "inline")
