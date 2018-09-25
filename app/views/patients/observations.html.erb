@@ -541,7 +541,7 @@
 
 </style>
 
-<% form_tag :controller => "encounters", :action => "create" do |f| %>
+<%= form_tag :controller => "encounters", :action => "create" do |f| %>
 
     <% session_date = session[:datetime] || Time.now() %>
     <%= hidden_field_tag "encounter[encounter_type_name]", "OBSERVATIONS" %>

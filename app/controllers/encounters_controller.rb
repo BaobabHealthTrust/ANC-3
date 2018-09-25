@@ -69,7 +69,7 @@ class EncountersController < ApplicationController
       end  
       if observation[:value_coded_or_text_multiple] && observation[:value_coded_or_text_multiple].is_a?(Array) && !observation[:value_coded_or_text_multiple].blank?
         values = observation.delete(:value_coded_or_text_multiple)
-        values.each{|value| observation[:value_coded_or_text] = value; Observation.create(observation) }
+        values.each{|value| observation[:value_coded_or_text] = value; Observation.create(observation.permit!) }
       else           
         observation.delete(:value_coded_or_text_multiple)
         observation.delete(:parent_concept_name)
@@ -412,7 +412,7 @@ class EncountersController < ApplicationController
     
     locations = []
 
-    File.open(RAILS_ROOT + "/public/data/locations.txt", "r").each{ |loc|
+    File.open(Rails.root.to_s + "/public/data/locations.txt", "r").each{ |loc|
       locations << loc if loc.upcase.strip.match(search_string)
     }
 
@@ -420,7 +420,7 @@ class EncountersController < ApplicationController
       extras.each{|loc| locations << loc if loc.upcase.strip.match(search_string)}
     end
     
-    render :text => "<li></li><li " + locations.map{|location| "value=\"#{location}\">#{location}" }.join("</li><li ") + "</li>"
+    render plain: "<li></li><li " + locations.map{|location| "value=\"#{location}\">#{location}" }.join("</li><li ") + "</li>"
 
   end
   

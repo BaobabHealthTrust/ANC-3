@@ -830,23 +830,23 @@ module ANCService
       label.draw_line(180,250,250,1,0)
       label.draw_line(180,280,250,1,0)
 
-      label.draw_text(@height,270,76,0,2,1,1,false)
-      label.draw_text(@weight,270,106,0,2,1,1,false)
+      label.draw_text(@height.to_s,270,76,0,2,1,1,false)
+      label.draw_text(@weight.to_s,270,106,0,2,1,1,false)
       # label.draw_text(@who,270,136,0,2,1,1,false)
 
-      label.draw_text(@hiv_test_date,188,166,0,2,1,1,false)
-      label.draw_text(target_date,188,196,0,2,1,1,false)
-      label.draw_text(target_date,188,226,0,2,1,1,false)
-      label.draw_text(target_date,188,256,0,2,1,1,false)
-      label.draw_text(target_date,188,286,0,2,1,1,false)
+      label.draw_text(@hiv_test_date.to_s,188,166,0,2,1,1,false)
+      label.draw_text(target_date.to_s,188,196,0,2,1,1,false)
+      label.draw_text(target_date.to_s,188,226,0,2,1,1,false)
+      label.draw_text(target_date.to_s,188,256,0,2,1,1,false)
+      label.draw_text(target_date.to_s,188,286,0,2,1,1,false)
 
 
-      label.draw_text(@hiv_test,345,166,0,2,1,1,false)
-      label.draw_text(@syphilis,345,196,0,2,1,1,false)
-      label.draw_text(@hb,325,226,0,2,1,1,false)
+      label.draw_text(@hiv_test.to_s,345,166,0,2,1,1,false)
+      label.draw_text(@syphilis.to_s,345,196,0,2,1,1,false)
+      label.draw_text(@hb.to_s,325,226,0,2,1,1,false)
       #label.draw_text(@hb2,325,256,0,2,1,1,false)
-      label.draw_text(@malaria,325,256,0,2,1,1,false)
-      label.draw_text(@blood_group,325,286,0,2,1,1,false)
+      label.draw_text(@malaria.to_s,325,256,0,2,1,1,false)
+      label.draw_text(@blood_group.to_s,325,286,0,2,1,1,false)
       #label.draw_text(@malaria,188,226,0,2,1,1,false)
 
       label.print(1)
@@ -1000,7 +1000,7 @@ module ANCService
           posipres = paragraphate(posi.to_s + pres.to_s,5, 5)
 
           (0..(posipres.length)).each{|u|
-            label.draw_text(posipres[u],178,(200 + (13 * u)),0,2,1,1,false)
+            label.draw_text(posipres[u].to_s,178,(200 + (13 * u)),0,2,1,1,false)
           }
 
           fet = (encounters[element]["OBSERVATIONS"]["FETAL HEART BEAT"].humanize == "Unknown" ? "?" :
@@ -1009,7 +1009,7 @@ module ANCService
           fet = paragraphate(fet, 5, 5)
 
           (0..(fet.length)).each{|f|
-            label.draw_text(fet[f],259,(200 + (13 * f)),0,2,1,1,false)
+            label.draw_text(fet[f].to_s,259,(200 + (13 * f)),0,2,1,1,false)
           }
 
           wei = (encounters[element]["VITALS"]["WEIGHT (KG)"].to_i <= 0 ? "?" :
@@ -1028,7 +1028,7 @@ module ANCService
           bp = paragraphate(sbp.to_s + "/" + dbp.to_s, 4, 3)
 
           (0..(bp.length)).each{|u|
-            label.draw_text(bp[u],420,(200 + (18 * u)),0,2,1,1,false)
+            label.draw_text(bp[u].to_s,420,(200 + (18 * u)),0,2,1,1,false)
           }
 
           uri = encounters[element]["LAB RESULTS"]["URINE PROTEIN"] rescue ""
@@ -1036,7 +1036,7 @@ module ANCService
           uri = paragraphate(uri, 5, 5)
 
           (0..(uri.length)).each{|u|
-            label.draw_text(uri[u],498,(200 + (18 * u)),0,2,1,1,false)
+            label.draw_text(uri[u].to_s,498,(200 + (18 * u)),0,2,1,1,false)
           }
 
           sp = (@drugs[element]["SP"].to_i > 0 ? @drugs[element]["SP"].to_i : "") rescue ""
@@ -1054,11 +1054,11 @@ module ANCService
           fefo = (fefo.to_i + @ferrous_fefol.to_i) rescue fefo
           fefo = "" if (fefo.to_i == 0 rescue false)
 
-          label.draw_text(fefo,664,200,0,2,1,1,false)
+          label.draw_text(fefo.to_s,664,200,0,2,1,1,false)
 
           albe = (@drugs[element]["Albendazole"].to_i > 0 ? @drugs[element]["Albendazole"].to_i : "") rescue ""
 
-          label.draw_text(albe,740,200,0,2,1,1,false)
+          label.draw_text(albe.to_s,740,200,0,2,1,1,false)
         end
 
       end
@@ -1177,14 +1177,14 @@ module ANCService
 
           ttv = (@drugs[element]["TTV"] > 0 ? 1 : "") rescue ""
 
-          label.draw_text(ttv,28,200,0,2,1,1,false)
+          label.draw_text(ttv.to_s,28,200,0,2,1,1,false)
 
           sign = encounters[element]["OBSERVATIONS"]["DIAGNOSIS"].humanize rescue ""
 
           sign = paragraphate(sign.to_s, 13, 5)
 
           (0..(sign.length)).each{|m|
-            label.draw_text(sign[m],175,(200 + (25 * m)),0,2,1,1,false)
+            label.draw_text(sign[m].to_s,175,(200 + (25 * m)),0,2,1,1,false)
           }
 
           med = encounters[element]["UPDATE OUTCOME"]["OUTCOME"].humanize + "; " rescue ""
@@ -1195,7 +1195,7 @@ module ANCService
           med = paragraphate(med.to_s + oth.to_s, 17, 5)
 
           (0..(med.length)).each{|m|
-            label.draw_text(med[m],370,(200 + (18 * m)),0,2,1,1,false)
+            label.draw_text(med[m].to_s,370,(200 + (18 * m)),0,2,1,1,false)
           }
 
           nex = encounters[element]["APPOINTMENT"]["APPOINTMENT DATE"] rescue []
@@ -1209,7 +1209,7 @@ module ANCService
           end
 
           (0..(nex.length)).each{|m|
-            label.draw_text(nex[m],610,(200 + (18 * m)),0,2,1,1,false)
+            label.draw_text(nex[m].to_s,610,(200 + (18 * m)),0,2,1,1,false)
           }
 
           use = (encounters[element]["USER"].split(" ") rescue []).collect{|n| n[0,1].upcase + "."}.join("")  rescue ""
@@ -1220,7 +1220,7 @@ module ANCService
           #   label.draw_text(use[m],710,(200 + (18 * m)),0,2,1,1,false)
           # }
 
-          label.draw_text(use,710,200,0,2,1,1,false)
+          label.draw_text(use.to_s,710,200,0,2,1,1,false)
 
         end
       end
