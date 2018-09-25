@@ -314,9 +314,9 @@
     <script type="text/javascript">
       <!--
 
-      var controlsSet1 = <%= (controls rescue []).to_json %>;
+      var controlsSet1 = <%= (controls rescue []).to_json.html_safe %>;
 
-      var controlsSet2 = <%= (dates rescue []).to_json %>;;
+      var controlsSet2 = <%= (dates rescue []).to_json.html_safe %>;;
 
       function __$(id){
         return document.getElementById(id);
