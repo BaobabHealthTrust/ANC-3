@@ -131,7 +131,9 @@
       if(__$('enter_gravida').value == 1){
       __$('enter_number_of_abortions').value = 0;
       };",
-          :tt_pageStyleClass => "NumbersOnly"}).html_safe %>
+          :tt_pageStyleClass => "NumbersOnly",
+          :validationRule => "^[0-9]+$",
+          :validationMessage => "Enter the valid number."}).html_safe %>
 
         <%= (touch_numeric_tag "PARITY", @patient, @parity,
           {:id => "enter_number_of_deliveries",
@@ -149,7 +151,9 @@
       __$('enter_number_of_abortions').setAttribute('validationMessage', 'Expected value is ' + (parseInt(__$('enter_gravida').value) -
       parseInt(__$('enter_number_of_deliveries').value) - 1));
       __$('enter_number_of_abortions').removeAttribute('validationRule'); " +
-            "__$('enter_number_of_abortions').removeAttribute('validationMessage');calculateAbortions();"
+            "__$('enter_number_of_abortions').removeAttribute('validationMessage');calculateAbortions();",
+          :validationRule => "^[0-9]+$",
+          :validationMessage => "Enter the valid number."
         }).html_safe %>
 
         <%= (touch_numeric_tag "NUMBER OF ABORTIONS", @patient, nil,
