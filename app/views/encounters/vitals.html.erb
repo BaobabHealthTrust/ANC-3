@@ -636,7 +636,7 @@
         :helpText => "Systolic blood pressure (<span id='sbp'>&nbsp;</span>/<span id='dbp'>&nbsp;</span>)",
         :absoluteMin => 70,
         :absoluteMax => 250,
-        :validationRule => "^([0-9]+)|Unknown$",
+        :validationRule => "^([0-9]+)$|Unknown$",
         :validationMessage => "You must enter numbers only (for example 157)",
         :tt_pageStyleClass => "KeyboardNumeric NumbersWithUnknown" }).html_safe %>
 
@@ -648,7 +648,7 @@
         :field_type => "number",
         :helpText => "Diastolic blood pressure (<span id='sbp'>&nbsp;</span>/<span id='dbp'>&nbsp;</span>)",
         :absoluteMin => 30,
-        :validationRule => "^([0-9]+)|Unknown$",
+        :validationRule => "^([0-9]+)$|Unknown$",
         :validationMessage => "You must enter numbers only (for example 157)",
         :tt_pageStyleClass => "Keyboard Numeric  NumbersWithUnknown",
         :condition => "__$('systolic_bp').value !== 'Unknown';"
