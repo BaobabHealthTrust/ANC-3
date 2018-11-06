@@ -272,13 +272,14 @@
   %>
   <% if ask_for_father_details == true %>
 
-  <% form_for :person, @person, :url => { :action => "create" } do |f| %>
+  <<form action="/people/create" method="post">
 
   <%= hidden_field_tag "encounter[encounter_type_name]", "REGISTRATION" %>
   <%= hidden_field_tag "encounter[encounter_datetime]", (session[:datetime] ?
       session[:datetime].to_date.strftime("%Y-%m-%d %H:%M:%S") : Time.now) %>
   <%= hidden_field_tag "encounter[provider_id]", session[:user_id] %>
   <%= hidden_field_tag :patient, params[:patient_id] %>
+  <%= hidden_field_tag "person[gender]", "M" %>
 
   <%= text_field_tag "person[names][given_name]", params[:given_name],
   {:id => 'given_name',
@@ -299,15 +300,6 @@
    :condition => '$("family_name").value == "" || skipped[tstCurrentPage] == 1',
    :tt_onLoad => 'seen(tstCurrentPage);'
   } %>
-
-  Gender:
-  <%= f.select :gender, options_for_select([["", ""], ["Male", "M"], ["Female", "F"]], "M"),
-  {:selected => "M"},
-  {:id => 'gender',
-   :helpText => 'Gender',
-   :condition => 'false/*$("gender").value == "" || skipped[tstCurrentPage] == 1*/',
-   :tt_onLoad => 'seen(tstCurrentPage);'
-  }  %>
 
   <%= text_field_tag "person[names][middle_name]", params[:middle_name],
   {:id => 'middle_name',
@@ -388,7 +380,7 @@
     :condition => 'false',
     :tt_onLoad => "seen(tstCurrentPage);" } if ask_home_village %>
 
-  <%= text_field_tag "p['address2_a']" , nil, {id => 'address2_a',
+  <%= text_field_tag "p['address2_a']" , nil, { :id => 'address2_a',
     :tt_onUnLoad => '$("address2").value = $("address2_a").value',
     :condition => '(($("address2").value == "Other") && ($("person_citizenship").value == "Malawian"))',
     :id => 'address2_a',
@@ -545,5 +537,5 @@
 
    <%end%>
   
-  <%end%>
+  </form>
 
