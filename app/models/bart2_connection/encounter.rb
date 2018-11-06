@@ -31,7 +31,7 @@ class Bart2Connection::Encounter < ActiveRecord::Base
   def after_void(reason = nil)
     self.observations.each do |row| 
       if not row.order_id.blank?
-        ActiveRecord::Base.connection.exedef void(reason = "Voided through #{BART_VERSION}",date_voided = Time.now)
+        ActiveRecord::Base.connection.exedef void(reason = "Voided through #{ANC_VERSION}",date_voided = Time.now)
 
    # ActiveRecord::Base.connection.execute("UPDATE encounter SET voided = 1 WHERE encounter_id = #{self.id}")
     self.update_attributes(:voided => 1)
