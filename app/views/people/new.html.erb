@@ -355,7 +355,9 @@
     :ajaxURL => '/person_names/given_names?search_string=',
     :allowFreeText => true,
     :condition => '$("given_name").value == "" || skipped[tstCurrentPage] == 1',
-    :tt_onLoad => 'seen(tstCurrentPage);'
+    :tt_onLoad => 'seen(tstCurrentPage);',
+    :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+    :validationMessage => "Enter a valid name."
   } %>
 
   <%= text_field_tag "person[names][family_name]",
@@ -366,7 +368,9 @@
     :ajaxURL => '/person_names/family_names?search_string=',
     :allowFreeText => true,
     :condition => '$("family_name").value == "" || skipped[tstCurrentPage] == 1',
-    :tt_onLoad => 'seen(tstCurrentPage);'
+    :tt_onLoad => 'seen(tstCurrentPage);',
+    :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+    :validationMessage => "Enter a valid name."
   } %>
 
   Gender:
@@ -392,7 +396,9 @@
     :allowFreeText => true,
     :condition => '$("middle_name").value == "" || skipped[tstCurrentPage] == 1',
     :tt_pageStyleClass => "azButton",
-    :tt_onLoad => 'seen(tstCurrentPage);'
+    :tt_onLoad => 'seen(tstCurrentPage);',
+    :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+    :validationMessage => "Enter a valid name."
   } if ask_middle_name %>
 
   <%= text_field_tag "person[birth_year]",
