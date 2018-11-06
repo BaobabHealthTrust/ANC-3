@@ -170,7 +170,7 @@ class GenericUserController < ApplicationController
       user_role.save
       # end
       flash[:notice] = 'User was successfully created.'
-      redirect_to :action => 'show'
+      redirect_to "/user/show/#{@user.user_id}"
     else
       flash[:notice] = 'OOps! User was not created!.'
       render :action => 'new'
