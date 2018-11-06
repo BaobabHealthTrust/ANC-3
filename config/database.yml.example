@@ -16,6 +16,7 @@ default: &default
   username: user
   password: pass
   socket: /var/run/mysqld/mysqld.sock
+  host: localhost
 
 development:
   <<: *default
@@ -28,6 +29,9 @@ test:
   <<: *default
   database: openmrs_anc_test
 
+bart2:
+  <<: *default
+  database: openmrs_test_bart
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
@@ -50,5 +54,5 @@ test:
 production:
   <<: *default
   database: openmrs_anc_production
-  username: user
-  password: pass
+  username: root
+  password: pach321
