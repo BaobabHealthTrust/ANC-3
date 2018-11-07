@@ -53,7 +53,7 @@ class EncountersController < ApplicationController
         observation["value_#{value_name}"] unless observation["value_#{value_name}"].blank? rescue nil
       }.compact
 
-      next if values.length == 0
+      next if values.length == 0 || values == [[""]]
 
       observation[:value_text] = observation[:value_text].join(", ") if observation[:value_text].present? && observation[:value_text].is_a?(Array)
       observation.delete(:value_text) unless observation[:value_coded_or_text].blank?

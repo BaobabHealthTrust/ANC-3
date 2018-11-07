@@ -189,17 +189,9 @@
   var alreadyNoted = false;
 
   function calculateBP(){
-
-    if (__$("sys").className == "gray"){
-      __$("systolic_blood_pressure").value = __$("touchscreenInput" + tstCurrentPage).value;
-    }
-
-    if (__$("dia").className == "gray"){
-      __$("diastolic_blood_pressure").value = __$("touchscreenInput" + tstCurrentPage).value;
-    }
     
     var sb = $("systolic_blood_pressure").value;
-    var db = $("diastolic_blood_pressure").value;
+    var db = __$("touchscreenInput" + tstCurrentPage).value;
 
     if (sb == "Unknown" || db == "Unknown"){
       $("systolic_blood_pressure").value = "Unknown";
@@ -237,7 +229,7 @@
       alreadyNoted = false;
     }
       
-    $("bp").innerHTML = "Blood Pressure: <i style='font-size: 1.2em; float: right;'>" + bp + "</i>" + txt;
+    $("bp").innerHTML = txt;
        
     timedEvent = setTimeout('calculateBP()', 100);
   }
@@ -609,29 +601,10 @@
 
   <% if current_user.activities.include?("BP") %>
     <% if params[:bp] %>
-
-      <!-- %= select_tag "capture_bp", options_for_select([['Yes','YES'],['No','NO']]),
-          :id => 'capture_bp',
-          :helpText => "Measure <b>blood pressure</b> (BP)?",
-          :tt_onLoad => "showCategory2('Current vitals');",
-          :tt_pageStyleClass => 'NoKeyboard' % -->
-      
-      <!--%= touch_text_field_tag "SYSTOLIC BLOOD PRESSURE", @patient, nil,{
-        :id => "systolic_bp",
-        :field_type => "number",
-        :tt_onLoad => "updateSBPValues();",
-        :tt_onUnLoad => "clearInterval(sbpInterval);",
-        :helpText => "Systolic blood pressure (<span id='sbp'>&nbsp;</span>/<span id='dbp'>&nbsp;</span>)",
-        :absoluteMin => 70,
-        :absoluteMax => 250,
-        :validationRule => "^([0-9]+)|Unknown$",
-        :validationMessage => "You must enter numbers only (for example 157)",
-        :tt_pageStyleClass => "KeyboardNumeric NumbersWithUnknown" } % -->
-
       <%= (touch_text_field_tag "SYSTOLIC BLOOD PRESSURE", @patient, nil,{
         :id => "systolic_bp",
         :field_type => "number",
-        :tt_onLoad =>  "_foo(); updateSBPValues();",
+        :tt_onLoad =>  "updateSBPValues();",
         :tt_onUnLoad => "parsedConceptName = ''; clearTimeout(timedEvent); clearInterval(sbpInterval);",
         :helpText => "Systolic blood pressure (<span id='sbp'>&nbsp;</span>/<span id='dbp'>&nbsp;</span>)",
         :absoluteMin => 70,
@@ -643,7 +616,7 @@
 
       <%= (touch_text_field_tag "DIASTOLIC BLOOD PRESSURE", @patient, nil,{
         :id => "diastolic_blood_pressure",
-        :tt_onLoad => "_foo(); updateDBPValues(); updateAbsoluteMaxValue();",
+        :tt_onLoad => "calculateBP(); updateDBPValues(); updateAbsoluteMaxValue();",
         :tt_onUnLoad => "clearTimeout(timedEvent);clearInterval(dbpInterval);",
         :field_type => "number",
         :helpText => "Diastolic blood pressure (<span id='sbp'>&nbsp;</span>/<span id='dbp'>&nbsp;</span>)",
@@ -652,12 +625,11 @@
         :validationMessage => "You must enter numbers only (for example 157)",
         :tt_pageStyleClass => "Keyboard Numeric  NumbersWithUnknown",
         :condition => "__$('systolic_bp').value !== 'Unknown';"
-      }).html_safe %>
+}).html_safe %>
 
     <% end %>
 
   <% end %>
-
 
   <% if current_user.activities.include?("Weight and Height") %>
     <% if params[:height] && params[:weight] %>
