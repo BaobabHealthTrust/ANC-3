@@ -497,7 +497,8 @@ start_date = @art_start_date rescue nil
       initializeDate();",
       :condition => "__$('prev_hiv_test_results').value != '' ||
       __$('previous_hiv_test').value == 'Yes'",
-      :absoluteMax => "#{(session[:datetime].to_date - 1.days) rescue (Date.today - 1.days)}"
+      :absoluteMax => "#{(session[:datetime].to_date - 1.days) rescue (Date.today - 1.days)}",
+      :absoluteMin => "#{@patient.person.birthdate.to_date rescue nil}"
     }).html_safe
 %>
 
