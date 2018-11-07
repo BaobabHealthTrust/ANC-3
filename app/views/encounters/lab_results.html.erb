@@ -687,7 +687,9 @@ start_date = @art_start_date rescue nil
       :max => 16,
       :tt_onLoad => "unknownToNotDone(); parsedConceptName = 'HB Test Result';",
       :tt_onUnLoad => "parsedConceptName = '';",
-      :condition => "getSelected().match(/HB/)"
+      :condition => "getSelected().match(/HB/)",
+      :validationRule => "^([0-9]+)$|Not Done$",
+      :validationMessage => "Enter valid test results."
     }).html_safe
 %>
   <% if (Settings["recency_test"] == true) %>
@@ -886,7 +888,7 @@ start_date = @art_start_date rescue nil
       :condition => "getUrineTest().match(/WBC/);",
       :tt_onUnLoad => "parsedConceptName = '';",
       :units => 'cmm',
-      :validationRule => "(^[+-]?([0-9]*[.])?[0-9]+$)",
+      :validationRule => "(^([0-9]*[.])?[0-9]+$)",
       :validationMessage => "You must enter a valid number",
       :tt_pageStyleClass => "Numeric NumbersOnlyWithDecimal"}).html_safe %>
 
@@ -912,7 +914,7 @@ start_date = @art_start_date rescue nil
       :condition => "getUrineTest().match(/RBC/);",
       :tt_onUnLoad => "parsedConceptName = '';",
       :units => 'cmm',
-      :validationRule => "(^[+-]?([0-9]*[.])?[0-9]+$)",
+      :validationRule => "(^([0-9]*[.])?[0-9]+$)",
       :validationMessage => "You must enter a valid number",
       :tt_pageStyleClass => "Numeric NumbersOnlyWithDecimal"
     }).html_safe %>

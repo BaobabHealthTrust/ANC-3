@@ -38,10 +38,10 @@
   yearString << "2020"
 %>
 
-<%= touch_select_tag "year", '', options_for_select(yearString),
-        {:id => "year",
-         :helpText => "Select Year",
-         :tt_pageStyleClass => "NoKeyboard NoInput small"  } %>
+<%= (touch_select_tag "year", '', options_for_select(yearString),{
+    :id => "year",
+    :helpText => "Select Year",
+    :tt_pageStyleClass => "NoKeyboard NoInput small"  }).html_safe %>
 
 <%= (touch_select_tag "month", '', options_for_select(optionsString),
         {:id => "month",
