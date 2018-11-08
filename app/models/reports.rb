@@ -1289,7 +1289,7 @@ class Reports
     login = CoreService.get_global_property_value("remote_bart.username").split(/,/) rescue ""
     password = CoreService.get_global_property_value("remote_bart.password").split(/,/) rescue ""
 
-    uri = "http://#{login}:#{password}@#{server}/encounters/export_on_art_patients"
+    uri = "http://#{login.first}:#{password.first}@#{server}/encounters/export_on_art_patients"
 
     patient_identifiers = JSON.parse(RestClient.post(uri, paramz))
 
@@ -1333,7 +1333,7 @@ class Reports
     login = CoreService.get_global_property_value("remote_bart.username").split(/,/) rescue ""
     password = CoreService.get_global_property_value("remote_bart.password").split(/,/) rescue ""
 
-    uri = "http://#{login}:#{password}@#{server}/encounters/export_on_art_patients"
+    uri = "http://#{login.first}:#{password.first}@#{server}/encounters/export_on_art_patients"
 
 		patient_identifiers = JSON.parse(RestClient::Request.execute(:method => :post, 
         :url => uri,
@@ -1381,7 +1381,7 @@ class Reports
     login = CoreService.get_global_property_value("remote_bart.username").split(/,/) rescue ""
     password = CoreService.get_global_property_value("remote_bart.password").split(/,/) rescue ""
 
-    uri = "http://#{login}:#{password}@#{server}/encounters/export_on_art_patients"
+    uri = "http://#{login.first}:#{password.first}@#{server}/encounters/export_on_art_patients"
 
     #patient_identifiers = JSON.parse(RestClient.post(uri, paramz))
     patient_identifiers = JSON.parse(RestClient::Request.execute(:method => :post,

@@ -23,8 +23,9 @@
   <body>
     <%
 
+    today = session[:datetime].to_date rescue Date.today
     min = 2008
-    max = (session[:datetime] ||= Time.now).strftime("%Y").to_i
+    max = today.strftime("%Y").to_i
 
     array = []
 
@@ -81,7 +82,8 @@
         <input type="hidden" name="type" value= "<%= params[:type] %>"/>
       <%end%>
 
-             <select id="selYear" name="selYear" helpText="Select Year:">
+             <select id="selYear" name="selYear" helpText="Select Year"
+              tt_pageStyleClass="NoKeyboard NoInput small">
              
              <option></option>
              <% array.reverse.each do |y| %>
@@ -89,7 +91,8 @@
       <% end %>
     </select>
 
-    <select id="selMonth" name="selMonth" helpText="Select Month:">
+    <select id="selMonth" name="selMonth" helpText="Select Month"
+     tt_pageStyleClass="NoKeyboard NoInput small">
       <option></option>
       <option value="1">January</option>
       <option value="2">February</option>

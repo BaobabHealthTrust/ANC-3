@@ -9,42 +9,71 @@
 </style>
 <form action="/reports/list_appointments" method='post'>
 
-<%optionsString = []
-  optionsString << "January"
-  optionsString << "February"
-  optionsString << "March"
-  optionsString << "April"
-  optionsString << "May"
-  optionsString << "June"
-  optionsString << "July"
-  optionsString << "August"
-  optionsString << "September"
-  optionsString << "October"
-  optionsString << "November"
-  optionsString << "December"
+<%
+  monthString = []
+  monthString << "January"
+  monthString << "February"
+  monthString << "March"
+  monthString << "April"
+  monthString << "May"
+  monthString << "June"
+  monthString << "July"
+  monthString << "August"
+  monthString << "September"
+  monthString << "October"
+  monthString << "November"
+  monthString << "December"
 %>
 
-<%yearString = []
-  yearString << "2010"
-  yearString << "2011"
-  yearString << "2012"
-  yearString << "2013"
-  yearString << "2014"
-  yearString << "2015"
-  yearString << "2016"
-  yearString << "2017"
-  yearString << "2018"
-  yearString << "2019"
-  yearString << "2020"
+<%
+  yearString = []
+  # set minimum and maximum year for select options.
+  min = 2008
+  today = session[:datetime].to_date rescue Date.today
+  max = today.strftime("%Y").to_i
+
+  # Populate year array with values from min to max plus 2.
+  (min..(max + 2)).each{|yr| yearString << yr}
+
 %>
 
-<%= (touch_select_tag "year", '', options_for_select(yearString),{
+<select id="year" name="year" helpText="Select Year" tt_pageStyleClass="NoKeyboard NoInput small">
+  <option></option>
+  <% yearString.reverse.each do |y| %>
+    <option><%= y %></option>
+  <% end %>
+</select>
+
+<select id="month" name="month" helpText="Select Month" tt_pageStyleClass="NoKeyboard NoInput small">
+  <option></option>
+  <% monthString.each do |m| %>
+    <option><%= m %></option>
+  <% end %>
+</select>
+
+<!--select id="selMonth" name="selMonth" helpText="Select Month:">
+      <option></option>
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+
+< %= (touch_select_tag "year", '', options_for_select(yearString),{
     :id => "year",
     :helpText => "Select Year",
     :tt_pageStyleClass => "NoKeyboard NoInput small"  }).html_safe %>
 
-<%= (touch_select_tag "month", '', options_for_select(optionsString),
+< %= (touch_select_tag "month", '', options_for_select(optionsString),
         {:id => "month",
          :helpText => "Select Month",
-         :tt_pageStyleClass => "NoKeyboard NoInput small"  }).html_safe %>
+         :tt_pageStyleClass => "NoKeyboard NoInput small"  }).html_safe %-->
 </form>
