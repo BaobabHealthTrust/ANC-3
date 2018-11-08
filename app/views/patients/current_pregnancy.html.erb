@@ -358,8 +358,25 @@
   {:id => "week_of_first_visit",
   :helptext => "Week of First Visit",
   :tt_onUnload => "checkLMP()" } %>
+  <%
+    @locations = []
 
-  <%= (touch_text_field_tag "Planned delivery place", @patient, nil,
+    File.open(Rails.root.to_s + "/public/data/locations.txt", "r").each{ |loc|
+      l = loc.split("/n").first
+      @locations << [l,l]
+    }
+  %>
+
+  <%= select_tag "Planned delivery place", options_for_select(@locations),
+    {
+      :id => "planned_delivery_place",
+      :tt_onLoad => "addHereButton();",
+      :helptext => "Planned delivery place  <span class='helper'> Current Pregnancy</span>",
+      :tt_onUnload => "removeHereButton();"
+    } %>
+
+
+  <%#= (touch_text_field_tag "Planned delivery place", @patient, nil,
     {:id => "planned_delivery_place",
     :helptext => "Planned delivery place  <span class='helper'> Current Pregnancy</span>",
     :ajaxURL => "/encounters/static_locations?search_string=",
