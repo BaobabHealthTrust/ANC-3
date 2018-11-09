@@ -113,7 +113,15 @@ class ReportsController < ApplicationController
     if params[:type] == "anc_monthly"
       redirect_to :action => "monthly_report", :year => params[:selYear], :month => params[:selMonth]
     else
-      @parameters = params
+      @parameters = params.permit(:selSelect, 
+        :day, 
+        :type,
+        :selYear,
+        :selMonth,
+        :selQtr,
+        :selWeek,
+        :start_date,
+        :end_date)
       session_date = (session[:datetime].to_date rescue Date.today)
       @facility = Location.current_health_center.name rescue ''
 
@@ -342,7 +350,15 @@ class ReportsController < ApplicationController
   end
 
   def report_pdf
-    @parameters = params
+      @parameters = params.permit(:selSelect, 
+        :day, 
+        :type,
+        :selYear,
+        :selMonth,
+        :selQtr,
+        :selWeek,
+        :start_date,
+        :end_date)
     session_date = (session[:datetime].to_date rescue Date.today)
     @facility = Location.current_health_center.name rescue ''
 
@@ -539,27 +555,6 @@ class ReportsController < ApplicationController
     @on_cpt__1 = report.on_cpt__1
     @no_cpt__1 = (@total_final_visit_hiv_positive - @on_cpt__1)
 
-    #filter for cohort validation rules
-=begin
-    vars = ValidationRule.rules_xy
-
-    @failures = []
-
-    if params[:selType] == "cohort"
-      if vars.collect{|v| eval("@#{v}") }.flatten.uniq.include?(nil) #nils are for failed eval executions
-        raise "One of the cohort validation rules is using an unknown variable".to_s
-      end
-
-      rules = ValidationRule.find_all_by_type_id(1)
-      rules.each do |rule|
-
-        exr =  rule.expr.gsub(/\{/, '@').gsub(/\}/, '.count')
-        if !eval(exr)
-          @failures << "Failed: #{rule.desc}"
-        end
-      end
-    end
-=end
     render :layout => false
   end
 

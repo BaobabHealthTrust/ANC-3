@@ -306,8 +306,7 @@ class Reports
       return (@cohort_patients - ttv__total_previous_doses_2(2)).uniq
     end
 
-    Encounter.joins([:observations]).where(
-      :conditions => ["concept_id = ? AND (value_numeric > 0 OR value_text > 0) AND DATE(encounter_datetime) BETWEEN (?) AND (?)" +
+    Encounter.joins([:observations]).where(["concept_id = ? AND (value_numeric > 0 OR value_text > 0) AND DATE(encounter_datetime) BETWEEN (?) AND (?)" +
           "AND encounter.patient_id IN (?)",
         ConceptName.find_by_name("TT STATUS").concept_id,
         @lmp, ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients]).select(["patient_id, (COALESCE(value_numeric,0)+COALESCE(value_text,0)) form_id"]).each { |e|
@@ -1216,12 +1215,11 @@ class Reports
 
   def nvp_baby__1
 
-    nvp = Order.find(:all, :joins => [[:drug_order => :drug], :encounter],
-      :select => ["encounter.patient_id, count(*) encounter_id, drug.name instructions, " +
-          "SUM(DATEDIFF(auto_expire_date, start_date)) orderer"], :group => [:patient_id],
-      :conditions => ["(drug.name REGEXP ? OR drug.name REGEXP ?) AND (DATE(encounter_datetime) >= #{@lmp} " +
+    nvp = Order.where(["(drug.name REGEXP ? OR drug.name REGEXP ?) AND (DATE(encounter_datetime) >= #{@lmp} " +
           "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)", "NVP", "Nevirapine syrup",
-        (@start_date.to_date + @pregnant_range), @final_visit_positive_patients]).collect { |o| o.patient_id }
+        (@start_date.to_date + @pregnant_range), @final_visit_positive_patients]).joins([[:drug_order => :drug], :encounter])
+        .select(["encounter.patient_id, count(*) encounter_id, drug.name instructions, " +
+          "SUM(DATEDIFF(auto_expire_date, start_date)) orderer"]).group([:patient_id]).collect { |o| o.patient_id }
     return nvp.uniq rescue []
   end
 
@@ -1234,13 +1232,14 @@ class Reports
           "SUM(DATEDIFF(auto_expire_date, start_date)) orderer"]).collect { |o|
       [o.patient_id, o.orderer]
     }
+    data = data.first
 
     if qty == 1
-      result = data.delete_if { |x, y| y != 1 }.collect { |p, c| p }
+      result = data.delete_if { |x, y| y != 1 unless y.blank? }.collect { |p, c| p }
     elsif qty == ">1"
-      result = data.delete_if { |x, y| y <= 1 }.collect { |p, c| p }
+      result = data.delete_if { |x, y| y <= 1 unless y.blank? }.collect { |p, c| p }
     elsif qty == "<1"
-      result = data.delete_if { |x, y| y >= 1 }.collect { |p, c| p }
+      result = data.delete_if { |x, y| y >= 1 unless y.blank? }.collect { |p, c| p }
     end
     result
   end

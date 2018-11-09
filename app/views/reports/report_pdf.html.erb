@@ -42,6 +42,10 @@
   <% @months = [] %>
   <% (1..13).each {|m| @months << Date::MONTHNAMES[m] unless Date::MONTHNAMES[m].nil?} %>
   <style media="print">
+    @font-face {
+      font-family: "Times New Roman";
+      src: url('../../../public/fonts/times-new-roman.ttf') format('truetype');
+    }
     button {
       display: none;
     }
@@ -82,7 +86,7 @@
     #report_header {
       font-size: 1em;
       text-align: center;
-      font-weight: bold;
+      font-weight: 500;
       margin-top: -5px;
     }
     #report_info {
@@ -137,16 +141,16 @@
       right: 1px;
     }
     .block_header {
-      font-weight: bold;
+      font-weight: 400;
     }
     .right {
-      font-weight: normal;
+      font-weight: 100;
       right: 0px;
     }
     .report_block {
       background-color: #999;
       color: #000;
-      font-weight: bold;
+      font-weight: 400;
       border: 1px solid #333;"
     }
 
@@ -199,7 +203,7 @@
           <td colspan="3">
             Was any client served at this site during this month?
                     <span style="font-size: 0.8em;">
-                      If no, still submit this report
+                      If no, still submit report
                     </span>
           </td>
           <td class="value_cell">
@@ -266,7 +270,7 @@
           </tr>
           <tr>
             <td class="num">&nbsp;</td>
-            <td  style="border: 1px solid #333;">New women registered</td>
+            <td  style="border: 1px solid #333;">New women reg.</td>
             <td class="value_cell"><%= @new_women_registered.length %></td>
           </tr>
           <tr>
@@ -274,7 +278,7 @@
               &nbsp;
             </td>
             <td colspan="2" class="block_header">
-              Week of first ANC visit<sup style="font-weight: normal;">1</sup>
+              Week of first ANC visit<sup style="font-weight: 100;">1</sup>
             </td>
           </tr>
 
@@ -292,7 +296,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">HIV status first visit<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">HIV status first visit<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -350,17 +354,17 @@
 
           <tr>
             <td class="num">27</td>
-            <td style="border-left: 1px solid #333;">Start ART 0-27 weeks</td>
+            <td style="border-left: 1px solid #333;">Start ART 0-27 wks</td>
             <td class="value_cell"><%= @first_visit_on_art_zero_to_27.length rescue 0 %></td>
           </tr>
 
           <tr>
             <td class="num">28</td>
-            <td style="border-left: 1px solid #333; border-bottom: 1px solid #333;">Start ART 28+ weeks</td>
+            <td style="border-left: 1px solid #333; border-bottom: 1px solid #333;">Start ART 28+ wks</td>
             <td class="value_cell"><%= @first_visit_on_art_28_plus.length rescue 0 %></td>
           </tr>
 
-          <tr>
+          <tr style="line-height: 3px;">
             <td colspan="3">&nbsp;</td>
           </tr>
 
@@ -377,7 +381,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">Visits per woman<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">Visits per woman<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -424,7 +428,7 @@
         <table width="95%">
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">(Pre-) Eclampsia<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">(Pre-) Eclampsia<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -444,7 +448,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">TTV doses<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">TTV doses<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -464,7 +468,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">SP doses <sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">SP doses <sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -487,7 +491,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">FeFo tablets <sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">FeFo tablets <sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -508,7 +512,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">Albendazole<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">Albendazole<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -527,7 +531,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">ITN (bed nets) given<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">ITN (bed nets) given<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -546,7 +550,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">Syphilis status <sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">Syphilis status <sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -573,7 +577,7 @@
 
           <tr>
             <td class="num">&nbsp;</td>
-            <td colspan="2" class="block_header">HIV status final<sup style="font-weight: normal;">1</sup></td>
+            <td colspan="2" class="block_header">HIV status final<sup style="font-weight: 100;">1</sup></td>
           </tr>
 
           <tr>
@@ -677,13 +681,13 @@
 
           <tr>
             <td>27</td>
-            <td style="border-left: 1px solid #999;">Start ART 0-27 weeks</td>
+            <td style="border-left: 1px solid #999;">Start ART 0-27 wks</td>
             <td class="value_cell"><%= @final_visit_on_art_zero_to_27.length rescue 0 %></td>
           </tr>
 
           <tr>
             <td>28</td>
-            <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">Start ART 28+ weeks</td>
+            <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">Start ART 28+ wks</td>
             <td class="value_cell"><%= @final_visit_on_art_28_plus.length rescue 0 %></td>
           </tr>
 
@@ -712,7 +716,7 @@
             <td></td>
             <td colspan="2" class="block_header">Notes</td>
           </tr>
-          <tr rowspan="3" style="height: 140px;">
+          <tr rowspan="3" style="height: 120px;">
             <td></td>
             <td colspan="2">&nbsp;</td>
           </tr>
@@ -734,7 +738,7 @@
       </div>
     </div>
     <div id="report_footer">
-      <sup style="font-weight: normal;">1</sup> Check: Total of these sections must add up to total number of the women in cohort.
+      <sup style="font-weight: 100;">1</sup> Check: Total of these sections must add up to total number of the women in cohort.
     </div>
   </div>
 </div>

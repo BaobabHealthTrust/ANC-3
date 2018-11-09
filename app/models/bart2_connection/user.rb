@@ -1,7 +1,7 @@
 require 'digest/sha1'
 require 'digest/sha2'
 
-class User < ActiveRecord::Base
+class Bart2Connection::User < ActiveRecord::Base
   self.establish_connection :bart2
 	devise :database_authenticatable #:authentication_keys => [:login]
 	before_save :before_save
