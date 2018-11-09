@@ -1,4 +1,4 @@
-class Lab < HealthdataConnection
+class Lab < ActiveRecord::Base
   self.table_name = "map_lab_panel"
 
   def self.results(patient, patient_ids)

@@ -1,3 +1,5 @@
+require "patient_service"
+require "anc_service"
 class GenericPeopleController < ApplicationController
     
 	def index

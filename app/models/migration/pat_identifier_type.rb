@@ -1,12 +1,12 @@
 class PatIdentifierType < OpenMRS
-  set_table_name "patient_identifier_type"
+  self.table_name = "patient_identifier_type"
   has_many :pat_identifiers, :foreign_key => :identifier_type
   belongs_to :users, :foreign_key => :user_id
 #patient_identifier_type_id
-  set_primary_key "patient_identifier_type_id"
+  self.primary_key = "patient_identifier_type_id"
 
   @@patient_identifier_hash_by_name = Hash.new
-  self.find(:all).each{|patient_identifier|
+  self.all.each{|patient_identifier|
     @@patient_identifier_hash_by_name[patient_identifier.name.downcase] = patient_identifier
   }
 

@@ -5,12 +5,12 @@ class Bart2Connection::Order < ActiveRecord::Base
   self.table_name = "orders"
   self.primary_key = "order_id"
   include Openmrs
-  belongs_to :order_type> { where retired: 0 }, :class_name => "Bart2Connection::OrderType"
-  belongs_to :concept> { where retired: 0 }, :class_name => "Bart2Connection::Concept"
-  belongs_to :encounter> { where voided: 0 }, :class_name => "Bart2Connection::Encounter"
-  belongs_to :patient> { where voided: 0 }, :class_name => "Bart2Connection::Patient"
-  belongs_to :provider> { where voided: 0 }, :foreign_key => 'orderer', :class_name => 'Bart2Connection::User'
-  belongs_to :observation> { where voided: 0 }, :foreign_key => 'obs_id', :class_name => 'Bart2Connection::Observation'
+  belongs_to :order_type, -> { where retired: 0 }, :class_name => "Bart2Connection::OrderType"
+  belongs_to :concept, -> { where retired: 0 }, :class_name => "Bart2Connection::Concept"
+  belongs_to :encounter, -> { where voided: 0 }, :class_name => "Bart2Connection::Encounter"
+  belongs_to :patient, -> { where voided: 0 }, :class_name => "Bart2Connection::Patient"
+  belongs_to :provider, -> { where voided: 0 }, :foreign_key => 'orderer', :class_name => 'Bart2Connection::User'
+  belongs_to :observation, -> { where voided: 0 }, :foreign_key => 'obs_id', :class_name => 'Bart2Connection::Observation'
   has_one :drug_order, :class_name => "Bart2Connection::DrugOrder" # no default scope
   
   scope :current,-> { includes(:encounter).references("encounter.encounter_id").where('DATE(encounter.encounter_datetime) = CURRENT_DATE()') }

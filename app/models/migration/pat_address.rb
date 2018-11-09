@@ -1,9 +1,9 @@
 class PatAddress < OpenMRS
-  set_table_name "patient_address"
+  self.table_name = "patient_address"
   belongs_to :patient, :foreign_key => :patient_id
   belongs_to :user, :foreign_key => :user_id
 #patient_address_id
-  set_primary_key "patient_address_id"
+  self.primary_key = "patient_address_id"
   
   def self.create(patient_id, address)    
     return false if patient_id.blank? || address.blank?
