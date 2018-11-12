@@ -52,23 +52,32 @@
   var leucocytesTest;
   var glucoseTest;
   var rapidRecencyAssayHash = {};
-<% rapid_recency_assay_array = ["Line 1. Control Line Present","Line 2. Positive Verification Line Present","Line 3. Long-Term Line Present"] %>
+	<% 
+		rapid_recency_assay_array = [
+								"Line 1. Control Line Present",
+								"Line 2. Positive Verification Line Present",
+								"Line 3. Long-Term Line Present"
+								] 
+	%>
 
-<% rapid_recency_assay_array.each do |rapid_recency| %>
-    rapidRecencyAssayHash['<%= rapid_recency %>'] = {yes: '', no: ''}
-<% end %>
+	<% rapid_recency_assay_array.each do |rapid_recency| %>
+    	rapidRecencyAssayHash['<%= rapid_recency %>'] = {yes: '', no: ''}
+	<% end %>
 
   //-->
-<%
-status = @hiv_status rescue nil
-art_status = @on_art rescue nil
-arv_number = @arv_number rescue nil
-start_date = @art_start_date rescue nil
-@available_test_results = [
-  ["HB", "HB Test Result"],["Syphilis", "Syphilis Test Result"],
-  ["Urine", "Urine Test Results"],["Malaria", "Malaria Test Result"],
-  ["Blood Group", "Blood Group Test Result"]]
-%>
+	<%
+		status 			= @hiv_status rescue nil
+		art_status 	= @on_art.first rescue nil
+		arv_number 	= @arv_number rescue nil
+		start_date 	= @art_start_date rescue nil
+		today 			= session[:datetime].blank? ? Date.today : session[:datetime]
+
+		
+		@available_test_results = [
+  		["HB", "HB Test Result"],["Syphilis", "Syphilis Test Result"],
+  		["Urine", "Urine Test Results"],["Malaria", "Malaria Test Result"],
+  		["Blood Group", "Blood Group Test Result"]]
+	%>
 
   function readableMessage(){
 
@@ -79,7 +88,10 @@ start_date = @art_start_date rescue nil
     try{
       // conceptName = conceptName.charAt(0).toUpperCase() + conceptName.slice(1).toLowerCase();
       if(__$("messageBar") && !__$("messageBar").innerHTML.match(conceptName)){
-        __$("messageBar").innerHTML = __$("messageBar").innerHTML.replace("Value", conceptName + " Value").replace("value", conceptName + " value").replace("a " + conceptName + " value", conceptName + " value")
+        __$("messageBar").innerHTML = __$("messageBar").innerHTML
+        .replace("Value", conceptName + " Value")
+        .replace("value", conceptName + " value")
+        .replace("a " + conceptName + " value", conceptName + " value")
       }
     }catch(ex){}
 
@@ -213,38 +225,38 @@ start_date = @art_start_date rescue nil
     }
   }
   function alertStatus() {
-<% if (status.present? rescue false) %>
+	<% unless (@hiv_status.blank? rescue true) %>
       gotoNextPage();
-<% end %>
+	<% end %>
   }
 
   function alertARTStatus(){
-<% if (art_status.present? rescue false) %>
+	<% unless (@on_art.blank? rescue true) %>
       gotoNextPage();
-<% end %>
+	<% end %>
   }
 
   function alertARVNumber(){
-<% if (arv_number.present? rescue false) %>
+	<% unless (@arv_number.blank? rescue true) %>
       gotoNextPage();
-<% end %>
+	<% end %>
   }
 
   function remoteARTStatus(){
     displayText = "<div>"
-<% if status.present? %>
+<% unless @hiv_status.blank? %>
       displayText += "HIV Status : &nbsp;&nbsp;&nbsp;&nbsp;<span class='value'><%= status.first %> </span><br />";
 <% end %>
 
-<% if art_status.present? %>
+<% unless @on_art.blank? %>
       displayText += "On ART : &nbsp;&nbsp;&nbsp;&nbsp;<span class='value'><%= art_status %> </span><br />";
 <% end %>
 
-<% if start_date.present? %>
+<% unless @art_start_date.blank? %>
       displayText += "ART Start Date : &nbsp;&nbsp;&nbsp;&nbsp;<span class='value'><%= start_date %></span> <br />";
 <% end %>
 
-<% if arv_number.present? %>
+<% unless @arv_number.blank? %>
       displayText += "ARV Number : &nbsp;&nbsp;&nbsp;&nbsp;<span class='value'><%= arv_number %> </span> <br />";
 <% end %>
 
@@ -461,9 +473,75 @@ start_date = @art_start_date rescue nil
     :helpText => "<span class='helper'> ART Summary </span>"
   }
 %>
+<%= (touch_hidden_tag "Previous HIV Test done", @patient, "Yes", :id => "previous_hiv_test" ).html_safe
+    %>
+  <% unless @hiv_status.blank? %>
+    
+    <%= (touch_hidden_tag "Previous HIV Test Results", @patient, "Positive", :id => "prev_hiv_test_results" ).html_safe
+    %>
 
-  <!-- % if params[:update].blank? % -->
+    <%= (touch_date_tag "Previous HIV Test date", @patient, nil, {
+        :id => "prev_hiv_test_date",
+        :helptext => "Previous HIV Test Date <span class='helper'> Lab Results</span>",
+        :tt_onUnLoad => "parsedConceptName = '';",
+        :tt_onLoad => " parsedConceptName = 'Previous HIV Test date'; initializeDate();",
+        :condition => "__$('prev_hiv_test_results').value != '' ||
+          __$('previous_hiv_test').value == 'Yes'",
+        :absoluteMax => "#{(session[:datetime].to_date - 1.days) rescue (Date.today - 1.days)}",
+        :absoluteMin => "#{@patient.person.birthdate.to_date rescue nil}"
+      }).html_safe
+    %>
+    <% unless art_status.blank? %>
+    <%= (touch_hidden_tag "On ART", @patient, art_status, {
+        :id => "on_art"
+      }).html_safe
+    %>
+    <% else %>
+    <%= (touch_select_tag "On ART", @patient, options_for_select([["", ""],["Yes", "Yes"],
+        ["No", "No"]], art_status),
+      {
+        :id => "on_art",
+        :helptext => "Is Patient On ART? <span class='helper'> Lab Results</span>",
+        :tt_onUnLoad => "parsedConceptName = '';",
+        :tt_onLoad => " parsedConceptName = 'On ART';",
+        :condition => "__$('prev_hiv_test_results').value == 'Positive'"
+      }).html_safe
+    %>
+    <% end %>
 
+    <% unless @arv_number.blank? %>
+    <%= (touch_hidden_tag "ARV Number", @patient, @arv_number, {
+        :id => "arv_number"
+      }).html_safe
+    %>
+    <% else %>
+    <%= (touch_text_field_tag "ARV Number", @patient, arv_number, {
+      :id => "arv_number",
+      :optional => true,
+      :tt_onLoad => '',
+      :helptext => "ARV Number <span class='helper'> Lab Results</span>",
+      :tt_onUnLoad => "parsedConceptName = '';",
+      :condition => "__$('on_art').value == 'Yes'"
+    }).html_safe
+    %>
+    <% end %>
+
+    <%= select_tag("choice",
+      options_for_select([["", ""],["", ""],
+        ["HB", "HB Test Result"],["Syphilis", "Syphilis Test Result"],
+        ["Urine", "Urine Test Results"],["Malaria", "Malaria Test Result"],
+        ["Blood Group", "Blood Group Test Result"]], ["", ""]),
+    {
+      :helpText => "New Test Results Available Today <span class='helper'> Lab Results</span>",
+      :id => "choice",
+      :multiple => true,
+      :optional => true,
+      :condition => "__$('previous_hiv_test').value == 'Yes' && (__$('prev_hiv_test_results').value == 'Positive' || !checkHIVTestDate());",
+      :tt_onLoad => "__$('test_date').value = '';"
+    })
+    %>
+
+  <% else %>
   <%= (touch_select_tag "Previous HIV Test done", @patient,
     options_for_select([["", ""],["Yes", "Yes"],["No", "No"]]),
     {
@@ -535,7 +613,7 @@ start_date = @art_start_date rescue nil
       :helpText => "New Test Results Available Today <span class='helper'> Lab Results</span>",
       :id => "choice",
       :multiple => true,
-      :optional => :true,
+      :optional => true,
       :condition => "__$('previous_hiv_test').value == 'Yes' && (__$('prev_hiv_test_results').value == 'Positive' || !checkHIVTestDate());",
       :tt_onLoad => "__$('test_date').value = '';"
     })
@@ -551,7 +629,7 @@ start_date = @art_start_date rescue nil
       :helpText => "New Test Results Available Today <span class='helper'> Lab Results</span>",
       :id => "choice1",
       :multiple => true,
-      :optional => :true,
+      :optional => true,
       :condition => "__$('previous_hiv_test').value == 'No' || (__$('prev_hiv_test_results').value == 'Negative' && checkHIVTestDate());"
     })
 %>
@@ -599,6 +677,7 @@ start_date = @art_start_date rescue nil
       :id => "test_date"
     }).html_safe
 %>
+<% end %>
 
     <%= (touch_text_field_tag "HB Test Result", @patient, nil,
     {

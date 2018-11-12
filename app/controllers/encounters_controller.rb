@@ -53,10 +53,15 @@ class EncountersController < ApplicationController
         observation["value_#{value_name}"] unless observation["value_#{value_name}"].blank? rescue nil
       }.compact
 
-      next if values.length == 0 || values == [[""]]
+      #values.flatten.reject { |v| v.to_s.empty? }
+      #raise observation.inspect if values != [[""]]
+      next if values.length == 0  || values == [[""]]
 
       observation[:value_text] = observation[:value_text].join(", ") if observation[:value_text].present? && observation[:value_text].is_a?(Array)
       observation.delete(:value_text) unless observation[:value_coded_or_text].blank?
+
+			observation = update_observation_value(observation) if !observation[:value_coded_or_text].blank?
+
       
       observation[:encounter_id] = encounter.id
       observation[:obs_datetime] = encounter.encounter_datetime || Time.now()
@@ -66,7 +71,7 @@ class EncountersController < ApplicationController
       if observation[:value_coded_or_text_multiple] && observation[:value_coded_or_text_multiple].is_a?(Array)
         observation[:value_coded_or_text_multiple].compact!
         observation[:value_coded_or_text_multiple].reject!{|value| value.blank?}
-      end  
+      end
       if observation[:value_coded_or_text_multiple] && observation[:value_coded_or_text_multiple].is_a?(Array) && !observation[:value_coded_or_text_multiple].blank?
         values = observation.delete(:value_coded_or_text_multiple)
         values.each{|value| observation[:value_coded_or_text] = value; Observation.create(observation.permit!) }
@@ -74,6 +79,7 @@ class EncountersController < ApplicationController
         observation.delete(:value_coded_or_text_multiple)
         observation.delete(:parent_concept_name)
         Observation.create(observation.permit!)
+        #raise observation.permit!.inspect if observation[:concept_name] == "Previous HIV Test Results"
       end
     end
     if params[:encounter][:encounter_type_name] == 'VITALS'
@@ -551,5 +557,19 @@ class EncountersController < ApplicationController
 
     render :layout => false
   end
+
+  def update_observation_value(observation)
+		value = observation[:value_coded_or_text]
+		value_coded_name = ConceptName.find_by_name(value)
+
+		if value_coded_name.blank?
+			observation[:value_text] = value
+		else
+			observation[:value_coded_name_id] = value_coded_name.concept_name_id
+			observation[:value_coded] = value_coded_name.concept_id
+		end
+		observation.delete(:value_coded_or_text)
+		return observation
+	end
   
 end
