@@ -473,9 +473,9 @@
     :helpText => "<span class='helper'> ART Summary </span>"
   }
 %>
+  <% unless @hiv_status.blank? %>
 <%= (touch_hidden_tag "Previous HIV Test done", @patient, "Yes", :id => "previous_hiv_test" ).html_safe
     %>
-  <% unless @hiv_status.blank? %>
     
     <%= (touch_hidden_tag "Previous HIV Test Results", @patient, "Positive", :id => "prev_hiv_test_results" ).html_safe
     %>
