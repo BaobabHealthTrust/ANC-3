@@ -1391,6 +1391,47 @@ class Reports
       ))
     return patient_identifiers
   end
+
+  def pregnancy_test_done_yes
+    # TODO
+    return []
+  end
+  
+  def pregnancy_test_done_no
+    # TODO
+    return []
+  end
+
+  def pregnancy_test_in_first_trim_yes
+    # TODO
+    return []
+  end
+
+  def pregnancy_test_in_first_trim_no
+    # TODO
+    return []
+  end
+
+  def hb_less_than_seven
+    # TODO
+    # Encounter.joins([:observations]).where(["concept_id = ? AND (DATE(encounter_datetime) >= ? " +
+    # "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
+    # ConceptName.find_by_name("HB TEST RESULT").concept_id,
+    # @monthly_start_date.to_date.beginning_of_month, 
+    # @monthly_end_date.to_date.end_of_month,
+    # @new_monthly_visits]).select(["DISTINCT patient_id"]).collect { |e| e.patient_id }
+    return []
+  end
+
+  def hb_greater_or_equal_to_seven
+    # TODO
+    return []
+  end
+
+  def hb_not_done
+    # TODO
+    return []
+  end
   ####################################################
 
   ############################# Monthly report ################################

@@ -96,19 +96,20 @@
     <div style="background-color: #fff; height: 660px; width: 99%; padding: 5px;">
           <table style="width: 100%; border: <%= pixels %>px solid #999; -moz-user-select: none;">
           <tr>
-            <%if @type != "monthly"%>
+            <!-- %if @type != "monthly"%>
               <th style="font-size: 1.8em; color: #eee; background-color: #999; padding: 10px;">
                 ANC C<span style="font-size: 0.8em">LINIC</span> -
                 F<span style="font-size: 0.8em">ACILITY</span> C<span style="font-size: 0.8em">OHORT</span>
                 R<span style="font-size: 0.8em">EPORT</span>
               </th>
-            <%else%>
+            < %else% -->
               <th style="font-size: 1.8em; color: #eee; background-color: #999; padding: 10px;">
                 ANC C<span style="font-size: 0.8em">LINIC</span> -
-                F<span style="font-size: 0.8em">ACILITY</span> C<span style="font-size: 0.8em">USTOM</span>
+                F<span style="font-size: 0.8em">ACILITY</span> M<span style="font-size: 0.8em">ONTHLY</span>
                 R<span style="font-size: 0.8em">EPORT</span>
+                - VERSION 5, JANUARY 2017
               </th>
-            <%end%>
+            <!-- %end% -->
           </tr>
 
           <tr>
@@ -200,6 +201,101 @@
                                 </a>
                               </td>
                             </tr>
+
+                            <tr>
+                              <td>
+                                &nbsp;
+                              </td>
+                              <td colspan="2" style="font-weight: bold;">
+                                Pregnancy test done<sup style="font-weight: normal;">1</sup>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                1
+                              </td>
+                              <td style="border-top: 1px solid #999; border-left: 1px solid #999;
+                                  border-bottom: 0px solid #999;">
+                                <form id="pregnancy_test_done_yes" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @pregnancy_test_done_yes.join(",") %>" name="patients" />
+                                  Yes
+                                  <input type="hidden" value="new registered women" name="block">
+                                </form>
+                              </td>
+                              <td class="valueCell">
+                                <a href="javascript:document.getElementById('pregnancy_test_done_yes').submit()">
+                                  <%= @pregnancy_test_done_yes.length %>
+                                </a>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>
+                                2
+                              </td>
+                              <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
+                                <form id="pregnancy_test_done_no" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @pregnancy_test_done_yes.join(",") %>" name="patients" />
+                                  <input type="hidden" value="new registered women" name="block">
+                                  <span  style="color:gray">No</span>
+                                </form>
+                              </td>
+                              <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
+                                <a href="javascript:document.getElementById('pregnancy_test_done_no').submit()">
+                                  <span  style="color:gray">
+                                    <%= @pregnancy_test_done_yes.length %>
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td>
+                                &nbsp;
+                              </td>
+                              <td colspan="2" style="font-weight: bold;">
+                                Pregnancy test done in 1<sup style="font-weight: normal;">st</sup> trimester
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                9
+                              </td>
+                              <td style="border-top: 1px solid #999; border-left: 1px solid #999;
+                                  border-bottom: 0px solid #999;">
+                                <form id="pregnancy_test_in_first_trim_yes" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @pregnancy_test_in_first_trim_yes.join(",") %>" name="patients" />
+                                  Yes
+                                  <input type="hidden" value="new registered women" name="block">
+                                </form>
+                              </td>
+                              <td class="valueCell">
+                                <a href="javascript:document.getElementById('pregnancy_test_in_first_trim_yes').submit()">
+                                  <%= @pregnancy_test_in_first_trim_yes.length %>
+                                </a>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td style="border-bottom: 0px;">
+
+                              </td>
+                              <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
+                                <form id="pregnancy_test_in_first_trim_no" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @pregnancy_test_in_first_trim_no.join(",") %>" name="patients" />
+                                  <input type="hidden" value="new registered women" name="block">
+                                  <span  style="color:gray">No</span>
+                                </form>
+                              </td>
+                              <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
+                                <a href="javascript:document.getElementById('pregnancy_in_first_trim_no').submit()">
+                                  <span  style="color:gray">
+                                  <%= @pregnancy_test_in_first_trim_no.length %>
+                                  </span>
+                                </a>
+                              </td>
+                            </tr>
+
                             <tr>
                               <td>
                                 &nbsp;
@@ -211,7 +307,7 @@
 
                             <tr>
                               <td>
-                                6
+                                8
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;
                                   border-bottom: 0px solid #999;">
@@ -256,7 +352,7 @@
                             </tr>
                             <tr>
                               <td>
-                                18
+                                23
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
                                 <form id="hiv_test_result_prev_neg" method="post" action="decompose">
@@ -273,7 +369,7 @@
                             </tr>
                             <tr>
                               <td>
-                                19
+                                24
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="hiv_test_result_prev_pos" method="post" action="decompose">
@@ -290,7 +386,7 @@
                             </tr>
                             <tr>
                               <td>
-                                20
+                                25
                               </td>
                               <td style="border-left: 1px solid #999; width: 60%;">
                                 <form id="hiv_test_result_neg" method="post" action="decompose">
@@ -307,7 +403,7 @@
                             </tr>
                             <tr>
                               <td>
-                                21
+                                26
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="hiv_test_result_pos" method="post" action="decompose">
@@ -324,7 +420,7 @@
                             </tr>
                             <tr>
                               <td>
-                                22
+                                27
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="hiv_test_result_unk" method="post" action="decompose">
@@ -363,7 +459,7 @@
                             </tr>
                             <tr>
                               <td>
-                                25
+                                30
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
                                 <form id="not_on_art" method="post" action="decompose">
@@ -379,7 +475,7 @@
                             </tr>
                             <tr>
                               <td>
-                                26
+                                31
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="on_art_before" method="post" action="decompose">
@@ -395,7 +491,7 @@
                             </tr>
                             <tr>
                               <td>
-                                27
+                                32
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="on_art_zero_to_27" method="post" action="decompose">
@@ -411,7 +507,7 @@
                             </tr>
                             <tr>
                               <td>
-                                28
+                                33
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="on_art_28_plus" method="post" action="decompose">
@@ -452,7 +548,7 @@
                             </tr>
                             <tr>
                               <td>
-                                1
+                                3
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;">
                                 <form id="visits_1" method="post" action="decompose">
@@ -468,7 +564,7 @@
                             </tr>
                             <tr>
                               <td>
-                                2
+                                4
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="visits_2" method="post" action="decompose">
@@ -484,7 +580,7 @@
                             </tr>
                             <tr>
                               <td>
-                                3
+                                5
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="visits_3" method="post" action="decompose">
@@ -500,7 +596,7 @@
                             </tr>
                             <tr>
                               <td>
-                                4
+                                6
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="visits_4" method="post" action="decompose">
@@ -516,7 +612,7 @@
                             </tr>
                             <tr>
                               <td>
-                                5
+                                7
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="visits_5" method="post" action="decompose">
@@ -573,7 +669,7 @@
                             </tr>
                             <tr>
                               <td>
-                                7
+                                10
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="pre_eclampsia_1" method="post" action="decompose">
@@ -613,7 +709,7 @@
                             </tr>
                             <tr>
                               <td>
-                                8
+                                11
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px; border-left: 1px solid #999;">
                                 <form id="ttv__total_previous_doses_2" method="post" action="decompose">
@@ -637,12 +733,12 @@
                             </tr>
                             <tr>
                               <td>
-                                9
+                                12
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;">
                                 <form id="fansida__sp___number_of_tablets_given_0" method="post" action="decompose">
                                   <input type="hidden" value="<%= @fansida__sp___number_of_tablets_given_0.join(",") %>" name="patients" />
-                                  0 doses
+                                  0-2 doses
                                 </form>
                               </td>
                               <td class="valueCell">
@@ -653,12 +749,12 @@
                             </tr>
                             <tr>
                               <td>
-                                10
+                                13
                               </td>
-                              <td style="border-left: 1px solid #999;">
+                              <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="fansida__sp___number_of_tablets_given_1" method="post" action="decompose">
                                   <input type="hidden" value="<%= @fansida__sp___number_of_tablets_given_1.join(",") %>" name="patients" />
-                                  1 x 3 tabs
+                                  &ge; 3 tabs
                                 </form>
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
@@ -667,7 +763,7 @@
                                 </a>
                               </td>
                             </tr>
-                            <tr>
+                            <!-- tr>
                               <td>
                                 11
                               </td>
@@ -682,7 +778,7 @@
                                   <%= @fansida__sp___number_of_tablets_given_2.length %>
                                 </a>
                               </td>
-                            </tr>
+                            </tr -->
 
                             <tr>
                               <td>
@@ -713,7 +809,7 @@
 
                             <tr>
                               <td>
-                                 12
+                                 14
                               </td>
                               <td style="border-top: 0px; border-left: 1px solid #999;
                                   border-bottom: 1px solid #999;">
@@ -734,7 +830,7 @@
                                 &nbsp;
                               </td>
                               <td colspan="2" style="font-weight: bold;">
-                                Albendazole<sup style="font-weight: normal;">1</sup>
+                                Albendazole doses<sup style="font-weight: normal;">1</sup>
                               </td>
                             </tr>
 
@@ -758,13 +854,13 @@
 
                             <tr>
                               <td>
-                                13
+                                15
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
                                 <form id="albendazole" method="post" action="decompose">
                                   <input type="hidden" value="<%= @albendazole.join(",") %>" name="patients" />
-                                  1+ dose
+                                  1 dose
                                 </form>
                               </td>
                               <td class="valueCell">
@@ -804,7 +900,7 @@
 
                             <tr>
                               <td>
-                                14
+                                16
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
@@ -819,7 +915,64 @@
                                 </a>
                               </td>
                             </tr>
-
+                            
+                            <tr>
+                              <td style="width: 10px;">
+                                &nbsp;
+                              </td>
+                              <td colspan="2" style="font-weight: bold;">
+                                Hb (g/dl)<sup style="font-weight: normal;">1</sup>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                17
+                              </td>
+                              <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
+                                <form id="hb_less_than_seven" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @hb_less_than_seven.join(",") %>" name="patients" />
+                                  <7
+                                </form>
+                              </td>
+                              <td class="valueCell">
+                                <a href="javascript:document.getElementById('hb_less_than_seven').submit()">
+                                  <%= @hb_less_than_seven.length %>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                16
+                              </td>
+                              <td style="border-left: 1px solid #999;">
+                                <form id="hb_greater_or_equal_to_seven" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @hb_greater_or_equal_to_seven.join(",") %>" name="patients" />
+                                  &ge;7
+                                </form>
+                              </td>
+                              <td class="valueCell" style="border-top: 0px;">
+                                <a href="javascript:document.getElementById('hb_greater_or_equal_to_seven').submit()">
+                                  <%= @hb_greater_or_equal_to_seven.length %>
+                                </a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                19
+                              </td>
+                              <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
+                                <form id="hb_not_done" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @hb_not_done.join(",") %>" name="patients" />
+                                  ND
+                                </form>
+                              </td>
+                              <td class="valueCell" style="border-top: 0px;">
+                                <a href="javascript:document.getElementById('hb_not_done').submit()">
+                                  <%= @hb_not_done.length %>
+                                </a>
+                              </td>
+                            </tr>
+                            
                             <tr>
                               <td style="width: 10px;">
                                 &nbsp;
@@ -830,7 +983,7 @@
                             </tr>
                             <tr>
                               <td>
-                                15
+                                20
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
                                 <form id="syphilis_result_neg" method="post" action="decompose">
@@ -846,7 +999,7 @@
                             </tr>
                             <tr>
                               <td>
-                                16
+                                21
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="syphilis_result_pos" method="post" action="decompose">
@@ -862,7 +1015,7 @@
                             </tr>
                             <tr>
                               <td>
-                                17
+                                22
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="syphilis_result_unk" method="post" action="decompose">
@@ -876,7 +1029,11 @@
                                 </a>
                               </td>
                             </tr>
-                            
+
+                          </table>
+                        </td>
+                        <td style="width: 30%;" valign="top">
+                          <table cellpadding="8" style="width: 90%; float: right; margin-top: 5px;" cellspacing="0">
                             <tr>
                               <td>
                                 &nbsp;
@@ -887,7 +1044,7 @@
                             </tr>
                             <tr>
                               <td>
-                                18
+                                23
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
                                 <form id="hiv_final_test_result_prev_neg" method="post" action="decompose">
@@ -903,7 +1060,7 @@
                             </tr>
                             <tr>
                               <td>
-                                19
+                                24
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="hiv_final_test_result_prev_pos" method="post" action="decompose">
@@ -919,7 +1076,7 @@
                             </tr>
                             <tr>
                               <td>
-                                20
+                                25
                               </td>
                               <td style="border-left: 1px solid #999; width: 60%;">
                                 <form id="hiv_final_test_result_neg" method="post" action="decompose">
@@ -933,15 +1090,9 @@
                                 </a>
                               </td>
                             </tr>
-
-                          </table>
-                        </td>
-                        <td style="width: 30%;" valign="top">
-                          <table cellpadding="8" style="width: 90%; float: right; margin-top: 5px;" cellspacing="0">
-                            
                             <tr>
                               <td>
-                                21
+                                26
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="hiv_final_test_result_pos" method="post" action="decompose">
@@ -949,7 +1100,7 @@
                                   New Positive
                                 </form>
                               </td>
-                              <td  class="valueCell">
+                              <td  class="valueCell" style="border-top: 0px;">
                                 <a href="javascript:document.getElementById('hiv_final_test_result_pos').submit()">
                                   <%= @final_visit_new_positive.length %>
                                 </a>
@@ -958,7 +1109,7 @@
 
                             <tr>
                               <td>
-                                22
+                                27
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="hiv_final_test_result_unk" method="post" action="decompose">
@@ -1015,7 +1166,7 @@
 
                             <tr>
                               <td>
-                                23
+                                28
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
@@ -1060,7 +1211,7 @@
 
                             <tr>
                               <td>
-                                24
+                                29
                               </td>
                               <td style="border-bottom: 1px solid #999; border-top: 0px;
                                   border-left: 1px solid #999; width: 60%;">
@@ -1086,7 +1237,7 @@
                             </tr>
                             <tr>
                               <td>
-                                25
+                                30
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999; width: 60%;">
                                 <form id="final_not_on_art" method="post" action="decompose">
@@ -1102,7 +1253,7 @@
                             </tr>
                             <tr>
                               <td>
-                                26
+                                31
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="final_on_art_before" method="post" action="decompose">
@@ -1118,7 +1269,7 @@
                             </tr>
                             <tr>
                               <td>
-                                27
+                                32
                               </td>
                               <td style="border-left: 1px solid #999;">
                                 <form id="final_on_art_zero_to_27" method="post" action="decompose">
@@ -1134,7 +1285,7 @@
                             </tr>
                             <tr>
                               <td>
-                                28
+                                33
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="final_on_art_28_plus" method="post" action="decompose">
@@ -1158,7 +1309,7 @@
                                 Date
                               </td>
                               <td class="valueCell" style="width: 70%;">
-                                &nbsp;
+                                <%= session[:datetime].to_date.strftime("%d/%b/%Y") rescue Date.today.strftime("%d/%b/%Y") %>
                               </td>
                             </tr>
                             <tr>
@@ -1166,7 +1317,7 @@
                                 Name
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                &nbsp;
+                                ANC <%= ANC_VERSION %>
                               </td>
                             </tr>
                             <tr>

@@ -323,6 +323,15 @@ class ReportsController < ApplicationController
       @no_nvp_baby__1 = (@total_final_visit_hiv_positive - @nvp_baby__1)
       @on_cpt__1 = report.on_cpt__1
       @no_cpt__1 = (@total_final_visit_hiv_positive - @on_cpt__1)
+      
+      ## Subject to modifications
+      @pregnancy_test_done_yes = report.pregnancy_test_done_yes
+      @pregnancy_test_done_no = report.pregnancy_test_done_no
+      @pregnancy_test_in_first_trim_yes = report.pregnancy_test_in_first_trim_yes
+      @pregnancy_test_in_first_trim_no = report.pregnancy_test_in_first_trim_no
+      @hb_less_than_seven = report.hb_less_than_seven
+      @hb_greater_or_equal_to_seven = report.hb_greater_or_equal_to_seven
+      @hb_not_done = report.hb_not_done
 
     #filter for cohort validation rules
 =begin
