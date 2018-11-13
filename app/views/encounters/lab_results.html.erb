@@ -443,11 +443,15 @@
     }
   }
 
-  // function checkHIVTestPositive(){
-  //   prev_hiv_test = __$('prev_hiv_test_results').value
-    
-  //   "< %= @available_test_results.unshift(["HIV", "HIV Test Result"]) %>" if (prev_hiv_test == 'Negative' && checkHIVTestDate())
-  // }
+  function updateHIVTestDate(){
+    hiv_test = __$('new_test_result_at_current_facility').value
+    today = "<%= Date.today %>"
+    if (hiv_test !== ""){
+      __$("test_date").value = today
+    }
+  }
+
+  //setInterval(updateHIVTestDate(), 300)
         
   //-->
 </script>
@@ -642,7 +646,7 @@
       :id => "new_test_result_at_current_facility",
       :helptext => "HIV Test Result <span class='helper'> Lab Results</span>",
       :tt_BeforeUnload => "checkHIVTestUnknown();",
-      :tt_onUnLoad => "parsedConceptName = '';",
+      :tt_onUnLoad => "parsedConceptName = ''; updateHIVTestDate();",
       :tt_onLoad => "parsedConceptName = 'HIV Status'; ",
       :condition => "getSelected().match(/HIV/)"
     }).html_safe
@@ -672,7 +676,7 @@
 %>
 
   <!-- HIV Test date -->
-  <%= (touch_hidden_tag "HIV test date", @patient, "#{session[:datetime].to_date rescue Date.today}",
+  <%= (touch_hidden_tag "HIV test date", @patient, "",
     {
       :id => "test_date"
     }).html_safe
