@@ -1561,10 +1561,10 @@ module ANCService
     end
 
     def anc_visits(session_date = Date.today)
-      @current_range = self.active_range(session_date)
+      @current_range = self.active_range(session_date.to_date)
 
-      start_date = @current_range[0]["START"].to_date rescue (session_date - 8.month)
-      end_date = @current_range[0]["END"].to_date rescue (session_date + 6.month)
+      start_date = @current_range[0]["START"].to_date rescue (session_date.to_date - 8.month)
+      end_date = @current_range[0]["END"].to_date rescue (session_date.to_date + 6.month)
       return [] if start_date.to_date < (session_date.to_date - 10.months).to_date
 
       self.patient.encounters.where(["DATE(encounter_datetime) >= ? AND DATE(encounter_datetime) <= ? AND encounter_type = ?",

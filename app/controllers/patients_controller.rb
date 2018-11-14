@@ -25,8 +25,8 @@ class PatientsController < ApplicationController
     last_known_hiv_test = Observation.where(["concept_id =?", ConceptName.find_by_name("HIV STATUS").concept_id]).last
 
     @alert_for_hiv_test = true if ["unknown", "old_negative"].include?(
-      @patient.resent_hiv_status?(session_date)) && !last_known_hiv_test.blank? &&
-      last_known_hiv_test.obs_datetime.to_date < session_date
+      @patient.resent_hiv_status?(session_date.to_date)) && !last_known_hiv_test.blank? &&
+      last_known_hiv_test.obs_datetime.to_date < session_date.to_date
 
     @current_range = @anc_patient.active_range((session[:datetime] ? session[:datetime].to_date : Date.today))
 
@@ -256,7 +256,7 @@ class PatientsController < ApplicationController
 
     # raise current_user.activities.collect{|u| u.downcase}.include?("update outcome").to_yaml
 
-    @time = @patient.encounters.where(["DATE(encounter_datetime) = ?",session_date.strftime("%Y-%m-%d")]).first.encounter_datetime rescue DateTime.now
+    @time = @patient.encounters.where(["DATE(encounter_datetime) = ?",session_date.to_date.strftime("%Y-%m-%d")]).first.encounter_datetime rescue DateTime.now
 
     @art_link = CoreService.get_global_property_value("art_link") rescue nil
     @anc_link = CoreService.get_global_property_value("anc_link") rescue nil
@@ -972,8 +972,8 @@ class PatientsController < ApplicationController
     @birth_year = @anc_patient.birth_year
 
     @min_birth_year = @birth_year + 13
-    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 50))
+    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 50))
     @previous_encounter = @patient.encounters.where(["encounter_type =?", EncounterType.find_by_name("OBSTETRIC HISTORY")]).last
 
     @pregnancies = {}
@@ -1030,8 +1030,8 @@ class PatientsController < ApplicationController
       @twin_counts[preg] = @pregnancies[preg].keys.length
     end
 
-    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 55))
+    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 55))
 
     @current_user_activities = current_user.activities.collect{|u| u.downcase}
   end
@@ -1042,7 +1042,7 @@ class PatientsController < ApplicationController
 
       #create visit encounter
       encounter = Encounter.new(params[:encounter].permit!)
-      encounter.encounter_datetime = session[:datetime] unless session[:datetime].blank?
+      encounter.encounter_datetime = session[:datetime].to_date unless session[:datetime].blank?
       encounter.save
 
       #create visit observation
@@ -1075,11 +1075,11 @@ class PatientsController < ApplicationController
     @birth_year = @anc_patient.birth_year
 
     @min_birth_year = @birth_year + 13
-    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 50))
+    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 50))
 
-    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 55))
+    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 55))
 
     @procedures = ["", "Manual Vacuum Aspiration (MVA)", "Evacuation"]
     @place = ["", "Health Facility", "Home", "TBA", "Other"]
@@ -1351,7 +1351,7 @@ class PatientsController < ApplicationController
 
   def obstetric_medical_examination_label
     #raise @anc_patient.obstetric_medical_history_label.inspect
-    print_string = "#{(@anc_patient.gravida(session[:datetime] || Time.now()).to_i > 1 ?
+    print_string = "#{(@anc_patient.gravida((session[:datetime] || Time.now()).to_date).to_i > 1 ?
     @anc_patient.detailed_obstetric_history_label : "")}" +
       "#{@anc_patient.obstetric_medical_history_label}" #rescue (raise "Unable to find patient (#{params[:patient_id]}) or generate an obstetric and medical history label for that patient")
     send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:patient_id]}#{rand(10000)}.lbl", :disposition => "inline")
@@ -1588,12 +1588,12 @@ class PatientsController < ApplicationController
     @anc_patient = ANCService::ANC.new(@patient) rescue nil
 
     if @current_pregnancy.present?
-      @data["LMP"] =  @anc_patient.lmp(session_date).strftime("%d/%b/%Y") rescue nil
-      @data["FUNDUS"] = @anc_patient.fundus_by_lmp(session_date) rescue nil
-      @data["ANC VISITS"] = @anc_patient.anc_visits(session_date).blank? ? nil : @anc_patient.anc_visits(session_date).uniq
+      @data["LMP"] =  @anc_patient.lmp(session_date.to_date).strftime("%d/%b/%Y") rescue nil
+      @data["FUNDUS"] = @anc_patient.fundus_by_lmp(session_date.to_date) rescue nil
+      @data["ANC VISITS"] = @anc_patient.anc_visits(session_date.to_date).blank? ? nil : @anc_patient.anc_visits(session_date.to_date).uniq
 
       #disregard irrelevant pregnancies
-      if ((@data["LMP"].present? and @data["LMP"].to_date + 10.months < session_date) rescue true)
+      if ((@data["LMP"].present? and @data["LMP"].to_date + 10.months < session_date.to_date.to_date) rescue true)
         @data = {}
       end
 
@@ -1704,6 +1704,8 @@ class PatientsController < ApplicationController
       values = ['coded_or_text', 'coded_or_text_multiple', 'group_id', 'boolean', 'coded', 'drug', 'datetime', 'numeric', 'modifier', 'text'].map{|value_name|
         observation["value_#{value_name}"] unless observation["value_#{value_name}"].blank? rescue nil
       }.compact
+
+      next if values.length == 0  || values == [[""]]
 
       next if observation[:concept_name].blank?
       observation[:encounter_id] = encounter.id
@@ -2357,7 +2359,7 @@ EOF
         date_of_encounter = Time.mktime(params[:set_year].to_i,
                                         params[:set_month].to_i,
                                         params[:set_day].to_i,0,0,1)
-        session[:datetime] = date_of_encounter #if date_of_encounter.to_date != Date.today
+        session[:datetime] = date_of_encounter.to_date #if date_of_encounter.to_date != Date.today
       end
       if !params[:id].blank?
         redirect_to "/patients/show/#{params[:id]}" and return
