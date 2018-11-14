@@ -361,6 +361,14 @@ class PatientsController < ApplicationController
     else
       @encounter = Encounter.find(params[:encounter_id])
       @patient = @encounter.patient
+      (@encounter.observations || []).each do |ob|
+        ob.void
+      end
+
+      (@encounter.orders || []).each do |od|
+        od.void
+      end
+
       @encounter.void
     end
 
