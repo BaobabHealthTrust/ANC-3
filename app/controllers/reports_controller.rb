@@ -168,7 +168,6 @@ class ReportsController < ApplicationController
       @start_date = params[:start_date] if !params[:start_date].blank?
       @end_date = params[:end_date] if !params[:end_date].blank?
 
-      #raise "#{@start_date} : #{@end_date}"
       if @type == "cohort"
         session[:report_start_date] = (@start_date.to_date - 6.months).beginning_of_month
         session[:report_end_date] = (@start_date.to_date - 6.months).end_of_month
@@ -178,7 +177,6 @@ class ReportsController < ApplicationController
       end
 
 
-      #raise "#{@start_date} #{@end_date} #{@start_age} #{@end_age} #{@type} #{session_date}"
       report = Reports.new(@start_date, @end_date, @start_age, @end_age, @type, session_date)
 
       @new_women_registered = report.new_women_registered
@@ -205,8 +203,6 @@ class ReportsController < ApplicationController
 
       @pre_eclampsia_no = @observations_total - @pre_eclampsia_1
 
-      #@pre_eclampsia_2 = report.pre_eclampsia_2
-
       @ttv__total_previous_doses_1 = report.ttv__total_previous_doses_2(1)
 
       @ttv__total_previous_doses_2 = report.ttv__total_previous_doses_2
@@ -217,14 +213,7 @@ class ReportsController < ApplicationController
 
       @fansida__sp___number_of_tablets_given_2 = @observations_total - (@fansida__sp___number_of_tablets_given_0 + @fansida__sp___number_of_tablets_given_1)
 
-      #@fefo__number_of_tablets_given_2 = report.fefo__number_of_tablets_given_2
-
       @fefo__number_of_tablets_given_1, @fefo__number_of_tablets_given_2 = report.fefo
-      #@fansida__sp___number_of_tablets_given_more_than_2 = report.fansida__sp___number_of_tablets_given_more_than_2
-
-      #@fansida__sp___number_of_tablets_given_more_than_2 = @observations_total - (@fansida__sp___number_of_tablets_given_0 + @fansida__sp___number_of_tablets_given_1 + @fansida__sp___number_of_tablets_given_2)
-
-      @fefo__number_of_tablets_given_1 = @observations_total - @fefo__number_of_tablets_given_2 #report.fefo__number_of_tablets_given_1
       @albendazole_more_than_1 = report.albendazole(">1")
 
       @albendazole = report.albendazole(1) + @albendazole_more_than_1
@@ -242,46 +231,11 @@ class ReportsController < ApplicationController
 
       @syphilis_result_unk = (@observations_total - (@syphilis_result_pos + @syphilis_result_neg).uniq).uniq
 
-    #@hiv_test_result_prev_neg = report.hiv_test_result_prev_neg.uniq
-
-    #@hiv_test_result_prev_pos = report.hiv_test_result_prev_pos.uniq
-
-    #@hiv_test_result_neg = report.hiv_test_result_neg.uniq
-
-    #@hiv_test_result_pos = report.hiv_test_result_pos.uniq
-
-    #@hiv_test_result_inc  = report.hiv_test_result_inc.uniq
-
-    #getting rid of overlaps
-    #@hiv_test_result_prev_neg -= (@hiv_test_result_pos + @hiv_test_result_neg + @hiv_test_result_pos)
-    #@hiv_test_result_neg -= (@hiv_test_result_prev_pos + @hiv_test_result_pos)
-    #@hiv_test_result_prev_pos -= (@hiv_test_result_pos)
-
-    #@hiv_test_result_unk = (@observations_total - (@hiv_test_result_prev_neg + @hiv_test_result_prev_pos +
-    #@hiv_test_result_neg + @hiv_test_result_pos + @hiv_test_result_inc).uniq).uniq
-
-    #@total_hiv_positive = (@hiv_test_result_prev_pos + @hiv_test_result_pos).delete_if{|p| p.blank?}
-
-    #@not_on_art = report.not_on_art.uniq
-    #@not_on_art.delete_if{|p| p.blank?}
-
-    #@on_art_before = report.on_art_before
-    #@on_art_before.delete_if{|p| p.blank?}
-
-    #@on_art_zero_to_27 = report.on_art_zero_to_27
-    #@on_art_zero_to_27.delete_if{|p| p.blank?}
-
-    #@on_art_28_plus = report.on_art_28_plus.uniq
-    #@on_art_28_plus.delete_if{|p| p.blank?}
-
     #>>>>>>>>>>>>>>>>>>>>>>>>NEW ADDITIONS START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        #raise report.first_visit_hiv_test_result_prev_negative .inspect
-
         @first_visit_new_negative = report.first_visit_new_negative
         @first_visit_new_positive = report.first_visit_new_positive
         @first_visit_hiv_test_result_prev_negative = report.first_visit_hiv_test_result_prev_negative - @first_visit_new_negative
         @first_visit_hiv_test_result_prev_positive = report.first_visit_hiv_test_result_prev_positive
-        #@first_visit_hiv_not_done = report.first_visit_hiv_not_done
 
         @first_visit_hiv_not_done = (@new_women_registered - @first_visit_hiv_test_result_prev_negative -
             @first_visit_hiv_test_result_prev_positive - @first_visit_new_negative - @first_visit_new_positive)
@@ -290,12 +244,8 @@ class ReportsController < ApplicationController
         @final_visit_new_negative = report.final_visit_new_negative
         @final_visit_new_positive = report.final_visit_new_positive
         
-        #@final_visit_hiv_not_done = (report.final_visit_hiv_not_done - @final_visit_hiv_test_result_prev_negative -
-            #@final_visit_hiv_test_result_prev_positive - @final_visit_new_negative - @final_visit_new_positive)
          @final_visit_hiv_not_done = (report.total_on_booking_cohort - @final_visit_hiv_test_result_prev_negative -
             @final_visit_hiv_test_result_prev_positive - @final_visit_new_negative - @final_visit_new_positive)
-    #@observations_total - (@first_visit_new_positive +
-          #@first_visit_new_negative + @first_visit_hiv_test_result_prev_positive + @first_visit_hiv_test_result_prev_negative)
 
         @total_first_visit_hiv_positive = (@first_visit_hiv_test_result_prev_positive + @first_visit_new_positive).delete_if{|p| p.blank?}
         
@@ -333,27 +283,6 @@ class ReportsController < ApplicationController
       @hb_greater_or_equal_to_seven = report.hb_greater_or_equal_to_seven
       @hb_not_done = report.hb_not_done
 
-    #filter for cohort validation rules
-=begin
-    vars = ValidationRule.rules_xy
-
-    @failures = []
-
-    if params[:selType] == "cohort"
-      if vars.collect{|v| eval("@#{v}") }.flatten.uniq.include?(nil) #nils are for failed eval executions
-        raise "One of the cohort validation rules is using an unknown variable".to_s
-      end
-
-      rules = ValidationRule.find_all_by_type_id(1)
-      rules.each do |rule|
-
-        exr =  rule.expr.gsub(/\{/, '@').gsub(/\}/, '.count')
-        if !eval(exr)
-          @failures << "Failed: #{rule.desc}"
-        end
-      end
-    end
-=end
       render :layout => false
     end
   end
@@ -451,8 +380,6 @@ class ReportsController < ApplicationController
 
     @pre_eclampsia_no = @observations_total - @pre_eclampsia_1
 
-    #@pre_eclampsia_2 = report.pre_eclampsia_2
-
     @ttv__total_previous_doses_1 = report.ttv__total_previous_doses_2(1)
 
     @ttv__total_previous_doses_2 = report.ttv__total_previous_doses_2
@@ -462,14 +389,7 @@ class ReportsController < ApplicationController
     @fansida__sp___number_of_tablets_given_1, @fansida__sp___number_of_tablets_given_6 = report.fansida__sp
 
     @fansida__sp___number_of_tablets_given_2 = @observations_total - (@fansida__sp___number_of_tablets_given_0 + @fansida__sp___number_of_tablets_given_1)
-
-    #@fefo__number_of_tablets_given_2 = report.fefo__number_of_tablets_given_2
-
     @fefo__number_of_tablets_given_1, @fefo__number_of_tablets_given_2 = report.fefo
-    #@fansida__sp___number_of_tablets_given_more_than_2 = report.fansida__sp___number_of_tablets_given_more_than_2
-
-    #@fansida__sp___number_of_tablets_given_more_than_2 = @observations_total - (@fansida__sp___number_of_tablets_given_0 + @fansida__sp___number_of_tablets_given_1 + @fansida__sp___number_of_tablets_given_2)
-
     @fefo__number_of_tablets_given_1 = @observations_total - @fefo__number_of_tablets_given_2 #report.fefo__number_of_tablets_given_1
     @albendazole_more_than_1 = report.albendazole(">1")
 
@@ -488,44 +408,11 @@ class ReportsController < ApplicationController
 
     @syphilis_result_unk = (@observations_total - (@syphilis_result_pos + @syphilis_result_neg).uniq).uniq
 
-    #@hiv_test_result_prev_neg = report.hiv_test_result_prev_neg.uniq
-
-    #@hiv_test_result_prev_pos = report.hiv_test_result_prev_pos.uniq
-
-    #@hiv_test_result_neg = report.hiv_test_result_neg.uniq
-
-    #@hiv_test_result_pos = report.hiv_test_result_pos.uniq
-
-    #@hiv_test_result_inc  = report.hiv_test_result_inc.uniq
-
-    #getting rid of overlaps
-    #@hiv_test_result_prev_neg -= (@hiv_test_result_pos + @hiv_test_result_neg + @hiv_test_result_pos)
-    #@hiv_test_result_neg -= (@hiv_test_result_prev_pos + @hiv_test_result_pos)
-    #@hiv_test_result_prev_pos -= (@hiv_test_result_pos)
-
-    #@hiv_test_result_unk = (@observations_total - (@hiv_test_result_prev_neg + @hiv_test_result_prev_pos +
-    #@hiv_test_result_neg + @hiv_test_result_pos + @hiv_test_result_inc).uniq).uniq
-
-    #@total_hiv_positive = (@hiv_test_result_prev_pos + @hiv_test_result_pos).delete_if{|p| p.blank?}
-
-    #@not_on_art = report.not_on_art.uniq
-    #@not_on_art.delete_if{|p| p.blank?}
-
-    #@on_art_before = report.on_art_before
-    #@on_art_before.delete_if{|p| p.blank?}
-
-    #@on_art_zero_to_27 = report.on_art_zero_to_27
-    #@on_art_zero_to_27.delete_if{|p| p.blank?}
-
-    #@on_art_28_plus = report.on_art_28_plus.uniq
-    #@on_art_28_plus.delete_if{|p| p.blank?}
-
     #>>>>>>>>>>>>>>>>>>>>>>>>NEW ADDITIONS START<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @first_visit_hiv_test_result_prev_negative = report.first_visit_hiv_test_result_prev_negative
     @first_visit_hiv_test_result_prev_positive = report.first_visit_hiv_test_result_prev_positive
     @first_visit_new_negative = report.first_visit_new_negative
     @first_visit_new_positive = report.first_visit_new_positive
-    #@first_visit_hiv_not_done = report.first_visit_hiv_not_done
     @first_visit_hiv_not_done = (@new_women_registered - @first_visit_hiv_test_result_prev_negative -
         @first_visit_hiv_test_result_prev_positive - @first_visit_new_negative - @first_visit_new_positive)
 
@@ -535,8 +422,6 @@ class ReportsController < ApplicationController
     @final_visit_new_positive = report.final_visit_new_positive
     @final_visit_hiv_not_done = (report.final_visit_hiv_not_done - @final_visit_hiv_test_result_prev_negative -
         @final_visit_hiv_test_result_prev_positive - @final_visit_new_negative - @final_visit_new_positive)
-    #@observations_total - (@first_visit_new_positive +
-    #@first_visit_new_negative + @first_visit_hiv_test_result_prev_positive + @first_visit_hiv_test_result_prev_negative)
 
     @total_first_visit_hiv_positive = (@first_visit_hiv_test_result_prev_positive + @first_visit_new_positive).delete_if{|p| p.blank?}
 
@@ -563,6 +448,15 @@ class ReportsController < ApplicationController
     @no_nvp_baby__1 = (@total_final_visit_hiv_positive - @nvp_baby__1)
     @on_cpt__1 = report.on_cpt__1
     @no_cpt__1 = (@total_final_visit_hiv_positive - @on_cpt__1)
+      
+    ## Subject to modifications
+    @pregnancy_test_done_yes = report.pregnancy_test_done_yes
+    @pregnancy_test_done_no = report.pregnancy_test_done_no
+    @pregnancy_test_in_first_trim_yes = report.pregnancy_test_in_first_trim_yes
+    @pregnancy_test_in_first_trim_no = report.pregnancy_test_in_first_trim_no
+    @hb_less_than_seven = report.hb_less_than_seven
+    @hb_greater_or_equal_to_seven = report.hb_greater_or_equal_to_seven
+    @hb_not_done = report.hb_not_done
 
     render :layout => false
   end
