@@ -27,7 +27,7 @@ class PrescriptionsController < ApplicationController
     end
 
     encounter = Encounter.new(params[:encounter])
-    encounter.encounter_datetime ||= session[:datetime]
+    encounter.encounter_datetime ||= session[:datetime].to_date
     encounter.save
 
     (params[:prescriptions] || []).each { |prescription|
@@ -44,7 +44,7 @@ class PrescriptionsController < ApplicationController
       prescription.delete(:value_text) unless prescription[:value_coded_or_text].blank?
 
       prescription[:encounter_id] = @encounter.encounter_id
-      prescription[:obs_datetime] = @encounter.encounter_datetime ||= (session[:datetime] ||= Time.now())
+      prescription[:obs_datetime] = @encounter.encounter_datetime.to_date ||= (session[:datetime] ||= Time.now()).to_date
       prescription[:person_id] = @encounter.patient_id
 
       diagnosis_observation = Observation.create("encounter_id" => prescription[:encounter_id],
@@ -85,8 +85,8 @@ class PrescriptionsController < ApplicationController
         return
       end
 
-      start_date = session[:datetime] ||= Time.now
-      auto_expire_date = (session[:datetime] ||= Time.now) + prescription[:duration].to_i.days
+      start_date = session[:datetime].to_date ||= Time.now
+      auto_expire_date = (session[:datetime] ||= Time.now).to_date + prescription[:duration].to_i.days
 
       DrugOrder.write_order(@encounter, @patient, @diagnosis, @drug, start_date,
         auto_expire_date, prescription[:dosage], prescription[:frequency], 0, 1)
@@ -108,7 +108,7 @@ class PrescriptionsController < ApplicationController
         @patient = Patient.find(params[:patient_id] || session[:patient_id]) rescue nil
 
         encounter = Encounter.new(params[:encounter])
-        encounter.encounter_datetime ||= session[:datetime]
+        encounter.encounter_datetime ||= session[:datetime].to_date
         encounter.save
 
         if !prescription[:formulation]
@@ -119,9 +119,9 @@ class PrescriptionsController < ApplicationController
         end
 
         unless params[:location]
-          session_date = session[:datetime] || params[:encounter_datetime] || Time.now()
+          session_date = (session[:datetime] || params[:encounter_datetime] || Time.now()).to_date
         else
-          session_date = params[:encounter_datetime] #Use encounter_datetime passed during import
+          session_date = params[:encounter_datetime].to_date #Use encounter_datetime passed during import
         end
         # set current location via params if given
         Location.current_location = Location.find(params[:location]) if params[:location]
@@ -174,7 +174,7 @@ class PrescriptionsController < ApplicationController
       @patient = Patient.find(params[:patient_id] || session[:patient_id]) rescue nil
 
       encounter = Encounter.new(params[:encounter].permit!)
-      encounter.encounter_datetime ||= session[:datetime]
+      encounter.encounter_datetime ||= session[:datetime].to_date
       encounter.save
 
       if !params[:formulation]
@@ -185,9 +185,9 @@ class PrescriptionsController < ApplicationController
       end
 
       unless params[:location]
-        session_date = session[:datetime] || params[:encounter_datetime] || Time.now()
+        session_date = (session[:datetime] || params[:encounter_datetime] || Time.now()).to_date
       else
-        session_date = params[:encounter_datetime] #Use encounter_datetime passed during import
+        session_date = params[:encounter_datetime].to_date #Use encounter_datetime passed during import
       end
       # set current location via params if given
       Location.current_location = Location.find(params[:location]) if params[:location]
@@ -488,7 +488,7 @@ class PrescriptionsController < ApplicationController
     session_date = DateTime.new(d.year, d.month, d.day, t.hour, t.min, t.sec)
 
     encounter = MedicationService.current_treatment_encounter(@patient)
-    encounter.encounter_datetime = session_date
+    encounter.encounter_datetime = session_date.to_date
     encounter.save
 
     if !(params[:prescriptions].blank?)
@@ -503,7 +503,7 @@ class PrescriptionsController < ApplicationController
         end
 
         prescription[:encounter_id] = encounter.encounter_id
-        prescription[:obs_datetime] = session_date
+        prescription[:obs_datetime] = session_date.to_date
         prescription[:person_id] = encounter.patient_id
 
         formulation = (prescription[:dosage] || '').upcase
@@ -515,7 +515,7 @@ class PrescriptionsController < ApplicationController
           return
         end
 
-        start_date = session_date
+        start_date = session_date.to_date
         prn = "no"
         auto_expire_date = start_date + prescription[:duration].to_i.days
 
@@ -561,7 +561,7 @@ class PrescriptionsController < ApplicationController
     unless params[:prescription].blank?
       (params[:prescription] || []).each { |prescription|
         prescription[:encounter_id] = encounter.encounter_id
-        prescription[:obs_datetime] = encounter.encounter_datetime || (session[:datetime] || Time.now())
+        prescription[:obs_datetime] = encounter.encounter_datetime.to_date || (session[:datetime] || Time.now()).to_date
         prescription[:person_id] = encounter.patient_id
 
         formulation = (prescription[:formulation] || '').upcase
@@ -661,7 +661,7 @@ class PrescriptionsController < ApplicationController
     session_date = (session[:datetime].to_date rescue Date.today)
 
     encounter = MedicationService.current_treatment_encounter(@patient, session_date)
-    encounter.encounter_datetime = session_date
+    encounter.encounter_datetime = session_date.to_date
     encounter.save
 
     params[:drug_formulations] = (params[:drug_formulations] || []).collect { |df| eval(df) } || {}

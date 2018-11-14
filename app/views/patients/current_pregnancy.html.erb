@@ -331,7 +331,7 @@
 
   <%= (touch_date_tag "LAST MENSTRUAL PERIOD", @patient, nil,
     {:id => "lmp",
-    :helptext => "Last Menstrual Period  <span class='helper'> Current Pregnancy</span>",
+    :helptext => "Last Normal Menstrual Period  <span class='helper'> Current Pregnancy</span>",
     :tt_onLoad => "timedEvent = setTimeout('calculateEDOD()', 100); initializeDate()",
     :tt_onUnLoad => 'clearTimeout(timedEvent);
     // if (__$("touchscreenInput" + tstCurrentPage).value == "Unknown" ) __$("lmp").value = tstEstimatedLMPDate;',

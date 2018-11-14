@@ -44,31 +44,31 @@
               LMP:
             </th>
             <td>
-              <%= @current_range[0]["START"].to_date.strftime("%d/%b/%Y") rescue "&nbsp;" %>
+              <%= @current_range[0]["START"].to_date.strftime("%d/%b/%Y") rescue "&nbsp;".html_safe %>
             </td>
             <th style="padding-left: 30px;">
               EDD:
             </th>
             <td>
-              <%= (@current_range[0]["END"].to_date - 5.week).strftime("%d/%b/%Y") rescue "&nbsp;" %>
+              <%= (@current_range[0]["END"].to_date - 5.week).strftime("%d/%b/%Y") rescue "&nbsp;".html_safe %>
             </td>
             <th style="padding-left: 30px;">
               Planned Delivery Place:
             </th>
             <td>
-              <%= @current_range[0]["PLANNED DELIVERY PLACE"] rescue "&nbsp;" %>
+              <%= @current_range[0]["PLANNED DELIVERY PLACE"] rescue "&nbsp;".html_safe %>
             </td>
             <th style="padding-left: 30px;">
               Bed Net Given?:
             </th>
             <td>
-              <%= @current_range[0]["MOSQUITO NET"] rescue "&nbsp;" %>
+              <%= @current_range[0]["MOSQUITO NET"] rescue "&nbsp;".html_safe %>
             </td>
             <th style="padding-left: 30px;">
               Multiple Gestation
             </th>
             <td>
-              <%= @multiple_gestation rescue "&nbsp;" %>
+              <%= @multiple_gestation rescue "&nbsp;".html_safe %>
             </td>
           </tr>
         </table>
@@ -208,42 +208,43 @@
             </td>
             <td class="leftTop" align="center">
               <%= (encounter["OBSERVATIONS"]["FUNDUS"].to_i <= 0 ? "?" :
-                  encounter["OBSERVATIONS"]["FUNDUS"].to_i.to_s + " (wks)") rescue "&nbsp;" %>
+                  encounter["OBSERVATIONS"]["FUNDUS"].to_i.to_s + " (wks)") rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop">
-              <%= (encounter["OBSERVATIONS"]["POSITION"]).to_s.titleize.gsub("Breech Delivery", "Breech") rescue "&nbsp;" %>&nbsp;
-              <%= (encounter["OBSERVATIONS"]["PRESENTATION"]).to_s.titleize.gsub("Breech Delivery", "Breech") rescue "&nbsp;" %>
+              <%= (encounter["OBSERVATIONS"]["POSITION"]).to_s.titleize.gsub("Breech Delivery", "Breech") rescue "&nbsp;".html_safe %>&nbsp;
+              <%= (encounter["OBSERVATIONS"]["PRESENTATION"]).to_s.titleize.gsub("Breech Delivery", "Breech") rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop" align="center">
               <%= (encounter["OBSERVATIONS"]["FETAL HEART BEAT"].humanize == "Unknown" ? "?" :
-                  encounter["OBSERVATIONS"]["FETAL HEART BEAT"].humanize) rescue "&nbsp;" %>
+                  encounter["OBSERVATIONS"]["FETAL HEART BEAT"].humanize) rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop" align="center">
               <%= (encounter["VITALS"]["WEIGHT (KG)"].to_i <= 0 ? "?" :
                   ((encounter["VITALS"]["WEIGHT (KG)"].to_s.match(/\.[1-9]/) ?
                       encounter["VITALS"]["WEIGHT (KG)"] :
-                      encounter["VITALS"]["WEIGHT (KG)"].to_i))) rescue "&nbsp;" %>
+                      encounter["VITALS"]["WEIGHT (KG)"].to_i))) rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop">
               <%= (encounter["VITALS"]["SYSTOLIC BLOOD PRESSURE"].to_i <= 0 ? "?" :
-                  encounter["VITALS"]["SYSTOLIC BLOOD PRESSURE"].to_i) rescue "?" %>/<%= (encounter["VITALS"]["DIASTOLIC BLOOD PRESSURE"].to_i <= 0 ? "?" :
+                  encounter["VITALS"]["SYSTOLIC BLOOD PRESSURE"].to_i) rescue "?" %>
+                  /<%= (encounter["VITALS"]["DIASTOLIC BLOOD PRESSURE"].to_i <= 0 ? "?" :
                   encounter["VITALS"]["DIASTOLIC BLOOD PRESSURE"].to_i) rescue "?" %>
             </td>
             <td class="leftTop" align="center">
-              <%= encounter["LAB RESULTS"]["URINE PROTEIN"] rescue "&nbsp;" %>&nbsp;
+              <%= encounter["LAB RESULTS"]["URINE PROTEIN"] rescue "&nbsp;".html_safe %>&nbsp;
             </td>
             <td class="topic leftTop" align="center">
               <%= (encounter["CURRENT PREGNANCY"]["TT STATUS"] ?
-                  encounter["CURRENT PREGNANCY"]["TT STATUS"].to_i : "&nbsp;") rescue "&nbsp;" %>&nbsp;
+                  encounter["CURRENT PREGNANCY"]["TT STATUS"].to_i : "&nbsp;".html_safe) rescue "&nbsp;".html_safe %>&nbsp;
             </td>
             <td class="topic leftTop" align="center">
-              <%= (@drugs[element]["TTV"] > 0 ? 1 : "&nbsp;")  rescue "&nbsp;"; %>&nbsp;
+              <%= (@drugs[element]["TTV"] > 0 ? 1 : "&nbsp;".html_safe)  rescue "&nbsp;".html_safe %>&nbsp;
             </td>
             <td class="leftTop" align="center">
-              <%= (@drugs[element]["SP"].to_i > 0 ? @drugs[element]["SP"].to_i : "&nbsp;") rescue "&nbsp;";  %>
+              <%= (@drugs[element]["SP"].to_i > 0 ? @drugs[element]["SP"].to_i : "&nbsp;".html_safe) rescue "&nbsp;".html_safe  %>
             </td>
             <td class="leftTop" align="center">
-              <%= (@drugs[element]["Fefol"].to_i > 0 ? @drugs[element]["Fefol"].to_i : "&nbsp;") rescue "&nbsp;";  %>
+              <%= (@drugs[element]["Fefol"].to_i > 0 ? @drugs[element]["Fefol"].to_i : "&nbsp;".html_safe) rescue "&nbsp;".html_safe;  %>
             </td>
             <!--td class="leftTop" align="center">
   <%#= (@drugs[element]["NVP"].to_i > 0 ? @drugs[element]["NVP"].to_i : "&nbsp;") rescue "&nbsp;";  %>
@@ -255,23 +256,23 @@
   <%#= (@drugs[element]["TDF/3TC/EFV"].to_i > 0 ? @drugs[element]["TDF/3TC/EFV"].to_i : "&nbsp;") rescue "&nbsp;";  %>
             </td-->
             <td class="leftTop" align="center">
-              <%= (@drugs[element]["NVP"].to_i > 0 ? @drugs[element]["NVP"].to_i : "&nbsp;") rescue "&nbsp;"; %>
+              <%= (@drugs[element]["NVP"].to_i > 0 ? @drugs[element]["NVP"].to_i : "&nbsp;".html_safe) rescue "&nbsp;".html_safe; %>
             </td>
             <td class="leftTop" align="center">
-              <%= encounter["OBSERVATIONS"]["DIAGNOSIS"].humanize rescue "&nbsp;" %>
+              <%= encounter["OBSERVATIONS"]["DIAGNOSIS"].humanize rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop">
-              <%= "<b>Outcome:</b> " + encounter["UPDATE OUTCOME"]["OUTCOME"].humanize + ";<br />" rescue "&nbsp;" %>
+              <%= "<b>Outcome:</b> " + encounter["UPDATE OUTCOME"]["OUTCOME"].humanize + ";<br />" rescue "&nbsp;".html_safe %>
               <%= ("<b>Other Drugs:</b> " +
                   (@other_drugs[element].collect{|d, v|
                     "#{d}: #{ (v.to_s.match(/\.[1-9]/) ? v : v.to_i) }"
-                  }.join("; ")) + ";<br />") if @other_drugs[element].length > 0 rescue "&nbsp;" %>
+                  }.join("; ")) + ";<br />") if @other_drugs[element].length > 0 rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop">
-              <%= encounter["APPOINTMENT"]["APPOINTMENT DATE"] rescue "&nbsp;" %>
+              <%= encounter["APPOINTMENT"]["APPOINTMENT DATE"] rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop" style="border-right: 1px solid #000;">
-              <%= encounter["USER"] rescue "&nbsp;" %>&nbsp;
+              <%= encounter["USER"] rescue "&nbsp;".html_safe %>&nbsp;
             </td>
           </tr>
 

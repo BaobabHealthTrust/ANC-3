@@ -175,9 +175,12 @@
     displayText += "</table></td><td><table width='50%'>";
     if (first == "false"){
       displayText += "<tr><th>Last Vitals</th></td></tr>";
-      displayText += "<tr><td>Weight : <%= @vital["weight"] rescue "" %> Kg </td></tr>"
-      displayText += "<tr><td>Height : <%= @vital["height"] rescue "" %> Cm </td></tr>"
-      displayText += "<tr><td><span class='title'>BMI :</span> <%= @vital["bmi"] rescue "none" %> </td></tr>"
+      displayText += "<tr><td>Weight : <%= @vital["weight"].blank? ? "N/A" : 
+      "#{@vital["weight"]} kg" rescue "N/A" %></td></tr>"
+      displayText += "<tr><td>Height : <%= @vital["height"].blank? ? "N/A" :
+      "#{@vital["height"]} cm" rescue "N/A" %> </td></tr>"
+      displayText += "<tr><td><span class='title'>BMI :</span> <%= @vital["bmi"].blank? ? "N/A" :
+      "#{@vital["bmi"]}" rescue "N/A" %> </td></tr>"
     }
     
     displayText += "</table></td></tr></table></div>";

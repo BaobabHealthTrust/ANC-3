@@ -86,35 +86,38 @@
             <td style="text-align: center">
               <%= (@obstetrics[pos] ? (@obstetrics[pos]["YEAR OF BIRTH"] ?
                     (@obstetrics[pos]["YEAR OF BIRTH"].to_i > 0 ? @obstetrics[pos]["YEAR OF BIRTH"].to_i :
-                      "Unknown") : "&nbsp;") : "&nbsp;") %>
+                      "Unknown") : "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
             <td style="text-align: center">
-              <%= (@obstetrics[pos] ? (@obstetrics[pos]["PLACE OF BIRTH"] ? @obstetrics[pos]["PLACE OF BIRTH"] : "&nbsp;") : "&nbsp;") %>
-              <%= (@obstetrics[pos] ? (@obstetrics[pos]["BIRTHPLACE"] ? @obstetrics[pos]["BIRTHPLACE"] : "&nbsp;") : "&nbsp;") %>
+              <%= (@obstetrics[pos] ? (@obstetrics[pos]["PLACE OF BIRTH"] ? @obstetrics[pos]["PLACE OF BIRTH"].html_safe : "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
+              <%= (@obstetrics[pos] ? (@obstetrics[pos]["BIRTHPLACE"] ? @obstetrics[pos]["BIRTHPLACE"] : "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
             <td style="text-align: center">
-              <%= (@obstetrics[pos] ? (@obstetrics[pos]["GESTATION"] ? @obstetrics[pos]["GESTATION"] : "&nbsp;") : "&nbsp;") %>
+              <%= (@obstetrics[pos] ? (@obstetrics[pos]["GESTATION"] ? @obstetrics[pos]["GESTATION"] : "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
 
             <td style="text-align: center">
               <%= (@obstetrics[pos] ? (@obstetrics[pos]["METHOD OF DELIVERY"] ? @obstetrics[pos]["METHOD OF DELIVERY"].titleize :
-                    (@obstetrics[pos]["PROCEDURE DONE"] ? @obstetrics[pos]["PROCEDURE DONE"] : "&nbsp;")) : "&nbsp;") %>
+                    (@obstetrics[pos]["PROCEDURE DONE"] ? @obstetrics[pos]["PROCEDURE DONE"] : "&nbsp;".html_safe)) : "&nbsp;".html_safe) %>
             </td>
             <td style="text-align: center">
-              <%= (@obstetrics[pos] ? (@obstetrics[pos]["CONDITION AT BIRTH"] ? @obstetrics[pos]["CONDITION AT BIRTH"] : "&nbsp;") : "&nbsp;") %>
+              <%= (@obstetrics[pos] ? (@obstetrics[pos]["CONDITION AT BIRTH"] ? @obstetrics[pos]["CONDITION AT BIRTH"] : 
+              "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
             <td style="text-align: center">
-              <%= (@obstetrics[pos] ? (@obstetrics[pos]["BIRTH WEIGHT"] ? @obstetrics[pos]["BIRTH WEIGHT"] : "&nbsp;") : "&nbsp;") %>
+              <%= (@obstetrics[pos] ? (@obstetrics[pos]["BIRTH WEIGHT"] ? @obstetrics[pos]["BIRTH WEIGHT"] : 
+              "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
             <td style="text-align: center">
-              <%= (@obstetrics[pos] ? (@obstetrics[pos]["ALIVE"] ? @obstetrics[pos]["ALIVE"] : "&nbsp;") : "&nbsp;") %>
+              <%= (@obstetrics[pos] ? (@obstetrics[pos]["ALIVE"] ? @obstetrics[pos]["ALIVE"] : 
+              "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
             <td style="text-align: center">
               <%= (@obstetrics[pos] ? (@obstetrics[pos]["AGE AT DEATH"] ?
                     (@obstetrics[pos]["AGE AT DEATH"].to_s ? @obstetrics[pos]["AGE AT DEATH"] :
-                      @obstetrics[pos]["AGE AT DEATH"].to_i) : "&nbsp;") : "&nbsp;") %>
+                      @obstetrics[pos]["AGE AT DEATH"].to_i) : "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
               <%= (@obstetrics[pos] ? (@obstetrics[pos]["UNITS OF AGE OF CHILD"] ?
-                    @obstetrics[pos]["UNITS OF AGE OF CHILD"] : "&nbsp;") : "&nbsp;") %>
+                    @obstetrics[pos]["UNITS OF AGE OF CHILD"] : "&nbsp;".html_safe) : "&nbsp;".html_safe) %>
             </td>
           </tr>
 
