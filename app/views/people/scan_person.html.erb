@@ -10,17 +10,7 @@
 }
 </style>
 <script type="text/javascript">
-// setTimeout(function(){
-// 	var searchButton = document.getElementById('search_by_name');
-// 	searchButton.onclick = function(){
-// 	  <% if params['patient_id'].blank? %>
-// 	  	window.location = "/people/search?gender=Female"
-// 	  	console.log('here');
-// 	  <% else %>
-// 	    window.location = "/people/search?gender=Male&patient_id=<%=params[:patient_id]%>"
-// 	  <%end%>
-// 	}
-// },500);
+  tt_cancel_destination = "/patients/show/<%=params[:patient_id]%>"
  
 </script>
 

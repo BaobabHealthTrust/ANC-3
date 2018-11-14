@@ -16,8 +16,7 @@
     set_date = new Date(parseFloat(year),parseFloat(month),parseFloat(day));
     return (today > set_date)
   }
-
-  var tt_cancel_destination = "/clinic"
+  var tt_cancel_destination = "<%= params[:p_id].blank? ? "/clinic" : "/patients/show/#{params[:p_id]}" %>"
 </script>
 
 
@@ -27,8 +26,10 @@
   {
     :field_type => 'date', 
     :helpText => 'Set Date'})%>
-
-  <!-- %= text_field_tag(:set_year,nil,{:field_type => 'number', :absoluteMin => "1940", :absoluteMax => Time.now.year, :helpText => 'Year'}) %>
+  
+  <% unless params[:p_id].blank? %>
+    <%= hidden_field_tag "patient_id", params[:p_id] %>
+  <% end %>
 
   < % optionsString = "<option>" "" "</option>"
   1.upto(12){ |number| 

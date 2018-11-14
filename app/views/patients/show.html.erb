@@ -305,7 +305,8 @@
                 <option link="/patients/outcome/?patient_id=<%= @patient.id %>" ttSize = "155px">Update Outcome</option>
           <%end%>
           <% if session[:datetime].blank?%>
-            <option link="/patients/set_datetime/<%= @patient.id %>" ttSize = "120px">Set Date</option>
+            <!-- option link="/patients/set_datetime/< %= @patient.id %>" ttSize = "120px">Set Date< / option -->
+            <option link="/people/set_datetime?p_id=<%= @patient.id %>" ttSize = "120px">Set Date</option>
           <% else %>
             <option link="/patients/reset_datetime/<%= @patient.id %>" ttSize = "120px">Reset Date</option>
         <% end %>

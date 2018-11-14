@@ -351,6 +351,9 @@ class GenericPeopleController < ApplicationController
           date[1], date[2],0,0,1)
         session[:datetime] = date_of_encounter #if date_of_encounter.to_date != Date.today
       end
+      unless params[:patient_id].blank?
+        redirect_to "/patients/show/#{params[:patient_id]}" and return
+      end
       unless params[:id].blank?
         redirect_to next_task(Patient.find(params[:id]))
       else
