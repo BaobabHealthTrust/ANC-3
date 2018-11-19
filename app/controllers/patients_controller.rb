@@ -964,8 +964,8 @@ class PatientsController < ApplicationController
     @birth_year = @anc_patient.birth_year
 
     @min_birth_year = @birth_year + 13
-    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 50))
+    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 50))
     @previous_encounter = @patient.encounters.where(["encounter_type =?", EncounterType.find_by_name("OBSTETRIC HISTORY")]).last
 
     @pregnancies = {}
@@ -1022,8 +1022,8 @@ class PatientsController < ApplicationController
       @twin_counts[preg] = @pregnancies[preg].keys.length
     end
 
-    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 55))
+    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 55))
 
     @current_user_activities = current_user.activities.collect{|u| u.downcase}
   end
@@ -1034,7 +1034,7 @@ class PatientsController < ApplicationController
 
       #create visit encounter
       encounter = Encounter.new(params[:encounter].permit!)
-      encounter.encounter_datetime = session[:datetime] unless session[:datetime].blank?
+      encounter.encounter_datetime = session[:datetime].to_date unless session[:datetime].blank?
       encounter.save
 
       #create visit observation
@@ -1067,11 +1067,11 @@ class PatientsController < ApplicationController
     @birth_year = @anc_patient.birth_year
 
     @min_birth_year = @birth_year + 13
-    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 50))
+    @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 50))
 
-    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).year) ?
-        ((session[:datetime] || Date.today).year) : (@birth_year + 55))
+    @abs_max_birth_year = ((@birth_year + 55) > ((session[:datetime] || Date.today).to_date.year) ?
+        ((session[:datetime] || Date.today).to_date.year) : (@birth_year + 55))
 
     @procedures = ["", "Manual Vacuum Aspiration (MVA)", "Evacuation"]
     @place = ["", "Health Facility", "Home", "TBA", "Other"]

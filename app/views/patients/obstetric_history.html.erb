@@ -13,7 +13,7 @@
       var parity;
       var parsedConceptName;
 
-<%session_date = session[:datetime]? session[:datetime] : Date.today%>
+<%session_date = session[:datetime]? session[:datetime].to_date : Date.today%>
   var anc_visits = <%= @anc_patient.anc_visits(session_date).to_json%>;
   var last_visit = <%= @anc_patient.last_visit(session_date)%>;
   var birth_year = <%= @birth_year.to_i%>;
@@ -91,14 +91,14 @@
       <%  if params[:with_visit_type] && params[:with_visit_type].to_s == "true" %>
         <%= hidden_field_tag "encounter[encounter_type_name]", "ANC VISIT TYPE" %>
         <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
-        <%= hidden_field_tag "encounter[encounter_datetime]", session[:datetime]? session[:datetime] : DateTime.now() %>
+        <%= hidden_field_tag "encounter[encounter_datetime]", session[:datetime]? session[:datetime].to_date : DateTime.now() %>
         <%= hidden_field_tag "encounter[provider_id]", session[:user_id] %>
 
 
         <%= hidden_field_tag("programs[][patient_program_id]", @program_id) %>
         <%= hidden_field_tag("programs[][program_id]", Program.find_by_name('ANC PROGRAM').id)%>
         <%= hidden_field_tag("programs[][location_id]", Location.current_health_center.id) %>
-        <%= hidden_field_tag("programs[][date_enrolled]", session[:datetime] || Date.today ) %>
+        <%= hidden_field_tag("programs[][date_enrolled]", session[:datetime].to_date || Date.today ) %>
         <%= hidden_field_tag("programs[][states][][state]", "Currently in treatment") %>
 
 
