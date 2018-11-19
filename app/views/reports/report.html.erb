@@ -235,7 +235,7 @@
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
                                 <form id="pregnancy_test_done_no" method="post" action="decompose">
-                                  <input type="hidden" value="<%= @pregnancy_test_done_yes.join(",") %>" name="patients" />
+                                  <input type="hidden" value="<%= @pregnancy_test_done_no.join(",") %>" name="patients" />
                                   <input type="hidden" value="new registered women" name="block">
                                   <span  style="color:gray">No</span>
                                 </form>
@@ -243,7 +243,7 @@
                               <td style="border: 1px solid #999; border-bottom: 1px solid #999;">
                                 <a href="javascript:document.getElementById('pregnancy_test_done_no').submit()">
                                   <span  style="color:gray">
-                                    <%= @pregnancy_test_done_yes.length %>
+                                    <%= @pregnancy_test_done_no.length %>
                                   </span>
                                 </a>
                               </td>

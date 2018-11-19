@@ -1401,35 +1401,19 @@ class Reports
       AND o.concept_id = ? AND (o.value_text = 'Yes' OR o.value_coded = ?) 
       AND encounter.voided = 0 WHERE DATE(encounter_datetime) BETWEEN
       (SELECT DATE(MIN(lmp)) FROM last_menstraul_period_date
-      WHERE person_id IN (?) AND obs_datetime BETWEEEN ? AND ?)
+      WHERE person_id IN (?) AND obs_datetime BETWEEN ? AND ?)
       AND (?) AND patient_id IN (?)",
       pregnancy_test_concept.concept_id, yes_concept.concept_id,
-      @new_monthly_visits,
+      @monthly_patients,
       @monthly_start_date.to_date.beginning_of_month.strftime("%Y-%m-%d 00:00:00"),
       @monthly_end_date.to_date.end_of_month.strftime("%Y-%m-%d 23:59:59"),
-      @monthly_end_date.to_date, @new_monthly_visits]).collect { |e| 
+      @monthly_end_date.to_date, @monthly_patients]).collect { |e| 
         e.patient_id 
       }.uniq
   end
   
   def pregnancy_test_done_no
-    pregnancy_test_concept = ConceptName.where(name: "Pregnancy test").first
-    no_concept = ConceptName.where(name: "No").first
-
-    Encounter.find_by_sql(["SELECT patient_id FROM 
-      encounter INNER JOIN obs o ON o.encounter_id = encounter.encounter_id
-      AND o.concept_id = ? AND (o.value_text = 'No' OR o.value_coded = ?) 
-      AND encounter.voided = 0 WHERE DATE(encounter_datetime) BETWEEN
-      (SELECT DATE(MIN(lmp)) FROM last_menstraul_period_date
-      WHERE person_id IN (?) AND obs_datetime BETWEEEN ? AND ?)
-      AND (?) AND patient_id IN (?)",
-      pregnancy_test_concept.concept_id, no_concept.concept_id,
-      @new_monthly_visits,
-      @monthly_start_date.to_date.beginning_of_month.strftime("%Y-%m-%d 00:00:00"),
-      @monthly_end_date.to_date.end_of_month.strftime("%Y-%m-%d 23:59:59"),
-      @monthly_end_date.to_date, @new_monthly_visits]).collect { |e| 
-        e.patient_id 
-      }.uniq
+    @monthly_patients - pregnancy_test_done_yes
   end
 
   def pregnancy_test_in_first_trim_yes
