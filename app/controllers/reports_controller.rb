@@ -281,7 +281,7 @@ class ReportsController < ApplicationController
       @pregnancy_test_in_first_trim_no = report.pregnancy_test_in_first_trim_no
       @hb_less_than_seven = report.hb_less_than_seven
       @hb_greater_or_equal_to_seven = report.hb_greater_or_equal_to_seven
-      @hb_not_done = report.hb_not_done
+      @hb_not_done = @observations_total - (@hb_less_than_seven + @hb_greater_or_equal_to_seven)
 
       render :layout => false
     end
@@ -456,7 +456,7 @@ class ReportsController < ApplicationController
     @pregnancy_test_in_first_trim_no = report.pregnancy_test_in_first_trim_no
     @hb_less_than_seven = report.hb_less_than_seven
     @hb_greater_or_equal_to_seven = report.hb_greater_or_equal_to_seven
-    @hb_not_done = report.hb_not_done
+    @hb_not_done = @observations_total - (@hb_less_than_seven + @hb_greater_or_equal_to_seven)
 
     render :layout => false
   end

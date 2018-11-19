@@ -1232,7 +1232,7 @@ class Reports
           "SUM(DATEDIFF(auto_expire_date, start_date)) orderer"]).collect { |o|
       [o.patient_id, o.orderer]
     }
-    data = data.first
+    data = data.first.compact
 
     if qty == 1
       result = data.delete_if { |x, y| y != 1 unless y.blank? }.collect { |p, c| p }
@@ -1455,24 +1455,34 @@ class Reports
   end
 
   def hb_less_than_seven
+    hb_concept = ConceptName.where(name: "HB TEST RESULT").first
+
     Encounter.joins([:observations]).where(["concept_id = ? 
-      AND (DATE(encounter_datetime) >= ? 
+      AND (value_text < 7 OR value_numeric < 7) 
+      AND (DATE(encounter_datetime) >= #{@lmp} 
       AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
-      ConceptName.find_by_name("HB TEST RESULT").concept_id,
-      @monthly_start_date.to_date.beginning_of_month, 
-      @monthly_end_date.to_date.end_of_month,
-      @cohort_patients]).select(["DISTINCT patient_id"]).collect { |e| e.patient_id }
+    hb_concept.concept_id,
+    ((@start_date.to_date + @pregnant_range) - 1.day), 
+    @cohort_patients]).select(["DISTINCT patient_id"]).collect { |e| 
+      e.patient_id 
+    }.uniq
   end
 
   def hb_greater_or_equal_to_seven
-    # TODO
-    return []
+    hb_concept = ConceptName.where(name: "HB TEST RESULT").first
+
+    Encounter.joins([:observations]).where(["concept_id = ? 
+      AND (value_text >= 7 OR value_numeric >= 7) 
+      AND (DATE(encounter_datetime) >= #{@lmp} 
+      AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
+    hb_concept.concept_id,
+    ((@start_date.to_date + @pregnant_range) - 1.day), 
+    @cohort_patients]).select(["DISTINCT patient_id"]).collect { |e| 
+      e.patient_id 
+    }.uniq
+    
   end
 
-  def hb_not_done
-    # TODO
-    return []
-  end
   ####################################################
 
   ############################# Monthly report ################################
