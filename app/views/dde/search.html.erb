@@ -1,7 +1,8 @@
-
-
-<% form_for :person, @person, :url => { :action => "search_by_name_and_gender" } do |f| %>
-
+<script type="text/javascript">
+  tt_cancel_destination = "/clinic"
+</script>
+<!-- % form_for :person, @person, :url => { :action => "search_by_name_and_gender" } do |f| % -->
+<%= form_with url: "search_by_name_and_gender" do |f| %>
   <%= text_field_tag "person[names][given_name]", params[:given_name], 
     {:id => 'given_name', :field_type => 'alpha', 
     :helpText => 'First name', 
@@ -18,8 +19,16 @@
     :condition => '$("family_name").value == "" || skipped[tstCurrentPage] == 1', 
     :tt_onLoad => 'seen(tstCurrentPage);' } %>
 
-    Gender: <%= f.select :gender, {"" => "", "Male" => "M", "Female" => "F"}, 
-    {:selected => params[:gender]}, {:id => 'gender', 
-    :helpText => 'Gender' } %>
+  <% ask_for_father_details = CoreService.get_global_property_value("father_details") rescue 'false'
+  if ask_for_father_details == true %>
+    <%= select_tag "person[gender]", options_for_select([["",""], ["Male", "M"],
+    ["Female", "F"]]),
+    {
+      :helpText => 'Gender',
+      :id => 'gender'
+    } %>
+  <% else %>
+    <input type="hidden" name="person[gender]" value="F" id="gender" >
+  <%end%>
 
 <% end %>

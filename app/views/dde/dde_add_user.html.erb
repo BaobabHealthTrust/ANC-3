@@ -1,5 +1,8 @@
 <script type="text/javascript" language="javascript" src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer ></script>
 <script type="text/javascript" language="javascript" src="/touchscreentoolkit/lib/javascripts/standard.js" defer ></script>
+<script type="text/javascript" language="javascript">
+  tt_cancel_destination = "/clinic"
+</script>
 <body onload="showAlerts();">
 <form action="/dde/dde_add_user" method="POST">
   <% dde_location = "#{params[:dde_ipaddress]}:#{params[:dde_port]}" %>

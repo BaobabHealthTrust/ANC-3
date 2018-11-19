@@ -600,7 +600,7 @@ class DdeController < ApplicationController
       li_elements += "<li value='#{doc_id}'>#{location_name}</li>"
     end
     li_elements += "<li></li>"
-    render :text => li_elements and return
+    render plain: li_elements and return
   end
 
   def dde_add_user
@@ -618,7 +618,7 @@ class DdeController < ApplicationController
       location = DDEService.get_dde_location(dde_url, params[:location], params[:dde_token])
       app_location = Location.current_health_center.name rescue ""
 
-      unless app_location == location["name"]
+      unless app_location == location.first["name"]
         redirect_to :controller => "dde", :action => "dde_add_user",
           :dde_token => params[:dde_token], :dde_username => params[:username],
           :dde_port => params[:dde_port], :dde_ipaddress => params[:dde_ipaddress],
@@ -646,7 +646,7 @@ class DdeController < ApplicationController
       li_elements += "<li value='#{program_id}'>#{name}</li>"
     end
     li_elements += "<li></li>"
-    render :text => li_elements and return
+    render plain: li_elements and return
   end
 
   def edit_demographics
@@ -689,7 +689,7 @@ class DdeController < ApplicationController
     districts = districts.map do |d|
       "<li value=\"#{d.name}\">#{d.name}</li>"
     end
-    render :text => districts.join('') and return
+    render plain: districts.join('') and return
   end
 	
   # List traditional authority containing the string given in params[:value]
@@ -701,7 +701,7 @@ class DdeController < ApplicationController
     traditional_authorities = traditional_authorities.map do |t_a|
       "<li value=\"#{t_a.name}\">#{t_a.name}</li>"
     end
-    render :text => traditional_authorities.join('') and return
+    render plain: traditional_authorities.join('') and return
   end
 
   # Villages containing the string given in params[:value]
@@ -713,7 +713,7 @@ class DdeController < ApplicationController
     villages = villages.map do |v|
       "<li value=\"" + v.name + "\">" + v.name + "</li>"
     end
-    render :text => villages.join('') and return
+    render plain: villages.join('') and return
   end
 
   def update_address
@@ -931,7 +931,7 @@ class DdeController < ApplicationController
     output = RestClient::Request.execute( { :method => :post, :url => dde_url,
       :payload => person_params, :headers => {:Authorization => session[:dde_token]} } )
 
-    render :text => output and return
+    render plain: output and return
   end
 
   def npid_label
