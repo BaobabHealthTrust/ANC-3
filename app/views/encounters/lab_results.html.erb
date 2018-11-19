@@ -467,6 +467,16 @@
     <!-- %= touch_hidden_tag "MALAWI ART SIDE EFFECTS", @patient, "#{element}", :id => "#{element}" %_-->
     <%= (touch_hidden_tag "#{element}", @patient, "", :id => "#{element}_child_concept").html_safe %>
   <% end %>
+  
+  <%= (touch_select_tag "Pregnancy test", @patient,
+    options_for_select([["", ""],["Yes", "Yes"],["No", "No"]] ),
+    {
+      :id => "pregnancy_test",
+      :helptext => "Pregnancy Test Done <span class='helper'> Lab Results</span>",
+      :tt_onUnLoad => "parsedConceptName = '';",
+      :tt_onLoad => "parsedConceptName = 'Pregnancy test';"
+    }).html_safe
+  %>
 
   <%= text_field_tag :showSummary, nil,
     {

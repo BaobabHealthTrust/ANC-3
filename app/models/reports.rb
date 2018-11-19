@@ -1393,34 +1393,75 @@ class Reports
   end
 
   def pregnancy_test_done_yes
-    # TODO
-    return []
+    pregnancy_test_concept = ConceptName.where(name: "Pregnancy test").first
+    yes_concept = ConceptName.where(name: "Yes").first
+
+    Encounter.find_by_sql(["SELECT patient_id FROM 
+      encounter INNER JOIN obs o ON o.encounter_id = encounter.encounter_id
+      AND o.concept_id = ? AND (o.value_text = 'Yes' OR o.value_coded = ?) 
+      AND encounter.voided = 0 WHERE DATE(encounter_datetime) BETWEEN
+      (SELECT DATE(MIN(lmp)) FROM last_menstraul_period_date
+      WHERE person_id IN (?) AND obs_datetime BETWEEN ? AND ?)
+      AND (?) AND patient_id IN (?)",
+      pregnancy_test_concept.concept_id, yes_concept.concept_id,
+      @monthly_patients,
+      @monthly_start_date.to_date.beginning_of_month.strftime("%Y-%m-%d 00:00:00"),
+      @monthly_end_date.to_date.end_of_month.strftime("%Y-%m-%d 23:59:59"),
+      @monthly_end_date.to_date, @monthly_patients]).collect { |e| 
+        e.patient_id 
+      }.uniq
   end
   
   def pregnancy_test_done_no
-    # TODO
-    return []
+    @monthly_patients - pregnancy_test_done_yes
   end
 
   def pregnancy_test_in_first_trim_yes
-    # TODO
-    return []
+    pregnancy_tested_patients = pregnancy_test_done_yes
+
+    Encounter.find_by_sql(['SELECT patient_id, MAX(o.value_numeric) wk FROM 
+      encounter INNER JOIN obs o ON o.encounter_id = encounter.encounter_id
+      AND o.concept_id = ? AND encounter.voided = 0 
+      WHERE DATE(encounter_datetime) BETWEEN
+      (SELECT DATE(MIN(lmp)) FROM last_menstraul_period_date
+      WHERE person_id IN (?) AND obs_datetime BETWEEN ? and ?)
+      AND (?) AND patient_id IN (?) GROUP BY patient_id HAVING wk < 13',
+        WEEK_OF_FIRST_VISIT_CONCEPT.concept_id,
+        pregnancy_tested_patients,
+        @monthly_start_date.to_date.beginning_of_month.strftime("%Y-%m-%d 00:00:00"),
+        @monthly_end_date.to_date.end_of_month.strftime("%Y-%m-%d 23:59:59"),
+        @monthly_end_date.to_date, pregnancy_tested_patients]).collect { |e| 
+          e.patient_id 
+        }.uniq
   end
 
   def pregnancy_test_in_first_trim_no
-    # TODO
-    return []
+    pregnancy_tested_patients = pregnancy_test_done_yes
+    
+    Encounter.find_by_sql(['SELECT patient_id, MAX(o.value_numeric) wk FROM 
+      encounter INNER JOIN obs o ON o.encounter_id = encounter.encounter_id
+      AND o.concept_id = ? AND encounter.voided = 0 
+      WHERE DATE(encounter_datetime) BETWEEN
+      (SELECT DATE(MIN(lmp)) FROM last_menstraul_period_date
+      WHERE person_id IN (?) AND obs_datetime BETWEEN ? and ?)
+      AND (?) AND patient_id IN (?) GROUP BY patient_id HAVING wk >= 13',
+        WEEK_OF_FIRST_VISIT_CONCEPT.concept_id,
+        pregnancy_tested_patients,
+        @monthly_start_date.to_date.beginning_of_month.strftime("%Y-%m-%d 00:00:00"),
+        @monthly_end_date.to_date.end_of_month.strftime("%Y-%m-%d 23:59:59"),
+        @monthly_end_date.to_date, pregnancy_tested_patients]).collect { |e| 
+          e.patient_id 
+        }.uniq
   end
 
   def hb_less_than_seven
-    # TODO
-    # Encounter.joins([:observations]).where(["concept_id = ? AND (DATE(encounter_datetime) >= ? " +
-    # "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
-    # ConceptName.find_by_name("HB TEST RESULT").concept_id,
-    # @monthly_start_date.to_date.beginning_of_month, 
-    # @monthly_end_date.to_date.end_of_month,
-    # @new_monthly_visits]).select(["DISTINCT patient_id"]).collect { |e| e.patient_id }
-    return []
+    Encounter.joins([:observations]).where(["concept_id = ? 
+      AND (DATE(encounter_datetime) >= ? 
+      AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
+      ConceptName.find_by_name("HB TEST RESULT").concept_id,
+      @monthly_start_date.to_date.beginning_of_month, 
+      @monthly_end_date.to_date.end_of_month,
+      @cohort_patients]).select(["DISTINCT patient_id"]).collect { |e| e.patient_id }
   end
 
   def hb_greater_or_equal_to_seven

@@ -543,7 +543,7 @@
 
 <%= form_tag :controller => "encounters", :action => "create" do |f| %>
 
-    <% session_date = session[:datetime] || Time.now() %>
+    <% session_date = session[:datetime].to_date || Time.now() %>
     <%= hidden_field_tag "encounter[encounter_type_name]", "OBSERVATIONS" %>
     <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
     <%= hidden_field_tag "encounter[encounter_datetime]", session_date %>
@@ -647,11 +647,10 @@
 
     <%= (touch_numeric_tag "FUNDUS", @patient, nil,
      {:id => "enter_fundal_height",
-      :helptext => "Fundal Height (cm) <span class='helper'> ANC Examination</span>",
+      :helptext => "Fundal height (cm) <span class='helper'> ANC Examination</span>",
       :tt_pageStyleClass => "NumbersWithUnknown",
       :absoluteMin => 10,
-      :absoluteMax => 45,
-      :tt_onLoad => "buildConceptsHash(); setTimeout(function(){ readableMessage()}, 50)"
+      :absoluteMax => 45
      }, session_date).html_safe %>
 
     <%= (touch_select_tag "FETAL HEART BEAT", @patient,
@@ -665,15 +664,15 @@
           :helptext => "Fetal Heart Beat <span class='helper'> ANC Examination</span>"
         }, session_date).html_safe %>
 
-    <%= (touch_numeric_tag "FETAL HEART RATE", @patient, nil,
+    <%= (touch_numeric_tag "Fetal heart rate", @patient, nil,
      {:id => "fetal_heart_rate",
-      :helptext => "Fetal Heart Rate (bpm) <span class='helper'> ANC Examination</span>",
+      :helptext => "Fetal heart rate (bpm) <span class='helper'> ANC Examination</span>",
       :tt_pageStyleClass => "NumbersWithUnknown",
       :condition => "__$('enter_fetal_heart').value == 'Heard'",
       :min => 120,
-      :max => 140,
-      :tt_onLoad => "buildConceptsHash(); setTimeout(function(){ readableMessage()}, 50)"
+      :max => 140
      }, session_date).html_safe %>
+
 
     <%#--------------------------------------------------------%>
 
