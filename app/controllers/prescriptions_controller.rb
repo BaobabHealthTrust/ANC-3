@@ -174,7 +174,7 @@ class PrescriptionsController < ApplicationController
       @patient = Patient.find(params[:patient_id] || session[:patient_id]) rescue nil
 
       encounter = Encounter.new(params[:encounter].permit!)
-      encounter.encounter_datetime ||= session[:datetime].to_date
+      encounter.encounter_datetime ||= session[:datetime].to_date rescue Date.today
       encounter.save
 
       if !params[:formulation]

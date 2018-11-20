@@ -264,7 +264,7 @@ class PeopleController < GenericPeopleController
                                      :creator => User.current.id,
                                      :location_id => session[:location_id],
                                      :identifier_type => PatientIdentifierType.find_by_name("National id").id
-            ) if !id.blank?
+            ) if !remote_id.blank?
         else
             PatientService.get_remote_national_id(person.patient)
         end

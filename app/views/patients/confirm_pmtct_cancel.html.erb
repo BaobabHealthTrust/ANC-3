@@ -7,7 +7,8 @@
   //-->
 </script>
 
-<% form_tag :controller => "encounters", :action => "create" do |f| %>
+<!--%= form_tag :controller => "encounters", :action => "create" do |f| % -->
+<form action="/encounters/create" method="post">
   <%= hidden_field_tag "encounter[encounter_type_name]", "ART_FOLLOWUP" %>
   <%= hidden_field_tag "encounter[patient_id]", @patient.id %>
   <%= hidden_field_tag "encounter[encounter_datetime]", DateTime.now() %>
@@ -25,13 +26,5 @@
     {:id => "why_not",
     :helptext => "Reason for Not Starting ART"
   }).html_safe %>
-
-  <%#= touch_date_tag "ART start date", @patient, nil,
-    {:id => "art_start_date",
-     :field_type => 'date',
-    :helptext => "ART start date",
-    :condition => "__$('why_not').value == 'Already on ART at another facility'",
-    } %>
-
-  <%= submit_tag 'Finish' %>
-<% end %>
+</form>
+<!--% end %-->

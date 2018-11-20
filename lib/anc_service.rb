@@ -1529,7 +1529,28 @@ module ANCService
     end
 
     def hiv_status
+      stat = Encounter.find_by_sql(["SELECT c.name as concept_name, 
+        o.concept_id, o.value_coded, o.value_text, o.obs_datetime 
+        FROM encounter e INNER JOIN obs o ON o.encounter_id = e.encounter_id 
+        INNER JOIN concept_name c on o.value_coded = c.concept_id 
+        WHERE e.encounter_type = (SELECT encounter_type_id FROM encounter_type 
+          WHERE name = 'LAB RESULTS' LIMIT 1) 
+        AND e.voided = 0 AND (o.concept_id = (SELECT concept_id 
+          FROM concept_name WHERE name = 'HIV STATUS') OR o.concept_id = (
+          SELECT concept_id FROM concept_name 
+          WHERE name = 'Previous HIV Test Results')) 
+        AND e.patient_id = #{self.patient.patient_id} 
+        ORDER BY o.obs_datetime DESC"]).collect{|v| v.concept_name}
 
+        if stat.include?("Positive")
+          return "Positive"
+        elsif (stat.include?("Negative"))
+          return "Negative"
+        else
+          return "Unknown"
+        end
+
+=begin
       stat = self.patient.encounters.find_by_sql("SELECT COALESCE(o.value_text,
                         (SELECT c.name FROM concept_name c WHERE c.concept_id = o.concept_id LIMIT 1)) value FROM encounter e
                           INNER JOIN obs o ON o.encounter_id = e.encounter_id
@@ -1543,6 +1564,7 @@ module ANCService
                   ").last.value.match(/Negative|Positive/i)[0] rescue "Unknown"
       stat = "Unknown" if stat.blank?
       stat
+=end
     end
 
     def hiv_status_duration(session_date = Date.today)

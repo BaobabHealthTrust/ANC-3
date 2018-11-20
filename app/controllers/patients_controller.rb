@@ -1499,7 +1499,7 @@ class PatientsController < ApplicationController
 
         if same_database == false
 
-          if !File.exists?("#{RAILS_ROOT}/config/dde_connection.yml")
+          if !File.exists?("#{Rails.root}/config/dde_connection.yml")
             @external_id = Bart2Connection::PatientIdentifier.search_by_identifier(@anc_patient.national_id).person_id rescue nil
           else
             @external_id = Bart2Connection::PatientIdentifier.search_or_create(@anc_patient.national_id).person_id rescue nil

@@ -445,7 +445,7 @@
 
   function updateHIVTestDate(){
     hiv_test = __$('new_test_result_at_current_facility').value
-    today = "<%= Date.today %>"
+    today = "<%= session[:datetime].to_date rescue Date.today %>"
     if (hiv_test !== ""){
       __$("test_date").value = today
     }

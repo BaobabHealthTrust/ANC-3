@@ -416,7 +416,7 @@ module PatientService
     #raise known_demographics.to_yaml
 
     #Format params for BART
-    received_params = received_params.with_indifferent_access
+    #received_params = received_params.with_indifferent_access
     new_params = received_params[:person]
     known_demographics = Hash.new()
     new_params['gender'] == 'F' ? new_params['gender'] = "Female" : new_params['gender'] = "Male"
@@ -464,14 +464,14 @@ module PatientService
     end rescue nil
 
     servers = CoreService.get_global_property_value("remote_servers.parent").split(/,/) rescue nil
-    server_address_and_port = servers.to_s.split(':')
+    server_address_and_port = servers.first.to_s.split(':')
     server_address = server_address_and_port.first
     server_port = server_address_and_port.second
     login = CoreService.get_global_property_value("remote_bart.username").split(/,/) rescue ''
     password = CoreService.get_global_property_value("remote_bart.password").split(/,/) rescue ''
 
     if server_port.blank?
-      uri = "http://#{login.first}:#{password.first}@#{server_address}/patient/create_remote"
+      uri = "http://#{login.first}:#{password.first}@#{server_address.first}/patient/create_remote"
     else
       uri = "http://#{login.first}:#{password.first}@#{server_address}:#{server_port}/patient/create_remote"
     end
@@ -1172,7 +1172,7 @@ EOF
       person_params["gender"] = 'M'
 		end
 
-		person = Person.create(person_params.permit!)
+		person = Person.create(person_params)
 
 		unless birthday_params.empty?
 		  if birthday_params["birth_year"] == "Unknown"
@@ -1188,8 +1188,8 @@ EOF
 
 		person.save
 
-		person.names.create(names_params.permit!)
-		person.addresses.create(address_params.permit!) unless address_params.empty? rescue nil
+		person.names.create(names_params)
+		person.addresses.create(address_params) unless address_params.empty? rescue nil
 
 		person.person_attributes.create(
 		  :person_attribute_type_id => PersonAttributeType.find_by_name("Occupation").person_attribute_type_id,
