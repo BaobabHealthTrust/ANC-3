@@ -322,7 +322,8 @@
 	}
 </script>
 
-<%= form_with model: @person do |f| %>
+<!-- %= form_with model: @person do |f| %-->
+<form action="/dde/create" method="post">
 
   <%= text_field_tag "person[names][given_name]", params[:given_name], {:id => 'given_name', :field_type => 'alpha', :helpText => 'First name', :ajaxURL => '/person_names/given_names?search_string=', :allowFreeText => true, :condition => '$("given_name").value == "" || skipped[tstCurrentPage] == 1', :tt_onLoad => 'seen(tstCurrentPage);' } %>
 
@@ -332,13 +333,17 @@
   <% ask_for_father_details = CoreService.get_global_property_value("father_details") rescue 'false'
   
   if ask_for_father_details == true %>
-    Gender: <%= f.select :gender, {"" => "", "Male" => "M", "Female" => "F"}, 
-    {:selected => params[:gender]}, 
-    {
-      :id => 'gender', 
-      :helpText => 'Gender', 
-      :condition => '$("gender").value == "" || skipped[tstCurrentPage] == 1', 
-      :tt_onLoad => 'seen(tstCurrentPage);' } %>
+    <%= select_tag "person[gender]",
+    options_for_select([["", ""], ["Male", "M"], ["Female", "F"]], "F"),
+    {:id => 'gender',
+    :helpText => 'Gender',
+    :condition => 'false/*$("gender").value == "" || skipped[tstCurrentPage] == 1*/',
+    :tt_onLoad => 'seen(tstCurrentPage);',
+    :tt_onUnLoad => "if(__$('gender').value.toLowerCase() == 'm')
+    { __$('person_birth_year').setAttribute('absoluteMin',
+    #{(session[:datetime] || Date.today).to_date.year - 6});}"
+  }  %>
+
   <%else%>
     <input type="hidden" name="person[gender]" value="F" id="gender" >
   <%end%>
@@ -468,13 +473,6 @@
     <%= text_field_tag "person[home_phone_number]",  params[:home_phone_number], {:field_type => 'number', :helpText => 'Ground Phone Number', :allowFreeText => true, :tt_pageStyleClass => "nota", :validationRule => "^0\\d{7,9}$|Unknown|Not Available|N\/A", :validationMessage => "Not a valid phone number" } if ask_ground_phone%>
   <%end%>
 
-  <%#= select_tag("person[agrees_phone_text_for_TB_therapy]", options_for_select([" ", "Yes", "No", "Unknown"] ,params[:agrees_phone_text_for_TB_therapy]),:helpText =>"Can we send you an SMS for follow-up?", :condition => "$('cellphone').value !='Unknown' && $('cellphone').value !='N/A'", :tt_onLoad => 'seen(tstCurrentPage);') if ask_sms_for_TB_therapy%>
-
-  <%#= select_tag("person[agrees_to_be_visited_for_TB_therapy]", options_for_select([" ", "Yes", "No", "Unknown"] ,params[:agrees_to_be_visited_for_TB_therapy]),:helpText =>"Can we visit you at home for follow-up?", :tt_onLoad => 'seen(tstCurrentPage);') if ask_visit_home_for_TB_therapy %>
-
-
-  <%#= select_tag("person[occupation]", options_for_select([" ", "Housewife", "Farmer", "Police", "Soldier", "Business", "Teacher", "Student", "Healthcare Worker"].sort.concat(["Other"]) ,params[:occupation]),:helpText =>"Occupation",:allowFreeText => true, :tt_onLoad => 'seen(tstCurrentPage);')%>
-
   <% if military_site? %>
     <%= select_tag("person[occupation]", options_for_select(@occupations ,params[:occupation]),
       :helpText =>"Occupation",
@@ -504,7 +502,7 @@
       :condition => "__$('occupation').value.match(/MDF/i)")%>
   <% end %>
 
-  <% if params[:relation].blank? %>
+  <% if ask_for_guardian? %>
     <%= select_tag("guardian_present", options_for_select([['Yes','YES'],['No','NO']]),
       :id => "guardian_present",
       :helpText => "Guardian Present",
@@ -532,5 +530,5 @@
   <%= hidden_field_tag :identifier, params[:identifier] %>
 
   <%= submit_tag "Create person" %>
-
-<% end %>
+</form>
+<!--% end %-->
