@@ -661,7 +661,9 @@ class PrescriptionsController < ApplicationController
     session_date = (session[:datetime].to_date rescue Date.today)
 
     encounter = MedicationService.current_treatment_encounter(@patient, session_date)
-    encounter.encounter_datetime = session_date.to_date
+    if encounter.encounter_datetime.blank?
+      encounter.encounter_datetime = session_date.to_date
+    end
     encounter.save
 
     params[:drug_formulations] = (params[:drug_formulations] || []).collect { |df| eval(df) } || {}
