@@ -1,4 +1,11 @@
-## Changelog 3.x.x (2018-11-21)
+## Changelog 3.x.x (2018-11-22)
+
+#### [v3.2.5-rc.5] (2018-11-22)
+  * **Modification**: Modified the position of messagebar.
+  * **Fix**: Fixed issue where the workflow skipped dispensation
+  * **Fix**: Fix application crashing when creating patient locally not through any external app. Issue number 5093
+#### [v3.2.5-rc.4] (2018-11-21)
+  * **Modification**: Modified changelog
 #### [v3.2.5-rc.3]
   * **Feature**: Added changelog for easy tracking of application changes
 #### [v3.2.5-rc.2] 
