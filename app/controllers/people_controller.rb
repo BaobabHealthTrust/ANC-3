@@ -274,7 +274,7 @@ class PeopleController < GenericPeopleController
 
       success = true
       params[:person].merge!({"identifiers" => {"National id" => identifier}}) unless identifier.blank?
-      person = PatientService.create_from_form(params[:person])
+      person = PatientService.create_from_form(person_params)
     end
     #raise params[:person][:patient].inspect
     if params[:person][:patient] && success
@@ -891,6 +891,18 @@ class PeopleController < GenericPeopleController
   def show_father
     person = Person.find(params[:id])
     @person_bean = PatientService.get_patient(person)
+  end
+
+  private 
+
+  def person_params
+    params.require(:person).permit(:gender, :birth_year, :birth_month, 
+      :age_estimate, :birth_day, :citizenship, :race, 
+      :cell_phone_number, :occupation, :patient,
+      names: [ :given_name,:family_name, :middle_name ],
+      addresses: [ :address2, :county_district, :neighborhood_cell, 
+        :state_province, :city_village, :address1
+      ])
   end
 
 
