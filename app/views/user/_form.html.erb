@@ -30,10 +30,17 @@
       :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
       :validationMessage => "Enter a valid name."
       %></p>
-      <% if current_user.admin? %>
-        <p><label for="user_username">Username</label><br/>
-        <%= text_field 'user', 'username', :textCase => "lower",:value => @user_name,:tt_onload =>"$('touchscreenInput5').value = ($('user_first_name').value.substring(0,3)+$('user_last_name').value.substring(0,3)).toLowerCase()" ,:validationRule =>"\\w{6}\\w*" ,:validationMessage => "Username must have at least SIX letters", :textCase => "lower" %></p>
-      <%end%>
+      <!--% if !current_user.admin? %-->
+        <!--p><label for="user_username">Username</label><br/-->
+        <!-- %= text_field 'user', 'username', :textCase => "lower",
+        :value => @user_name,
+        :tt_onload =>"$('touchscreenInput5').value = ($('user_first_name')
+        .value.substring(0,3)+$('user_last_name')
+        .value.substring(0,3)).toLowerCase()" ,
+        :validationRule =>"\\w{6}\\w*" ,
+        :validationMessage => "Username must have at least SIX letters", 
+        :textCase => "lower" %></p -->
+      <!--%end%-->
   <%when "destroy"%>
       <!--p><label for="user_voided">Remove User?</label--><br/>
       <!--%= select(:user, :voided, %w{Yes No}, :include_blank => 'true')%-->
