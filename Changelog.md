@@ -1,5 +1,12 @@
-## Changelog 3.x.x (2018-11-22)
+## Changelog 3.x.x (2018-11-26)
 
+#### [v3.2.5-rc.6] (2018-11-26)
+  * **Fix**: Fixed prescription issue when dispensing drugs with drug sets configured (4874)
+  * **Modification**: Restrict maximum number of characters for input in user and patient registration
+  * **Modification**: Removed username input for updateuser function (4804)
+  * **Modification**: Modified Para input keyboard to numbersonly (#4834)
+  * **Fix**: Fix hiv test alert for patients who have not been tested hiv
+  * **Fix**: Fixed pepfar report query, added district attributre in application config file, returned nearby or frequent nationalities on nationality input
 #### [v3.2.5-rc.5] (2018-11-22)
   * **Modification**: Modified the position of messagebar.
   * **Fix**: Fixed issue where the workflow skipped dispensation
