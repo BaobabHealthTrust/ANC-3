@@ -356,7 +356,7 @@
     :allowFreeText => true,
     :condition => '$("given_name").value == "" || skipped[tstCurrentPage] == 1',
     :tt_onLoad => 'seen(tstCurrentPage);',
-    :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+    :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
     :validationMessage => "Enter a valid name."
   } %>
 
@@ -369,7 +369,7 @@
     :allowFreeText => true,
     :condition => '$("family_name").value == "" || skipped[tstCurrentPage] == 1',
     :tt_onLoad => 'seen(tstCurrentPage);',
-    :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+    :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
     :validationMessage => "Enter a valid name."
   } %>
 
@@ -397,7 +397,7 @@
     :condition => '$("middle_name").value == "" || skipped[tstCurrentPage] == 1',
     :tt_pageStyleClass => "azButton",
     :tt_onLoad => 'seen(tstCurrentPage);',
-    :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+    :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
     :validationMessage => "Enter a valid name."
   } if ask_middle_name %>
 

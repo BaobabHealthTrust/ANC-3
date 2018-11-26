@@ -377,7 +377,7 @@ end -%>
         :helpText => 'First name', 
         :ajaxURL => '/person_names/given_names?search_string=', 
         :allowFreeText => true,
-        :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+        :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
         :validationMessage => "Enter a valid name." }%>
 
       <%= text_field_tag :family_name, params[:family_name], {
@@ -385,7 +385,7 @@ end -%>
         :helpText => 'Last name', 
         :ajaxURL => '/person_names/family_names?search_string=', 
         :allowFreeText => true,
-        :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+        :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
         :validationMessage => "Enter a valid name." }%>
       <%= hidden_field_tag :create_patient, params[:create_patient] %>
 

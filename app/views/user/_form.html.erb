@@ -15,7 +15,7 @@
       :ajaxURL => '/person_names/given_names?search_string=', 
       :value => @user_first_name ,
       :allowFreeText => true,
-      :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+      :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
       :validationMessage => "Enter a valid name."
       %></p>
 
@@ -27,7 +27,7 @@
       :ajaxURL => '/person_names/family_names?search_string=', 
       :value => @user_last_name, 
       :allowFreeText => true,
-      :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+      :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
       :validationMessage => "Enter a valid name."
       %></p>
       <!--% if !current_user.admin? %-->
@@ -59,8 +59,9 @@
       :ajaxURL => '/person_names/given_names?search_string=', 
       :value => @user_first_name ,
       :allowFreeText => true,
-      :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
-      :validationMessage => "Enter a valid name."
+      :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
+      :validationMessage => "Enter a valid name.",
+      :maxlength => 4
       %></p>
 
       <p><label for="user_middle_name">Middle name</label><br/>
@@ -71,7 +72,7 @@
       :ajaxURL => '/person_names/family_names?search_string=', 
       :value => @user_last_name, 
       :allowFreeText => true,
-      :validationRule => "^([a-zA-Z]{2,})'?-?([a-zA-Z]{1,})$",
+      :validationRule => "^([a-zA-Z]{2,17})'?-?([a-zA-Z]{1,17})$",
       :validationMessage => "Enter a valid name."
       %></p>
 
