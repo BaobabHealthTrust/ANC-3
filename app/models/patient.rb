@@ -69,10 +69,17 @@ class Patient < ActiveRecord::Base
 
   def hiv_positive?
     
-    self.encounters.joins([:observations]).where(["encounter.encounter_type = ? AND (obs.concept_id = ? OR
-        obs.concept_id = ?)", EncounterType.find_by_name("LAB RESULTS").id,
-        ConceptName.find_by_name("HIV STATUS").concept_id, ConceptName.find_by_name("Previous HIV Test Results").concept_id
-      ]).select(["obs.value_coded, obs.value_text"]).collect{|ob| (Concept.find(ob.value_coded).name.name.downcase.strip rescue nil) || ob.value_text.downcase.strip}.include?("positive") rescue false
+    self.encounters.joins([:observations])
+      .where(["encounter.encounter_type = ? AND (obs.concept_id = ? OR 
+        obs.concept_id = ?)", 
+        EncounterType.find_by_name("LAB RESULTS").id,
+        ConceptName.find_by_name("HIV STATUS").concept_id, 
+        ConceptName.find_by_name("Previous HIV Test Results").concept_id
+      ])
+      .select(["obs.value_coded, obs.value_text"])
+      .collect{|ob| 
+        ((Concept.find(ob.value_coded).name.name.downcase.strip rescue nil) || ob.value_text.owncase.strip)}
+      .include?("positive") rescue false
 end
 
 def resent_hiv_status?(today = Date.today)
@@ -83,10 +90,16 @@ def resent_hiv_status?(today = Date.today)
 
   checked_date = lmp.present?? lmp : (today.to_date - 9.months)
 
-  last_test_visit = self.encounters.joins([:observations]).where(["encounter.encounter_type = ? AND obs.concept_id = ? AND
-        encounter.encounter_datetime > ?", EncounterType.find_by_name("LAB RESULTS").id,
-      ConceptName.find_by_name("Hiv Test Date").concept_id, checked_date.to_date
-    ]).order([:encounter_datetime]).select(["obs.value_datetime"]).last.value_datetime.to_date  rescue nil
+  last_test_visit = self.encounters.joins([:observations])
+    .where(["encounter.encounter_type = ? AND (obs.concept_id = ? 
+      OR obs.concept_id = ?) AND encounter.encounter_datetime > ?", 
+      EncounterType.find_by_name("LAB RESULTS").id,
+      ConceptName.find_by_name("Hiv Test Date").concept_id, 
+      ConceptName.find_by_name("Previous HIV Test Date").concept_id, 
+      checked_date.to_date])
+    .order([:encounter_datetime])
+    .select(["obs.value_datetime"])
+    .last.value_datetime.to_date  rescue nil
 
   return "old_negative" if (last_test_visit.to_date <= (today - 3.months) rescue false)
   return "negative" if !last_test_visit.blank?
