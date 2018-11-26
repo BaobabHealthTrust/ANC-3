@@ -138,7 +138,7 @@
         <%= (touch_numeric_tag "PARITY", @patient, @parity,
           {:id => "enter_number_of_deliveries",
           :helptext => "Para <span class='helper'> Obstetric History</span>",
-          :tt_pageStyleClass => "NumbersWithUnknown",
+          :tt_pageStyleClass => "NumbersOnly",
           :condition => "__$('enter_gravida').value > 1",
           :tt_BeforeOnLoad => "",
           :tt_onLoad => "data = {}; __$('touchscreenInput' + " +
