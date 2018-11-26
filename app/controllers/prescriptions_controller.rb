@@ -632,7 +632,7 @@ class PrescriptionsController < ApplicationController
       @set_names[set.set_id] = set.name
       @set_descriptions[set.set_id] = set.description
 
-      dsets = DrugSet.where(["set_id =? AND voided =?", set.set_id, 0]).last
+      dsets = DrugSet.where(["set_id =? AND voided =?", set.set_id, 0])
       dsets.each do |d_set|
 
         @drug_sets[set.set_id][d_set.drug_inventory_id] = {}

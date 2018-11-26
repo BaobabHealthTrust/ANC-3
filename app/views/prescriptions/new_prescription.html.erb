@@ -25,9 +25,9 @@
     drug_ids.push("<%=drug.id%>");
 <%end%>
 
-  var drug_sets = <%= @drug_sets.to_json%>
-  var set_names = <%= @set_names.to_json%>
-  var set_descriptions = <%= @set_descriptions.to_json%>
+  var drug_sets = <%= @drug_sets.to_json.html_safe %>
+  var set_names = <%= @set_names.to_json.html_safe %>
+  var set_descriptions = <%= @set_descriptions.to_json.html_safe %>
 
     </script>
   </head>
