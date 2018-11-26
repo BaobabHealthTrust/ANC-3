@@ -444,11 +444,14 @@ class GenericPeopleController < ApplicationController
 
     region_id = Region.find_by_name("#{params[:filter_value]}").id rescue nil
     region_conditions = ["name LIKE (?) AND region_id = ? ", "%#{params[:search_string]}%", region_id]
+    near_by_countries = ["Mozambique", "Zambia", "Tanzania", 
+      "Zimbambe", "Nigeria", 'Burundi', "Namibia"]
 
     districts = District.where(region_conditions).order("name") rescue []
     districts = districts.map do |d|
       d.name
     end
+    districts = (near_by_countries + districts).uniq if params[:filter_value].downcase.match(/foreign/)
 
     if region_id.blank?
       nationalities = []
@@ -456,7 +459,8 @@ class GenericPeopleController < ApplicationController
         nationalities << nat
       }
       if nationalities.length > 0
-        nationalities = (["Mozambican", "Zambian", "Tanzanian", "Zimbambean", "Nigerian", 'Burundian', "Namibian"] + nationalities).uniq
+        nationalities = (["Mozambican", "Zambian", "Tanzanian", 
+          "Zimbambean", "Nigerian", 'Burundian', "Namibian"] + nationalities).uniq
       end
       districts = nationalities
     end

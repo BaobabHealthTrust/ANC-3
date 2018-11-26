@@ -764,7 +764,7 @@ class ReportsController < ApplicationController
         @value = getANCClientKnownPositiveAtEntry(monthly_patients, age, end_date)
       end
 
-      render :text => @value.count
+      render plain: @value.count
     end
 
     def monthly_registrations(start_date, end_date)
@@ -772,17 +772,16 @@ class ReportsController < ApplicationController
       current_pregnancy_id = EncounterType.find_by_name('Current Pregnancy').id
       lmp_concept_id = ConceptName.find_by_name('Date of Last Menstrual Period').concept_id
 
-      Encounter.find(:all, 
-        :joins => ['INNER JOIN obs ON obs.person_id = encounter.patient_id'],
-        :group => [:patient_id],
-        :select => ['MAX(value_datetime) lmp, patient_id'],
-        :conditions => ['encounter_type = ? AND obs.concept_id = ?
+      Encounter.where(['encounter_type = ? AND obs.concept_id = ?
           AND DATE(encounter_datetime) >= ?
           AND DATE(encounter_datetime) <= ?
           AND encounter.voided = 0',
         current_pregnancy_id,lmp_concept_id,
-        start_date,end_date]
-      ).collect { |e| e.patient_id }.uniq
+        start_date,end_date])
+        .joins(['INNER JOIN obs ON obs.person_id = encounter.patient_id'])
+        .group([:patient_id])
+        .select(['MAX(value_datetime) lmp, patient_id'])
+        .collect { |e| e.patient_id }.uniq
   
     end
 

@@ -27,6 +27,7 @@ production:
  maternity.links: localhost:3000
  father_details: true
  recency_test: false
+ district: Lilongwe
 
 development:
  create_from_remote: no
@@ -58,6 +59,7 @@ development:
  maternity.links: localhost:3000
  father_details: true
  recency_test: false
+ district: Lilongwe
  
 test: &TEST
  create_from_remote: no
