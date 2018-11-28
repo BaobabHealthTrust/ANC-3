@@ -120,7 +120,7 @@ class ApplicationController < GenericApplicationController
         "APPOINTMENT", nil, nil, "TODAY", nil, true, (current_user_activities.include?("Manage Appointments".downcase))],
       
       "Give Drugs" => [flow["Give Drugs".downcase], "/prescriptions/give_drugs/?patient_id=#{patient.id}",
-        "TREATMENT", nil, nil, "TODAY", 7124, false, (current_user_activities.include?("Give Drugs".downcase))] # ,
+        "TREATMENT", nil, nil, "TODAY", 9236, false, (current_user_activities.include?("Give Drugs".downcase))] # ,
       
       # "Update Outcome" => [17, "/patients/outcome/?patient_id=#{patient.id}", "UPDATE OUTCOME",
       #  nil, nil, "TODAY", nil, true, (current_user_activities.include?("Update Outcome".downcase))]
@@ -312,8 +312,12 @@ class ApplicationController < GenericApplicationController
         checked_already = false
         
         if !tasks[tsk][3].nil? && checked_already == false    # Check for presence of specific concept_id
-          available = Encounter.joins([:observations]).where(["patient_id = ? AND encounter_type = ? AND obs.concept_id = ? AND DATE(encounter_datetime) = ?",
-              patient.id, EncounterType.find_by_name(tasks[tsk][2]), tasks[tsk][3], session_date.to_date]) rescue []
+          available = Encounter.joins([:observations])
+            .where(["patient_id = ? AND encounter_type = ? 
+              AND obs.concept_id = ? AND DATE(encounter_datetime) = ?",
+              patient.id, 
+              EncounterType.find_by_name(tasks[tsk][2]), 
+              tasks[tsk][3], session_date.to_date]) rescue []
         
           checked_already = tasks[tsk][7]
           if available.length > 0
@@ -325,8 +329,11 @@ class ApplicationController < GenericApplicationController
         end
         
         if !tasks[tsk][4].nil? && checked_already == false   # Check for concept exclusions from encounter_type group
-          available = Encounter.joins([:observations]).where(["patient_id = ? AND encounter_type = ? AND NOT obs.concept_id = ? AND DATE(encounter_datetime) = ?",
-              patient.id, EncounterType.find_by_name(tasks[tsk][2]), tasks[tsk][4], session_date.to_date]) rescue []
+          available = Encounter.joins([:observations])
+            .where(["patient_id = ? AND encounter_type = ? 
+              AND NOT obs.concept_id = ? AND DATE(encounter_datetime) = ?",
+              patient.id, EncounterType.find_by_name(tasks[tsk][2]), 
+              tasks[tsk][4], session_date.to_date]) rescue []
         
           checked_already = tasks[tsk][7]
           if available.length > 0
@@ -421,7 +428,8 @@ class ApplicationController < GenericApplicationController
         
         # Else check for availability of encounter_type
         if checked_already == false
-          available = Encounter.joins([:observations]).where(["patient_id = ? AND encounter_type = ? " +
+          available = Encounter.joins([:observations])
+            .where(["patient_id = ? AND encounter_type = ? " +
                 "AND (DATE(encounter_datetime) >= ? AND DATE(encounter_datetime) <= ?)",
               patient.id, EncounterType.find_by_name(tasks[tsk][2]),
               (session_date.to_date - 6.month), (session_date.to_date + 6.month)]) rescue []
