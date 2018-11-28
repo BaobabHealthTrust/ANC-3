@@ -7,7 +7,7 @@ ___
 
 #### Ruby
 ANC run on ruby on rails which is why you need to install ruby. 
-Ruby version 2.5.0 is a requirement.
+Ruby version 2.5.3 is a requirement.
 
 #### Mysql
 Mysql is used as a database for the application. 
@@ -90,7 +90,7 @@ To configure properties, go to config/application.yml file. Some of the configur
 ```
   ...
   father_details: true
-  ...
+  ..
 ```
 * Recency test capturing. Set **rececy_test** to **true**
 ```
@@ -126,3 +126,55 @@ Finally run the database migration
   rails db:migrate
 ```
 
+## DDE Integration
+___
+DDE is short for Demographics Data Exchange. An API for exchanging patient's 
+demographics data between EMR applications using a patient ID. For more 
+information go to [DDE Repository](https://github.com/BaobabHealthTrust/Demographics-Data-Exchange)
+(for users who have the access only).
+
+Once DDE is up and running, you can now set ANC to communicate with it. Here is how you can configure DDE on ANC.
+
+* Ensure that you have copied dde_connection.yml.example file in config folder from the set up above. 
+* Ensure database migration has been done.
+* Ensure openmrs_metadata has been loaded to your mysql database.
+
+### Activate DDE in ANC
+
+On the dashboard, go to Administration tab, click on Configurations and then Enable/Disable DDE. The follow the following steps:
+
+1. Select yes to enable dde. If you are already activated this is where you turn DDE off by selecting no, the system will take you back to dashboard.
+
+![Enable DDE](public/images/dde/enable_dde.png)
+
+2. Provide DDE host address.
+
+![DDE Host Address](public/images/dde/host_address.png)
+
+3. Enter DDE port.
+
+![DDE Port Number](public/images/dde/port_number.png)
+
+4. Enter DDE default admin username as provided in DDE documentation.
+
+![DDE Admin Username](public/images/dde/dde_username.png)
+
+5. Enter DDE admin password. If DDE user was already created and is still active, you'll be taken back to dashboard and dde would be activated.
+
+![DDE Admin Password](public/images/dde/dde_password.png)
+
+6. After providing password, if you're a first time user, the application will provide a list of site to choose from. Carefully choose the site in which this application is configured. If the site names doesn't match, the application will refuse to create dde user for the application, hence dde will not be activated.
+
+![DDE Locations list](public/images/dde/dde_locations.png)
+
+7. You will then be presented with a list of application programs, normally for ANC you'll be presented with ANC PROGRAM, select and proceed.
+
+![Application program](public/images/dde/application_program.png)
+
+8. Provide the username for the application to dde. It is recommended that the username should be the combination of application and site code, i.e, ancSITE_CODE replacing SITE_CODE with the site code in small cases.
+
+![Username](public/images/dde/username.png)
+
+9. Then provide the password for the user.
+
+![Password](public/images/dde/password.png)
