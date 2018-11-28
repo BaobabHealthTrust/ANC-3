@@ -970,6 +970,7 @@ class PatientsController < ApplicationController
     end
 
     @birth_year = @anc_patient.birth_year
+    @by         = (session[:datetime] || Date.today).to_date.year - @birth_year
 
     @min_birth_year = @birth_year + 13
     @max_birth_year = ((@birth_year + 50) > ((session[:datetime] || Date.today).to_date.year) ?

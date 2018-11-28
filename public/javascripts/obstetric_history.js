@@ -1,4 +1,5 @@
 var details_available = [];
+var age_units = "hours"
 
 function readableMessage(){
 
@@ -829,6 +830,27 @@ function loadInputWindow(){
                 if (__$("unit")){
                     unit = __$("unit").value
                 }
+                if(type.toLowerCase() == 'age'){
+                    var value   =  __$('input').innerHTML;
+                    //var max_birth_year = <% @by %>;
+                    var max_birth_months      = parseInt(mother_age * 12);
+                    var max_birth_weeks       = parseInt(max_birth_months * 4);
+                    var max_birth_days        = parseInt(max_birth_weeks * 7);
+                    var max_birth_hours       = parseInt(max_birth_days * 24);
+                
+                    if (age_units == "years"){
+                      max = mother_age;
+                    }else if(age_units == "months"){
+                      max = max_birth_months;
+                    }else if(age_units == "weeks"){
+                      max = max_birth_weeks;
+                    }else if(age_units == "days"){
+                      max = max_birth_days;
+                    }else if(age_units == "hours"){
+                      max = max_birth_hours;
+                    }
+      
+                  }
 
                 var row = __$(__$("popup").getAttribute("row_id"));
                 var name = row.getElementsByClassName("detail-row-label")[0].innerHTML;
@@ -2043,4 +2065,14 @@ function addValidationInterval(){
         }
     }
 }
+
+// function to update age_units value
+setInterval(function(){
+  try{
+    age_units = __$('unit').value.toLowerCase();      
+  }catch{
+
+  }
+  console.log(mother_age);
+}, 200)
     
