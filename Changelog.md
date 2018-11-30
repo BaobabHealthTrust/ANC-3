@@ -1,5 +1,11 @@
-## Changelog 3.x.x (2018-11-26)
+## Changelog 3.x.x (2018-11-30)
 
+#### [v3.2.5-rc.7] (2018-11-30)
+  * **Modification**: Modified edit birthdate and edit demographics views
+  * **Modification**: Modified dde views
+  * **Fix**: Fixed issue with drug dispensation (#5148)
+  * **Modification**: Added dde configuration instruction in README
+  * **Fix**: Validated age at death in obstetric history for the input value not to exceed mothers age minus 10 years
 #### [v3.2.5-rc.6] (2018-11-26)
   * **Fix**: Fixed prescription issue when dispensing drugs with drug sets configured (4874)
   * **Modification**: Restrict maximum number of characters for input in user and patient registration
