@@ -111,7 +111,7 @@
 
 </script>
 
-<% form_for :person, @person, :url => { :action => "update_birthdate" } do |f| %>
+<form action="update_birthdate" method="POST">
 
   <%= text_field_tag "person[birth_year]", nil,
     {
@@ -152,4 +152,4 @@
 
   <input type="hidden" name="document_id" value="<%= params[:doc_id]%>" />
   <input type="hidden" name="patient_id" value="<%=params[:patient_id]%>" />
-<%end%>
+</form>
