@@ -830,14 +830,14 @@ function loadInputWindow(){
                 if (__$("unit")){
                     unit = __$("unit").value
                 }
-                if(type.toLowerCase() == 'age'){
+                try{
+                  if(type && type.toLowerCase() == 'age'){
                     var value   =  __$('input').innerHTML;
-                    //var max_birth_year = <% @by %>;
                     var max_birth_months      = parseInt(mother_age * 12);
                     var max_birth_weeks       = parseInt(max_birth_months * 4);
                     var max_birth_days        = parseInt(max_birth_weeks * 7);
                     var max_birth_hours       = parseInt(max_birth_days * 24);
-                
+                    
                     if (age_units == "years"){
                       max = mother_age;
                     }else if(age_units == "months"){
@@ -849,8 +849,11 @@ function loadInputWindow(){
                     }else if(age_units == "hours"){
                       max = max_birth_hours;
                     }
-      
+          
                   }
+                }catch(e){
+                    console.log(e)
+                }
 
                 var row = __$(__$("popup").getAttribute("row_id"));
                 var name = row.getElementsByClassName("detail-row-label")[0].innerHTML;
