@@ -664,7 +664,7 @@ class ReportsController < ApplicationController
         
         @facility = Location.current_health_center.name rescue ''
         @start_date = ("#{params[:year]}-#{params[:month]}-01").to_date.strftime("%Y-%m-%d")
-        end_date = ("#{params[:year]}-#{(params[:month].to_i + 1)}-01").to_date
+        end_date = params[:month].to_i != 12 ? ("#{params[:year]}-#{(params[:month].to_i + 1)}-01").to_date  : ("#{params[:year]}-#{(params[:month].to_i)}-31").to_date
         @end_date = (end_date - 1.days).strftime("%Y-%m-%d")
         date_today = (session[:datetime].to_date rescue Date.today)
         @date_today = date_today.strftime("%d/%m/%Y")
