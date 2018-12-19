@@ -324,16 +324,23 @@ class Reports
   end
 
 
-  def sp_doses_given_zero_to_two
-    Order.where("(drug.name = ? OR drug.name = ?) AND DATE(encounter_datetime) <= ? 
-            AND encounter.patient_id IN (?)",
-            "Sulphadoxine and Pyrimenthane (25mg tablet)","SP (3 tablets)", 
-            ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients)
-          .joins([[:drug_order => :drug], :encounter])
-          .select(["encounter.patient_id, count(encounter.encounter_id) as count, encounter_datetime, drug.name instructions"])
-          .group([:patient_id]).collect { |o|
-            [o.patient_id, o.count]
-          }.compact.delete_if { |x, y| y.to_i > 2 }.collect { |p, c| p }.uniq
+  def sp_doses_given(qty)#_zero_to_two
+    orders = Order.where("(drug.name = ? OR drug.name = ?) AND DATE(encounter_datetime) <= ? 
+              AND encounter.patient_id IN (?)","Sulphadoxine and Pyrimenthane (25mg tablet)",
+              "SP (3 tablets)",((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients)
+            .joins([[:drug_order => :drug], :encounter])
+            .select(["encounter.patient_id, count(encounter.encounter_id) as count, 
+              encounter_datetime, drug.name instructions"])
+            .group([:patient_id])
+            .collect { |o|
+              [o.patient_id, o.count]
+            }
+    if (qty == ">2")
+      results  = orders.compact.delete_if { |x, y| y.to_i <= 2 }.collect { |p, c| p }.uniq
+    elsif (qty == "<=2")
+      results = orders.compact.delete_if { |x, y| y.to_i > 2 }.collect { |p, c| p }.uniq
+    end
+    results
   end
 
   def sp_doses_given_more_than_three
@@ -378,13 +385,16 @@ class Reports
     fefol = {}
     minus_120 = []
     plus_120 = []
-    Order.joins([[:drug_order => :drug], :encounter]).where(["drug.name = ? AND (DATE(encounter_datetime) >= #{@lmp} " +
-          "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)", "Fefol (1 tablet)",
-        ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients]).group([:patient_id]).select(["encounter.patient_id, count(*) datetime, drug.name instructions, " +
-          "COALESCE(SUM(DATEDIFF(auto_expire_date, start_date)), 0) orderer"]).each { |o|
-      next if ! fefol[o.patient_id].blank?
-      fefol[o.patient_id] = o.orderer #if ! fefol[o.patient_id].include?(o.datetime)
-    }
+    Order.joins([[:drug_order => :drug], :encounter])
+      .where(["drug.name = ? AND (DATE(encounter_datetime) >= #{@lmp} 
+        AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)", 
+        "Fefol (1 tablet)",((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients])
+      .group([:patient_id]).select(["encounter.patient_id, count(*) datetime, drug.name instructions, 
+        COALESCE(SUM(DATEDIFF(auto_expire_date, start_date)), 0) orderer"])
+      .each { |o|
+        next if ! fefol[o.patient_id].blank?
+        fefol[o.patient_id] = o.orderer #if ! fefol[o.patient_id].include?(o.datetime)
+      }
 
     fefol.each{|k, v|
       if v.to_i < 120
@@ -467,6 +477,7 @@ class Reports
 
 
   def final_visit_hiv_test_result_prev_negative
+    hiv_patients      = final_visit_hiv_test_result_prev_positive + final_visit_new_positive
     prev_hiv_concept  = ConceptName.find_by_name("Previous HIV Test Results")
     hiv_neg_concept   = ConceptName.find_by_name("Negative")
     
@@ -484,7 +495,7 @@ class Reports
         @cohort_patients, prev_hiv_concept.concept_id, ((@start_date.to_date + @pregnant_range) - 1.day), 
         ((@start_date.to_date + @pregnant_range) - 1.day)])
         .map(&:patient_id)
-    return select.uniq
+    return (select - hiv_patients).uniq
   end
 
   def final_visit_hiv_test_result_prev_positive
@@ -1173,13 +1184,15 @@ class Reports
   def albendazole(qty = 1)
     result = []
 
-    data = Order.joins([[:drug_order => :drug], :encounter]).where(["drug.name REGEXP ? AND (DATE(encounter_datetime) >= #{@lmp} " +
-          "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)", "Albendazole",
-        (@start_date.to_date + @pregnant_range), @cohort_patients]).select(["encounter.patient_id, count(*) encounter_id, drug.name instructions, " +
-          "SUM(DATEDIFF(auto_expire_date, start_date)) orderer"]).collect { |o|
-      [o.patient_id, o.orderer]
-    }
-    data = data.first.compact
+    data = Order.joins([[:drug_order => :drug], :encounter])
+      .where(["drug.name REGEXP ? AND (DATE(encounter_datetime) >= #{@lmp}
+        AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
+        "Albendazole", (@start_date.to_date + @pregnant_range), @cohort_patients])
+      .select(["encounter.patient_id, count(*) encounter_id, drug.name instructions, 
+        SUM(DATEDIFF(auto_expire_date, start_date)) orderer"])
+      .collect { |o|
+        [o.patient_id, o.orderer]
+      }
 
     if qty == 1
       result = data.delete_if { |x, y| y != 1 unless y.blank? }.collect { |p, c| p }

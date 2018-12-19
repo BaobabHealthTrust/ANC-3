@@ -207,15 +207,15 @@ class ReportsController < ApplicationController
 
       @ttv__total_previous_doses_2 = report.ttv__total_previous_doses_2
 
-      @sp_doses_given_zero_to_two = report.sp_doses_given_zero_to_two.uniq
+      @sp_doses_given_zero_to_two = report.sp_doses_given("<=2")#_zero_to_two.uniq
       
-      @sp_doses_given_more_than_three = report.sp_doses_given_more_than_three.uniq
+      @sp_doses_given_more_than_three = report.sp_doses_given(">2")#_more_than_three.uniq
 
       @fefo__number_of_tablets_given_1, @fefo__number_of_tablets_given_2 = report.fefo
 
       @albendazole_more_than_1 = report.albendazole(">1")
 
-      @albendazole = report.albendazole(1) + @albendazole_more_than_1
+      @albendazole = report.albendazole(1) #+ @albendazole_more_than_1
 
       @albendazole_none = @observations_total - (@albendazole + @albendazole_more_than_1)
 

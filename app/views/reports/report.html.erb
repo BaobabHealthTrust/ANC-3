@@ -107,7 +107,7 @@
                 ANC C<span style="font-size: 0.8em">LINIC</span> -
                 F<span style="font-size: 0.8em">ACILITY</span> M<span style="font-size: 0.8em">ONTHLY</span>
                 R<span style="font-size: 0.8em">EPORT</span>
-                - VERSION 5, JANUARY 2017
+                - VERSION 5, <%= @end_date.to_date.strftime("%b %Y") rescue "" %>
               </th>
             <!-- %end% -->
           </tr>
