@@ -1677,7 +1677,7 @@ class PatientsController < ApplicationController
       @html+="</div><br />"
     end
 
-    render :text => @html.to_s
+    render plain: @html.to_s
   end
 
   def surgical_history
