@@ -90,16 +90,27 @@ def resent_hiv_status?(today = Date.today)
 
   checked_date = lmp.present?? lmp : (today.to_date - 9.months)
 
-  last_test_visit = self.encounters.joins([:observations])
-    .where(["encounter.encounter_type = ? AND (obs.concept_id = ? 
-      OR obs.concept_id = ?) AND encounter.encounter_datetime > ?", 
-      EncounterType.find_by_name("LAB RESULTS").id,
-      ConceptName.find_by_name("Hiv Test Date").concept_id, 
+  hiv_test_date = self.encounters.joins([:observations])
+  .where(["encounter.encounter_type = ? AND obs.concept_id = ? 
+    AND encounter.encounter_datetime > ?", 
+    EncounterType.find_by_name("LAB RESULTS").id,
+    ConceptName.find_by_name("Hiv Test Date").concept_id,  
+    checked_date.to_date])
+  .order([:encounter_datetime])
+  .select(["obs.value_text"])
+  .last.value_text.to_date  rescue nil
+
+  prev_hiv_test_date = self.encounters.joins([:observations])
+    .where(["encounter.encounter_type = ? AND obs.concept_id = ?  
+      AND encounter.encounter_datetime > ?", 
+      EncounterType.find_by_name("LAB RESULTS").id, 
       ConceptName.find_by_name("Previous HIV Test Date").concept_id, 
       checked_date.to_date])
     .order([:encounter_datetime])
     .select(["obs.value_datetime"])
     .last.value_datetime.to_date  rescue nil
+  
+  last_test_visit = hiv_test_date.blank? ? prev_hiv_test_date : hiv_test_date
 
   return "old_negative" if (last_test_visit.to_date <= (today - 3.months) rescue false)
   return "negative" if !last_test_visit.blank?

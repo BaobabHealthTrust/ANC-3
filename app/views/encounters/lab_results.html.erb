@@ -490,7 +490,8 @@
     :helpText => "<span class='helper'> ART Summary </span>"
   }
 %>
-  <% unless @hiv_status.blank? && @patient.resent_hiv_status?(today) == 'Positive' %>
+<% #raise @patient.resent_hiv_status?(today).inspect %>
+  <% if !(@hiv_status.blank?) && @patient.resent_hiv_status?(today) == "unknown" %>
 <%= (touch_hidden_tag "Previous HIV Test done", @patient, "Yes", :id => "previous_hiv_test" ).html_safe
     %>
     
@@ -503,7 +504,7 @@
         :tt_onUnLoad => "parsedConceptName = '';",
         :tt_onLoad => " parsedConceptName = 'Previous HIV Test date'; initializeDate();",
         :condition => "(__$('prev_hiv_test_results').value != '' ||
-          __$('previous_hiv_test').value == 'Yes') && #{!(@patient.resent_hiv_status?(today) == 'positive')}",
+          __$('previous_hiv_test').value == 'Yes')",
         :absoluteMax => "#{(session[:datetime].to_date - 1.days) rescue (Date.today - 1.days)}",
         :absoluteMin => "#{@patient.person.birthdate.to_date rescue nil}"
       }).html_safe
@@ -557,7 +558,21 @@
       :tt_onLoad => "__$('test_date').value = '';"
     })
     %>
-
+  <% elsif (["positive","negative"].include?@patient.resent_hiv_status?(today)) %>
+  
+  <%= select_tag("choice",
+    options_for_select([["", ""],["", ""],
+        ["HB", "HB Test Result"],["Syphilis", "Syphilis Test Result"],
+        ["Urine", "Urine Test Results"],["Malaria", "Malaria Test Result"],
+        ["Blood Group", "Blood Group Test Result"]], ["", ""]),
+    {
+      :helpText => "New Test Results Available Today <span class='helper'> Lab Results</span>",
+      :id => "choice",
+      :multiple => true,
+      :optional => true
+    })
+  %>
+  
   <% else %>
   <%= (touch_select_tag "Previous HIV Test done", @patient,
     options_for_select([["", ""],["Yes", "Yes"],["No", "No"]]),
@@ -565,7 +580,8 @@
       :id => "previous_hiv_test",
       :helptext => "Previous HIV Test Done <span class='helper'> Lab Results</span>",
       :tt_onUnLoad => "parsedConceptName = '';",
-      :tt_onLoad => "parsedConceptName = 'Previous HIV Test'; __$('backButton').style.display = 'none';"
+      :tt_onLoad => "parsedConceptName = 'Previous HIV Test'; __$('backButton').style.display = 'none';",
+      :condition => "#{(@patient.resent_hiv_status?(today) == 'unknown')}"
 
     }).html_safe
 %>
@@ -647,7 +663,8 @@
       :id => "choice1",
       :multiple => true,
       :optional => true,
-      :condition => "__$('previous_hiv_test').value == 'No' || (__$('prev_hiv_test_results').value == 'Negative' && checkHIVTestDate());"
+      :condition => "__$('previous_hiv_test').value == 'No' || (__$('prev_hiv_test_results').value == 'Negative' && checkHIVTestDate())
+      || (#{['unknown','old_negative'].include?@patient.resent_hiv_status?(today) });"
     })
 %>
   
