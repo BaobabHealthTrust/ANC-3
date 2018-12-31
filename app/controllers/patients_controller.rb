@@ -776,9 +776,6 @@ class PatientsController < ApplicationController
       }
     }
     
-    @malaria = syphil["MALARIA TEST RESULT"].titleize rescue ""
-
-    @malaria_date = syphil["MALARIA TEST RESULT"].match(/not done/i)? "" : syphil["DATE OF LABORATORY TEST"] rescue nil
 
     @syphilis = syphil["SYPHILIS TEST RESULT"].titleize rescue nil
     
@@ -786,38 +783,38 @@ class PatientsController < ApplicationController
 
        id = ConceptName.find_by_name("Syphilis Test Result").concept_id
        res = ActiveRecord::Base.connection.select_all("SELECT MAX(obs_datetime)as test_date FROM obs WHERE person_id = #{@patient.patient_id} AND concept_id = #{id}")
-       @syphilis_date = res[0]["test_date"].to_date.strftime('%Y-%m-%d')
+       @syphilis_date = res[0]["test_date"].to_date.strftime("%d/%b/%Y")
 
     else
 
-      @syphilis_date = syphil["SYPHILIS TEST RESULT DATE"] rescue nil
+      @syphilis_date = syphil["SYPHILIS TEST RESULT DATE"].to_date.strftime("%d/%b/%Y") rescue nil
 
     end
     
     
     @hiv_test = syphil["HIV STATUS"].titleize rescue nil
      
-    @hiv_test_date = syphil["HIV TEST DATE"] rescue nil
+    @hiv_test_date = syphil["HIV TEST DATE"].to_date.strftime("%d/%b/%Y") rescue nil
 
     hb = {}; pos = 1;
 
     @patient.encounters.where(["encounter_type = ?", EncounterType.find_by_name("LAB RESULTS").id]).order("encounter_datetime DESC").each{|e|
-      e.observations.each{|o| hb[o.concept.concept_names.map(& :name).last.upcase + " " +
-            pos.to_s] = o.answer_string.squish.upcase; pos += 1 if o.concept.concept_names.map(& :name).last.upcase == "HB TEST RESULT DATE";
+      e.observations.each{|o| 
+        hb[o.concept.concept_names.map(& :name).last.upcase] = [o.answer_string.squish.upcase, o.obs_datetime.to_date.strftime("%d/%b/%Y")]; 
+            #pos += 1 if o.concept.concept_names.map(& :name).last.upcase == "HB TEST RESULT DATE";
       }
     }
+    #raise hb.inspect
+    if @hiv_test.blank?
+      @hiv_test = hb["PREVIOUS HIV TEST RESULTS"][0] rescue nil
+      @hiv_test_date = hb["PREVIOUS HIV TEST DATE"][0] rescue nil
+    end
 
-    @hb1 = hb["HB TEST RESULT 1"] rescue nil
+    @hb1, @hb1_date = hb["HB TEST RESULT"] rescue nil
 
-    @hb1_date = hb["HB TEST RESULT DATE 1"] rescue nil
+    @malaria, @malaria_date = hb["MALARIA TEST RESULT"] rescue nil
 
-    @hb2 = hb["HB TEST RESULT 2"] rescue nil
-
-    @hb2_date = hb["HB TEST RESULT DATE 2"] rescue nil
-
-    @cd4 = syphil['CD4 COUNT'] rescue nil
-
-    @cd4_date = syphil['CD4 COUNT DATETIME'] rescue nil
+    @preg_test, @preg_test_date = hb["PREGNANCY TEST"] rescue nil
 
     @height = @anc_patient.current_height.to_i
 
@@ -1192,7 +1189,7 @@ class PatientsController < ApplicationController
     @field = params[:field]
     i=0
     @month_names = [[]] +Date::MONTHNAMES[1..-1].collect{|month|[month,i+=1]} + [["Unknown","Unknown"]]
-    render :partial => "edit_demographics", :field =>@field, :layout => true and return
+    render "_edit_demographics", :field =>@field, :layout => true and return
   end
 
   def update_demographics

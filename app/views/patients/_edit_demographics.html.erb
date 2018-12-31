@@ -242,7 +242,7 @@
 
 </script>
 
-<% form_for :person, @person, :url => { :action => "update_demographics" } do |f| %>
+<form method="POST" action="update_demographics">
   <%
   case @field
   when 'first_name'
@@ -436,4 +436,4 @@
 
   <%= submit_tag "Update person" %>
 
-<% end %>
+</form>

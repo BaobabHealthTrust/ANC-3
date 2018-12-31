@@ -490,7 +490,6 @@
     :helpText => "<span class='helper'> ART Summary </span>"
   }
 %>
-<% #raise @patient.resent_hiv_status?(today).inspect %>
   <% if !(@hiv_status.blank?) && @patient.resent_hiv_status?(today) == "unknown" %>
 <%= (touch_hidden_tag "Previous HIV Test done", @patient, "Yes", :id => "previous_hiv_test" ).html_safe
     %>
@@ -652,6 +651,9 @@
     })
 %>
 
+<% if ['unknown','old_negative'].include?@patient.resent_hiv_status?(today) %>
+<% #raise @patient.resent_hiv_status?(today).inspect %>
+
   <%= select_tag("choice",
     options_for_select([["", ""],["", ""],
         ["HIV", "HIV Test Result"],["HB", "HB Test Result"],
@@ -663,10 +665,10 @@
       :id => "choice1",
       :multiple => true,
       :optional => true,
-      :condition => "__$('previous_hiv_test').value == 'No' || (__$('prev_hiv_test_results').value == 'Negative' && checkHIVTestDate())
-      || (#{['unknown','old_negative'].include?@patient.resent_hiv_status?(today) });"
+      :condition => "__$('previous_hiv_test').value == 'No' || (__$('prev_hiv_test_results').value == 'Negative' && checkHIVTestDate());"
     })
 %>
+<% end %>
   
   <%= (touch_select_tag "HIV status", @patient,
     options_for_select([["", ""],["Negative", "Negative"],

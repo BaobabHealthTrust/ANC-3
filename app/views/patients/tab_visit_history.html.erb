@@ -263,10 +263,10 @@
             </td>
             <td class="leftTop">
               <%= "<b>Outcome:</b> " + encounter["UPDATE OUTCOME"]["OUTCOME"].humanize + ";<br />" rescue "&nbsp;".html_safe %>
-              <%= ("<b>Other Drugs:</b> " +
+              <%= ("<b>Other Drugs:</b> ".html_safe +
                   (@other_drugs[element].collect{|d, v|
                     "#{d}: #{ (v.to_s.match(/\.[1-9]/) ? v : v.to_i) }"
-                  }.join("; ")) + ";<br />") if @other_drugs[element].length > 0 rescue "&nbsp;".html_safe %>
+                  }.join("; ")) + "; ") if @other_drugs[element].length > 0 rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop">
               <%= encounter["APPOINTMENT"]["APPOINTMENT DATE"] rescue "&nbsp;".html_safe %>

@@ -3,6 +3,9 @@
     color: #f00;
     font-weight: bold;
   }
+  .refer {
+    color: red;
+  }
 </style>
 
 <table width="100%" border="0" cellpadding="5">
@@ -44,7 +47,7 @@
               border-bottom: 1px solid #000;
               border-right: 1px solid #000;"
               align="center" <%= (!@syphilis.nil? ? (@syphilis.upcase == "POSITIVE" ? "class='selected'" : "") : "") %>>
-            &nbsp;<%= (!@syphilis.blank? ? @syphilis : "N/A") %>&nbsp;
+            &nbsp;<%= (!@syphilis.blank? ? (@syphilis.upcase == "POSITIVE" ? "#{@syphilis} <sup class='refer'>*</sup>".html_safe : @syphilis) : "N/A") %>&nbsp;
           </td>
         </tr>
         <tr>
@@ -60,12 +63,12 @@
               border-bottom: 1px solid #000;
               border-right: 1px solid #000; font-size: 1.5em;"
               align="center" <%= (!@hiv_test.nil? ? (@hiv_test.upcase == "POSITIVE" ? "class='selected'" : "") : "") %>>
-             <%= (!@hiv_test.blank? ? (@hiv_test.upcase == "POSITIVE" ? "=" : "-") : "") %>&nbsp;
+             <%= (!@hiv_test.blank? ? (@hiv_test.upcase == "POSITIVE" ? "= <sup class='refer'>*</sup>".html_safe : "-") : "") %>&nbsp;
           </td>
         </tr>
         <tr>
           <td style="padding-left: 30px;">
-            Hb1
+            Hb
           </td>
           <td style="border-left: 1px solid #000;
               border-bottom: 1px solid #000;"
@@ -79,7 +82,7 @@
             &nbsp;<%= @hb1 %>&nbsp;
           </td>
         </tr>
-        <tr>
+        <!--tr>
           <td style="padding-left: 30px;">
             Hb2
           </td>
@@ -94,22 +97,40 @@
               align="center" <%= (!@hb2.nil? ? (@hb2.to_i <= 11 && @hb2.to_s.upcase != "NOT DONE" ? "class='selected'" : "") : "") %>>
             &nbsp;<%= (!@hb2.blank? ? @hb2 : "N/A") %>&nbsp;
           </td>
-        </tr>
-
-        <td style="padding-left: 30px;">
-          Malaria
-        </td>
-        <td style="border-left: 1px solid #000;
+        </tr-->
+        <tr>
+          <td style="padding-left: 30px;">
+            Malaria
+          </td>
+          <td style="border-left: 1px solid #000;
             border-bottom: 1px solid #000;"
             align="center">
-          &nbsp;<%= (!@malaria_date.blank? ? @malaria_date : "N/A") %>&nbsp;
-        </td>
-        <td style="color: #000; border-left: 1px solid #000;
+            &nbsp;<%= (!@malaria_date.blank? ? @malaria_date : "N/A") %>&nbsp;
+          </td>
+          <td style="color: #000; border-left: 1px solid #000;
+            border-bottom: 1px solid #000;
+            border-right: 1px solid #000;"
+            align="center" class="<%= (!@malaria.blank? ? (@malaria.upcase == "POSITIVE" ? "selected" : "") : "") %>">
+            &nbsp;<%= (!@malaria.blank? ? (@malaria.upcase == "POSITIVE" ? "#{@malaria} <sup class='refer'>*</sup>".html_safe : @malaria) : "N/A") %>&nbsp;
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding-left: 30px;">
+            Pregnancy Test
+          </td>
+          <td style="border-left: 1px solid #000;
+            border-bottom: 1px solid #000;"
+            align="center">
+            &nbsp;<%= (!@preg_test_date.blank? ? @preg_test_date : "N/A") %>&nbsp;
+          </td>
+          <td style="color: #000; border-left: 1px solid #000;
             border-bottom: 1px solid #000;
             border-right: 1px solid #000;"
             align="center">
-          &nbsp;<%= (!@malaria.blank? ? @malaria : "N/A") %>&nbsp;
-        </td>
+            &nbsp;<%= (!@preg_test.blank? ? @preg_test : "N/A") %>&nbsp;
+          </td>
+        </tr>
 
       </table>
     </td>

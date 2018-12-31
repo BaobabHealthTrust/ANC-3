@@ -1919,8 +1919,8 @@ module ANCService
     end rescue nil
 
     person.update_attributes(person_params) if !person_params.empty?
-    person.names.first.update_attributes(names_params) if names_params
-    person.addresses.first.update_attributes(address_params) if address_params
+    person.names.first.update_attributes(names_params.permit!) if names_params
+    person.addresses.first.update_attributes(address_params.permit!) if address_params
 
     #update or add new person attribute
     person_attribute_params.each{|attribute_type_name, attribute|

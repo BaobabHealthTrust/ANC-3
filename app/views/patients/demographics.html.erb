@@ -120,7 +120,7 @@
           <td class='title'>Home Village</td>
           <td class='data'> <%= @anc_patient.home_village %></td>
           <td><a href="edit_demographics?patient_id=<%=@patient.id%>&person_id=<%=
-                 @patient.id %>&cat=<%= (params["cat"] rescue "") %>&field=home_village">Edit</a></td>
+                 @patient.id %>&cat=<%= (params["cat"] rescue "") %>&field=home_district">Edit</a></td>
         </tr>
 
         <tr>
@@ -139,7 +139,7 @@
           <td class='title'>Current Village</td>
           <td class='data'> <%= @anc_patient.current_address2 %></td>
           <td><a href="edit_demographics?patient_id=<%=@patient.id%>&person_id=<%=
-                 @patient.id %>&cat=<%= (params["cat"] rescue "") %>&field=city_village"> Edit</a></td>
+                 @patient.id %>&cat=<%= (params["cat"] rescue "") %>&field=current_district"> Edit</a></td>
         </tr>
 
         <tr>
