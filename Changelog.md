@@ -1,5 +1,20 @@
-## Changelog 3.x.x (2018-11-30)
+## Changelog 3.x.x (2018-12-31)
 
+#### [v3.2.5-rc.8] (2018-12-31)
+
+  * **Modification**: Modified patient dashboard on lab results, fixed edit demographics views
+  * **Modification**: Rework on HIV Test question for new and subsequent visits
+  * **Fix**: Confirm dashbord fix
+  * **Modification**: Removed previous hiv test question for hiv positive patients
+  * **Modification**: Modified hiv prev neg patients list from reporst controller
+  * **Modification**: Modified Lab results to ask for pregnancy test only if never been tested in any of the previous visits
+  * **Modification**: Modified hiv new negative query for cohort report
+  * **Modification**: Modified sp doses, albendazo queries for cohort report
+  * **Modification**: Modified cohort queries for prev hiv pos and prev hiv neg
+  * **Fix**: Fix on selecting december monthly report
+  * **Fix**: Fixed bug on obstetric history which unabled user to click ok once input has been entered for birth details
+  * **Modification**: Modified ITN report query
+  * **Addition**: Added portal attribute to application config file and modified sp report query
 #### [v3.2.5-rc.7] (2018-11-30)
   * **Modification**: Modified edit birthdate and edit demographics views
   * **Modification**: Modified dde views
