@@ -7,7 +7,7 @@ ___
 
 #### Ruby
 ANC run on ruby on rails which is why you need to install ruby. 
-Ruby version 2.5.3 is a requirement.
+Ruby version 2.5.3 with Rubygem 2.7.6 is a requirement.
 
 #### Mysql
 Mysql is used as a database for the application. 
@@ -30,7 +30,7 @@ In the config folder, copy all .yml.example files into .yml files.
 To achieve this perform the following commands
 ```
   $ cp config/database.yml.example config/database.yml
-  $ cp config/application.yml.example config/database.yml
+  $ cp config/application.yml.example config/application.yml
   $ cp config/dde_connection.yml.example config/dde_connection.yml
 ```
 

@@ -1,0 +1,136 @@
+<script>
+  tt_cancel_destination = "/clinic";
+
+  function setPropertyValue() {
+    if (document.getElementById('value')) {
+      if (document.getElementById('value').value == 'Yes') {
+        document.getElementById('property_value').value = 'true';
+      }else if (document.getElementById('value').value == 'No') {
+        document.getElementById('property_value').value = 'false';
+      }
+    }
+
+    if (document.getElementById('art_ip_address')) {
+      if (document.getElementById('art_ip_address').value !== "" && document.getElementById('art_port_number').value !== "" ) {
+        ip_addr = document.getElementById('art_ip_address').value
+        port_num = document.getElementById('art_port_number').value
+        document.getElementById('property_value').value = ip_addr+":"+port_num
+      }
+    }
+
+    if (document.getElementById('art_username') && document.getElementById('art_username').value !== "") {
+      username = document.getElementById('art_username').value
+      document.getElementById('property_value').value = username
+    }
+
+    if (document.getElementById('art_password') && document.getElementById('art_password').value !== "") {
+      password = document.getElementById('art_password').value
+      document.getElementById('property_value').value = password
+    }
+  }
+</script>
+
+<%= form_tag 'edit_configurations', :method => :post do %>
+  <% case params[:value]
+    when 'create_from_remote'
+      property = 'create.from.remote'
+  %>
+
+  <%= select_tag("property", options_for_select([" ", "Yes", "No"]),
+    :tt_onUnLoad => "setPropertyValue()" ,
+    :id => 'value',
+    :helpText  => params[:value].gsub('_',' ').humanize) %>
+
+  <%
+    when 'art_link'
+      property = 'art_link'
+  %>
+
+  <%= text_field_tag("property", (@art_link.split(':')[0] rescue ni),
+    {
+      :helpText => "NART IP Address",
+      :tt_onUnLoad => "setPropertyValue()" ,
+      :id => 'art_ip_address',
+      :field_type => 'number',
+      :tt_pageStyleClass => 'Numeric NumbersOnlyWithDecimal'
+    }) 
+  %>
+  
+  <%= text_field_tag("property", (@art_link.split(':')[1] rescue ni),
+    {
+      :helpText => "NART Port Number",
+      :id => 'art_port_number',
+      :tt_onUnLoad => "setPropertyValue()" ,
+      :field_type => 'number',
+      :tt_pageStyleClass => 'NumbersOnly'
+    }) 
+  %>
+
+  <%
+  when 'art_username'
+    property = 'remote_bart.username'
+  %>
+
+  <%= text_field_tag("property", @art_username,
+    {
+      :id => 'art_username',
+      :textCase => "lower",
+      :field_type => "normal",
+      :helpText => "NART sername",
+      :tt_onUnLoad => "setPropertyValue()"
+    }) 
+  %>
+
+  <%
+  when 'art_password'
+    property = 'remote_bart.password'
+  %>
+
+  <%= text_field_tag("property", @art_password,
+    {
+      :id => 'art_password',
+      :textCase => "lower",
+      :field_type => "normal",
+      :helpText => "NART password",
+      :tt_onUnLoad => "setPropertyValue()"
+    }) 
+  %>
+
+  <%
+  when 'show_lab_results'
+    property = 'show.lab.results'
+  when 'ask_pills_remaining_at_home'
+    property = 'ask.pills.remaining.at.home'
+  when 'extended_family_planning'
+    property = 'extended.family.planning'
+  when 'confirm_before_creating_a_patient'
+    property = 'confirm.before.creating'
+  when 'enter_lab_results'
+    property = 'enter.lab.results'
+  when 'activate_viral_load_routine_check'
+    property = 'activate.vl.routine.check'
+  when 'activate_drug_management'
+    property = 'activate.drug.management'
+  when 'activate_hypertension_enhancement'
+    property = "activate.htn.enhancement"
+  when 'activate_cervical_cancer_screening'
+    property = "activate.cervical.cancer.screening"
+  when 'enable_fast_track'
+    property = "enable.fast.track"
+  when 'show_swap_button'
+    property = "show.swap.button"
+  when 'show_user_feedback'
+    property = "show.user.feedback"
+  when 'military_site'
+    property = "military.site"
+  end
+%>
+  <%= hidden_field_tag "property", property %>
+
+  <%= hidden_field_tag "property_value", nil %>
+
+  <% unless params[:view_configuration].blank? %>
+    <%= hidden_field_tag "view_configuration", params[:view_configuration] %>
+  <% end %>
+
+<%end%>

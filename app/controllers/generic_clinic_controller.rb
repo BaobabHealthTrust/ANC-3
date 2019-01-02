@@ -242,4 +242,31 @@ class GenericClinicController < ApplicationController
     render :template => 'clinic/lab_tab.rhtml' , :layout => false
   end
 
+  def system_configurations
+    @current_location = Location.current_health_center.name rescue ''
+    @create_from_remote = GlobalProperty.find_by_property('create.from.remote').property_value.capitalize rescue "N/A"
+    @art_link = GlobalProperty.find_by_property('art_link').property_value rescue "N/A"
+    @art_username = GlobalProperty.find_by_property('remote_bart.username').property_value rescue "N/A"
+    @art_password = GlobalProperty.find_by_property('remote_bart.password').property_value rescue "N/A"
+    render layout: 'layouts/report'
+
+  end
+
+  def edit_configurations
+    @art_link = GlobalProperty.find_by_property('art_link').property_value rescue "N/A"
+    @art_username = GlobalProperty.find_by_property('remote_bart.username').property_value rescue "N/A"
+    @art_password = GlobalProperty.find_by_property('remote_bart.password').property_value rescue "N/A"
+    if request.post?     
+      global_property = GlobalProperty.find_by_property(params[:property]) || GlobalProperty.new()
+      global_property.property = params[:property]
+      global_property.property_value = params[:property_value]
+      global_property.save
+      if params[:view_configuration]
+        redirect_to("/clinic/system_configurations") and return
+      end
+      redirect_to '/clinic' and return
+    end
+    render layout: 'layouts/application'
+  end
+
 end
