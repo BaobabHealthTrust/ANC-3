@@ -751,13 +751,13 @@
       :id => "hb_result",
       :helptext => "HB Test Result (g/dl) <span class='helper'> Lab Results</span>",
       :field_type => "number",
-      :tt_pageStyleClass => "NumbersWithUnknownAndDecimal",
+      :tt_pageStyleClass => "NumbersOnlyWithDecimal",
       :min => 2,
       :max => 16,
       :tt_onLoad => "unknownToNotDone(); parsedConceptName = 'HB Test Result';",
       :tt_onUnLoad => "parsedConceptName = '';",
       :condition => "getSelected().match(/HB/)",
-      :validationRule => "^([0-9]+)$|Not Done$",
+      :validationRule => "(^([0-9]*[.])?[0-9]+$)",
       :validationMessage => "Enter valid test results."
     }).html_safe
 %>
@@ -775,8 +775,7 @@
     <%= (touch_select_tag "Syphilis Test Result", @patient,
     options_for_select([["", ""],
         ["Positive", "Positive"],
-        ["Negative", "Negative"],
-        ["Not Done", "Not Done"]]),
+        ["Negative", "Negative"]]),
     {
       :id => "syphilis_result",
       :helptext => "Syphilis Test Result <span class='helper'> Lab Results</span>",
@@ -790,8 +789,7 @@
     <%= (touch_select_tag "Malaria Test Result", @patient,
     options_for_select([["", ""],
         ["Negative", "Negative"],
-        ["Positive", "Positive"],
-        ["Not Done", "Not Done"]]),
+        ["Positive", "Positive"]]),
     {
       :id => "malaria_test_result",
       :helptext => "Malaria Test Result <span class='helper'> Lab Results</span>",
