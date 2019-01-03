@@ -2,10 +2,11 @@
   tt_cancel_destination = "/clinic";
 
   function setPropertyValue() {
-    if (document.getElementById('value')) {
-      if (document.getElementById('value').value == 'Yes') {
+    if (document.getElementById('create_from_remote')) {
+      value = document.getElementById('create_from_remote').value
+      if ( value == 'Yes') {
         document.getElementById('property_value').value = 'true';
-      }else if (document.getElementById('value').value == 'No') {
+      }else {
         document.getElementById('property_value').value = 'false';
       }
     }
@@ -27,6 +28,34 @@
       password = document.getElementById('art_password').value
       document.getElementById('property_value').value = password
     }
+    
+    if (document.getElementById('art_location') && document.getElementById('art_location').value !== "") {
+      location = document.getElementById('art_location').value
+      document.getElementById('property_value').value = location
+    }
+
+    if (document.getElementById('ask_father_details') && document.getElementById('ask_father_details').value !== "") {
+      value = document.getElementById('ask_father_details').value
+      document.getElementById('property_value').value = value
+    }
+
+    if (document.getElementById('use_portal') && document.getElementById('use_portal').value !== "") {
+      use_portal = document.getElementById('use_portal').value
+      document.getElementById('property_value').value = use_portal
+    }
+    
+    if (document.getElementById('portal_url') && document.getElementById('portal_url').value !== "") {
+      portal_url = document.getElementById('portal_url').value
+      document.getElementById('property_value').value = portal_url
+    }
+    
+    if (document.getElementById('portal_ip_address')) {
+      if (document.getElementById('portal_ip_address').value !== "" && document.getElementById('portal_port_number').value !== "" ) {
+        ip_addr = document.getElementById('portal_ip_address').value
+        port_num = document.getElementById('portal_port_number').value
+        document.getElementById('property_value').value = "http://"+ip_addr+":"+port_num
+      }
+    }
   }
 </script>
 
@@ -38,7 +67,7 @@
 
   <%= select_tag("property", options_for_select([" ", "Yes", "No"]),
     :tt_onUnLoad => "setPropertyValue()" ,
-    :id => 'value',
+    :id => 'create_from_remote',
     :helpText  => params[:value].gsub('_',' ').humanize) %>
 
   <%
@@ -46,7 +75,7 @@
       property = 'art_link'
   %>
 
-  <%= text_field_tag("property", (@art_link.split(':')[0] rescue ni),
+  <%= text_field_tag("property", (@art_link.split(':')[0] rescue nil),
     {
       :helpText => "NART IP Address",
       :tt_onUnLoad => "setPropertyValue()" ,
@@ -56,7 +85,7 @@
     }) 
   %>
   
-  <%= text_field_tag("property", (@art_link.split(':')[1] rescue ni),
+  <%= text_field_tag("property", (@art_link.split(':')[1] rescue nil),
     {
       :helpText => "NART Port Number",
       :id => 'art_port_number',
@@ -97,14 +126,63 @@
   %>
 
   <%
-  when 'show_lab_results'
-    property = 'show.lab.results'
-  when 'ask_pills_remaining_at_home'
-    property = 'ask.pills.remaining.at.home'
-  when 'extended_family_planning'
-    property = 'extended.family.planning'
-  when 'confirm_before_creating_a_patient'
-    property = 'confirm.before.creating'
+  when 'art_location'
+    property = 'remote_bart.location'
+  %>
+
+  <%= select_tag("property", options_for_select(@art_locations),
+    :tt_onUnLoad => "setPropertyValue()" ,
+    :id => 'art_location',
+    :helpText  => params[:value].gsub('_',' ').humanize,
+    :tt_pageStyleClass => "NoKeyboard") %>
+
+  <%
+  when 'ask_father_details'
+    property = 'father_details'
+  %>
+  
+  <%= select_tag("property", options_for_select([[" "," "],["Yes", "true"],["No", "false"]]),
+    :tt_onUnLoad => "setPropertyValue()" ,
+    :id => 'ask_father_details',
+    :helpText  => params[:value].gsub('_',' ').humanize) %>
+
+  <%
+  when 'portal'
+    property = 'use_portal'
+  %>
+
+  <%= select_tag("property", options_for_select([[" "," "],["Yes", "true"],["No", "false"]]),
+    :tt_onUnLoad => "setPropertyValue()" ,
+    :id => 'use_portal',
+    :helpText  => params[:value].gsub('_',' ').humanize) %>
+
+  <%
+  when 'portal_url'
+    property = 'portal_url'
+  %>
+
+  <%= text_field_tag("property", (@portal_url.split(':')[1].split('//')[1] rescue nil),
+    {
+      :helpText => "Portal IP Address",
+      :tt_onUnLoad => "setPropertyValue()" ,
+      :id => 'portal_ip_address',
+      :field_type => 'number',
+      :tt_pageStyleClass => 'Numeric NumbersOnlyWithDecimal'
+    }) 
+  %>
+  
+  <%= text_field_tag("property", (@portal_url.split(':')[2] rescue nil),
+    {
+      :helpText => "Portal Port Number",
+      :id => 'portal_port_number',
+      :tt_onUnLoad => "setPropertyValue()" ,
+      :field_type => 'number',
+      :tt_pageStyleClass => 'NumbersOnly'
+    }) 
+  %>
+
+
+  <%
   when 'enter_lab_results'
     property = 'enter.lab.results'
   when 'activate_viral_load_routine_check'

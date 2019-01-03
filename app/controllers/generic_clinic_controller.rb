@@ -244,25 +244,56 @@ class GenericClinicController < ApplicationController
 
   def system_configurations
     @current_location = Location.current_health_center.name rescue ''
-    @create_from_remote = GlobalProperty.find_by_property('create.from.remote').property_value.capitalize rescue "N/A"
+
+    @create_from_remote = GlobalProperty.find_by_property('create.from.remote').property_value rescue "N/A"
+
     @art_link = GlobalProperty.find_by_property('art_link').property_value rescue "N/A"
+
     @art_username = GlobalProperty.find_by_property('remote_bart.username').property_value rescue "N/A"
+
     @art_password = GlobalProperty.find_by_property('remote_bart.password').property_value rescue "N/A"
+
+    location = GlobalProperty.find_by_property('remote_bart.location').property_value rescue nil
+    @art_location = Location.find(location).name rescue "N/A"
+
+    @father_details = GlobalProperty.find_by_property('father_details').property_value rescue false
+    
+    @use_portal = GlobalProperty.find_by_property('use_portal').property_value rescue false
+    
+    @portal_url = GlobalProperty.find_by_property('portal_url').property_value rescue "N/A"
+
     render layout: 'layouts/report'
 
   end
 
   def edit_configurations
-    @art_link = GlobalProperty.find_by_property('art_link').property_value rescue "N/A"
-    @art_username = GlobalProperty.find_by_property('remote_bart.username').property_value rescue "N/A"
-    @art_password = GlobalProperty.find_by_property('remote_bart.password').property_value rescue "N/A"
+
+    @art_link = GlobalProperty.find_by_property('art_link').property_value rescue nil
+
+    @art_username = GlobalProperty.find_by_property('remote_bart.username').property_value rescue nil
+
+    @art_password = GlobalProperty.find_by_property('remote_bart.password').property_value rescue nil
+
+    @art_locations = Location.find_by_sql("SELECT * FROM location WHERE location_id IN 
+      (SELECT location_id FROM location_tag_map WHERE location_tag_id = 
+        (SELECT location_tag_id FROM location_tag WHERE name = 'Workstation Location' LIMIT 1)) 
+      ORDER BY name ASC").collect{|l| [l.name, l.location_id]}
+
+    @father_details = GlobalProperty.find_by_property('father_details').property_value rescue nil
+    
+    @portal_url = GlobalProperty.find_by_property('portal_url').property_value
+    
     if request.post?     
       global_property = GlobalProperty.find_by_property(params[:property]) || GlobalProperty.new()
       global_property.property = params[:property]
       global_property.property_value = params[:property_value]
       global_property.save
       if params[:view_configuration]
-        redirect_to("/clinic/system_configurations") and return
+        if (params[:property] == "use_portal" && params[:property_value] == "true")
+          redirect_to("/clinic/edit_configurations?value=portal_url&view_configuration=true") and return
+        else
+          redirect_to("/clinic/system_configurations") and return
+        end
       end
       redirect_to '/clinic' and return
     end

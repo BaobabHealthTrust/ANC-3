@@ -2073,8 +2073,8 @@ function addValidationInterval(){
 setInterval(function(){
   try{
     age_units = __$('unit').value.toLowerCase();      
-  }catch{
-
+  }catch (error){
+    console.error(error);
   }
   console.log(mother_age);
 }, 200)
