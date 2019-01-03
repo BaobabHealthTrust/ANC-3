@@ -204,11 +204,11 @@
             </td>
             <td class="leftTop" align="center">
               <%= (((element.to_date - @current_range[0]["START"].to_date).to_i / 7) <= 0 ? "?" :
-                  (((element.to_date - @current_range[0]["START"].to_date).to_i / 7) - 1).to_s + " wks") rescue "&nbsp;" %>
+                  (((element.to_date - @current_range[0]["START"].to_date).to_i / 7) - 1).to_s + " cm") rescue "&nbsp;" %>
             </td>
             <td class="leftTop" align="center">
               <%= (encounter["OBSERVATIONS"]["FUNDUS"].to_i <= 0 ? "?" :
-                  encounter["OBSERVATIONS"]["FUNDUS"].to_i.to_s + " (wks)") rescue "&nbsp;".html_safe %>
+                  encounter["OBSERVATIONS"]["FUNDUS"].to_i.to_s + " (cm)") rescue "&nbsp;".html_safe %>
             </td>
             <td class="leftTop">
               <%= (encounter["OBSERVATIONS"]["POSITION"]).to_s.titleize.gsub("Breech Delivery", "Breech") rescue "&nbsp;".html_safe %>&nbsp;

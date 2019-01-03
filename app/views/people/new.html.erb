@@ -524,7 +524,8 @@
       :tt_requireNextClick => false,
       :ajaxURL => '',
       :tt_pageStyleClass => "azButton",
-      :tt_onLoad => "set_ajaxURL_for_suggestions('/people/traditional_authority/TraditionalAuthority?filter_value=' ,document.getElementById('state_province').value);$('nextButton').style.display = 'none';" %></p>
+      :tt_onLoad => "set_ajaxURL_for_suggestions('/people/traditional_authority/TraditionalAuthority?filter_value=' ,document.getElementById('state_province').value);
+        $('nextButton').style.display = 'none';document.getElementById('Unknown').style.display = 'none';" %></p>
 
   <%= text_field "filter" , 't_a_a', :tt_onUnLoad => 'if ($("t_a_a")) {$("t_a").value = $("t_a_a").value}',
     :condition => '$("state_province").value == "Other" && $("filter_region").value != "Foreign"', :ajaxURL => '/person_addresses/traditional_authority?search_string=', :tt_pageStyleClass => "azButton", :allowFreeText => true,  :helpText => 'Specify Traditional Authority (T/A) or area of residence', :tt_onLoad => "$('nextButton').style.display = 'block';" %></p>
