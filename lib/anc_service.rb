@@ -754,7 +754,8 @@ module ANCService
 
       #@hiv_test_date = syphil["HIV STATUS"].match(/not done/i) ? "" : syphil["HIV TEST DATE"] rescue nil
       
-      hiv_test_date = syphil["PREVIOUS HIV TEST RESULTS"].match(/not done/i) ? "" : syphil["PREVIOUS HIV TEST DATE"] rescue nil
+      hiv_test_date = syphil["HIV TEST DATE"].blank? ? syphil["PREVIOUS HIV TEST DATE"] :  syphil["HIV TEST DATE"] rescue nil
+
       @hiv_test_date = hiv_test_date.to_date.strftime("%Y-%m-%d") rescue ""
 
       hb = {}; pos = 1;
@@ -831,19 +832,20 @@ module ANCService
       # label.draw_text(@who,270,136,0,2,1,1,false)
 
       label.draw_text(@hiv_test_date.to_s,188,146,0,2,1,1,false)
-      label.draw_text(target_date.to_s,188,176,0,2,1,1,false)
-      label.draw_text(target_date.to_s,188,206,0,2,1,1,false)
-      label.draw_text(target_date.to_s,188,236,0,2,1,1,false)
-      label.draw_text(target_date.to_s,188,266,0,2,1,1,false)
+      label.draw_text("#{@syphilis.blank? ? "N/A" : target_date.to_s}",188,176,0,2,1,1,false)
+      label.draw_text("#{@hb.blank? ? "N/A" : target_date.to_s}",188,206,0,2,1,1,false)
+      label.draw_text("#{@malaria.blank? ? "N/A" : target_date.to_s}",188,236,0,2,1,1,false)
+      label.draw_text("#{@blood_group.blank? ? "N/A" : target_date.to_s}",188,266,0,2,1,1,false)
 
 
       label.draw_text(@hiv_test.to_s,345,146,0,2,1,1,false)
-      label.draw_text(@syphilis.to_s,325,176,0,2,1,1,false)
-      label.draw_text(@hb.to_s,325,226,0,2,1,1,false)
+      label.draw_text("#{@syphilis.blank? ? "N/A" : @syphilis.to_s}",325,176,0,2,1,1,false)
+      label.draw_text("#{@hb.blank? ? "N/A" : @hb.to_s}",325,206,0,2,1,1,false)
       #label.draw_text(@hb2,325,256,0,2,1,1,false)
-      label.draw_text(@malaria.to_s,325,236,0,2,1,1,false)
-      label.draw_text(@blood_group.to_s,325,266,0,2,1,1,false)
+      label.draw_text("#{@malaria.blank? ? "N/A" : @malaria.to_s}",325,236,0,2,1,1,false)
+      label.draw_text("#{@blood_group.blank? ? "N/A" : @blood_group.to_s}",325,266,0,2,1,1,false)
       #label.draw_text(@malaria,188,226,0,2,1,1,false)
+      label.draw_text("Pregnancy Test Done",400,59,0,2,1,1,false)
 
       label.print(1)
 
