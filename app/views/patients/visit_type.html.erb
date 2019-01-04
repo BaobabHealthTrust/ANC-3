@@ -60,7 +60,7 @@ session_date = session[:datetime]? session[:datetime] : Date.today
   //-->
 </script>
 
-<% form_tag :controller => "encounters", :action => "create" do %>
+<%= form_tag :controller => "encounters", :action => "create" do %>
 
  <%  session_date = session[:datetime] || Time.now() %>
 

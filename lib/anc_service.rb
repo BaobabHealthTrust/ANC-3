@@ -651,80 +651,76 @@ module ANCService
 
       label = ZebraPrinter::StandardLabel.new
 
-      label.draw_text("Obstetric History",28,29,0,1,1,2,false)
-      label.draw_text("Medical History",400,29,0,1,1,2,false)
-      label.draw_text("Refer",750,29,0,1,1,2,true)
-      label.draw_line(25,60,172,1,0)
-      label.draw_line(400,60,152,1,0)
-      label.draw_text("Gravida",28,80,0,2,1,1,false)
-      label.draw_text("Asthma",400,80,0,2,1,1,false)
-      label.draw_text("Deliveries",28,110,0,2,1,1,false)
-      label.draw_text("Hypertension",400,110,0,2,1,1,false)
-      label.draw_text("Abortions",28,140,0,2,1,1,false)
-      label.draw_text("Diabetes",400,140,0,2,1,1,false)
-      label.draw_text("Still Births",28,170,0,2,1,1,false)
-      label.draw_text("Epilepsy",400,170,0,2,1,1,false)
-      label.draw_text("Vacuum Extraction",28,200,0,2,1,1,false)
-      label.draw_text("Renal Disease",400,200,0,2,1,1,false)
-      # label.draw_text("Symphisiotomy",28,230,0,2,1,1,false)
-      label.draw_text("C/Section",28,230,0,2,1,1,false)
-      label.draw_text("Fistula Repair",400,230,0,2,1,1,false)
-      label.draw_text("Haemorrhage",28,260,0,2,1,1,false)
-      label.draw_text("Leg/Spine Deformation",400,260,0,2,1,1,false)
-      label.draw_text("Pre-Eclampsia",28,290,0,2,1,1,false)
-      label.draw_text("Age",400,290,0,2,1,1,false)
-      label.draw_line(250,70,130,1,0)
-      label.draw_line(250,70,1,236,0)
-      label.draw_line(250,306,130,1,0)
-      label.draw_line(380,70,1,236,0)
-      label.draw_line(250,100,130,1,0)
-      label.draw_line(250,130,130,1,0)
-      label.draw_line(250,160,130,1,0)
-      label.draw_line(250,190,130,1,0)
-      label.draw_line(250,220,130,1,0)
-      label.draw_line(250,250,130,1,0)
-      label.draw_line(250,280,130,1,0)
-      label.draw_line(659,70,130,1,0)
-      label.draw_line(659,70,1,236,0)
-      label.draw_line(659,306,130,1,0)
-      label.draw_line(790,70,1,236,0)
-      label.draw_line(659,100,130,1,0)
-      label.draw_line(659,130,130,1,0)
-      label.draw_line(659,160,130,1,0)
-      label.draw_line(659,190,130,1,0)
-      label.draw_line(659,220,130,1,0)
-      label.draw_line(659,250,130,1,0)
-      label.draw_line(659,280,130,1,0)
-      label.draw_text("#{@gravida}",280,80,0,2,1,1,false)
-      label.draw_text("#{@deliveries}",280,110,0,2,1,1,(((@deliveries > 4) rescue false) ? true : false))
-      label.draw_text("#{@abortions}",280,140,0,2,1,1,(@abortions > 1 ? true : false))
-      label.draw_text("#{(!@stillbirths.nil? ? (@stillbirths.upcase == "NO" ? "NO" : "YES") : "")}",280,170,0,2,1,1,
+      label.draw_text("Obstetric History",28,8,0,1,1,2,false)
+      label.draw_text("Medical History",400,8,0,1,1,2,false)
+      label.draw_text("Refer",750,8,0,1,1,2,true)
+      label.draw_line(25,39,172,1,0)
+      label.draw_line(400,39,152,1,0)
+      label.draw_text("Gravida",28,59,0,2,1,1,false)
+      label.draw_text("Asthma",400,59,0,2,1,1,false)
+      label.draw_text("Deliveries",28,89,0,2,1,1,false)
+      label.draw_text("Hypertension",400,89,0,2,1,1,false)
+      label.draw_text("Abortions",28,119,0,2,1,1,false)
+      label.draw_text("Diabetes",400,119,0,2,1,1,false)
+      label.draw_text("Still Births",28,149,0,2,1,1,false)
+      label.draw_text("Epilepsy",400,149,0,2,1,1,false)
+      label.draw_text("Vacuum Extraction",28,179,0,2,1,1,false)
+      label.draw_text("Renal Disease",400,179,0,2,1,1,false)
+      label.draw_text("C/Section",28,209,0,2,1,1,false)
+      label.draw_text("Fistula Repair",400,209,0,2,1,1,false)
+      label.draw_text("Haemorrhage",28,239,0,2,1,1,false)
+      label.draw_text("Leg/Spine Deformation",400,239,0,2,1,1,false)
+      label.draw_text("Pre-Eclampsia",28,269,0,2,1,1,false)
+      label.draw_text("Age",400,269,0,2,1,1,false)
+      label.draw_line(250,49,130,1,0)
+      label.draw_line(250,49,1,236,0)
+      label.draw_line(250,285,130,1,0)
+      label.draw_line(380,49,1,236,0)
+      label.draw_line(250,79,130,1,0)
+      label.draw_line(250,109,130,1,0)
+      label.draw_line(250,139,130,1,0)
+      label.draw_line(250,169,130,1,0)
+      label.draw_line(250,199,130,1,0)
+      label.draw_line(250,229,130,1,0)
+      label.draw_line(250,259,130,1,0)
+      label.draw_line(659,49,130,1,0)
+      label.draw_line(659,49,1,236,0)
+      label.draw_line(659,285,130,1,0)
+      label.draw_line(790,49,1,236,0)
+      label.draw_line(659,79,130,1,0)
+      label.draw_line(659,109,130,1,0)
+      label.draw_line(659,139,130,1,0)
+      label.draw_line(659,169,130,1,0)
+      label.draw_line(659,199,130,1,0)
+      label.draw_line(659,229,130,1,0)
+      label.draw_line(659,259,130,1,0)
+      label.draw_text("#{@gravida}",280,59,0,2,1,1,false)
+      label.draw_text("#{@deliveries}",280,89,0,2,1,1,(((@deliveries > 4) rescue false) ? true : false))
+      label.draw_text("#{@abortions}",280,119,0,2,1,1,(@abortions > 1 ? true : false))
+      label.draw_text("#{(!@stillbirths.nil? ? (@stillbirths.upcase == "NO" ? "NO" : "YES") : "")}",280,149,0,2,1,1,
         (!@stillbirths.nil? ? (@stillbirths.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@vacuum.nil? ? (@vacuum > 0 ? "YES" : "NO") : "")}",280,200,0,2,1,1,
+      label.draw_text("#{(!@vacuum.nil? ? (@vacuum > 0 ? "YES" : "NO") : "")}",280,179,0,2,1,1,
         (!@vacuum.nil? ? (@vacuum > 0 ? true : false) : false))
-      # label.draw_text("#{(!@symphosio.nil? ? (@symphosio.upcase == "NO" ? "NO" : "YES") : "")}",280,230,0,2,1,1,
-      #   (!@symphosio.nil? ? (@symphosio.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@csections.blank? ? (@csections <= 0 ? "NO" : "YES") : "")}",280,230,0,2,1,1,
+      label.draw_text("#{(!@csections.blank? ? (@csections <= 0 ? "NO" : "YES") : "")}",280,209,0,2,1,1,
         (!@csections.blank? ? (@csections <= 0 ? false : true) : false))
-      label.draw_text("#{@haemorrhage}",280,260,0,2,1,1,(((@haemorrhage.upcase == "PPH") rescue false) ? true : false))
-      label.draw_text("#{(!@preeclampsia.nil? ? (((@preeclampsia.upcase == "NO") rescue false) ? "NO" : "YES") : "")}",280,285,0,2,1,1,
+      label.draw_text("#{@haemorrhage}",280,239,0,2,1,1,(((@haemorrhage.upcase == "PPH") rescue false) ? true : false))
+      label.draw_text("#{(!@preeclampsia.nil? ? (((@preeclampsia.upcase == "NO") rescue false) ? "NO" : "YES") : "")}",280,264,0,2,1,1,
         (!@preeclampsia.nil? ? (@preeclampsia.upcase == "NO" ? false : true) : false))
-
-      label.draw_text("#{(!@asthma.nil? ? (@asthma.upcase == "NO" ? "NO" : "YES") : "")}",690,80,0,2,1,1,
+      label.draw_text("#{(!@asthma.nil? ? (@asthma.upcase == "NO" ? "NO" : "YES") : "")}",690,59,0,2,1,1,
         (!@asthma.nil? ? (@asthma.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@hyper.nil? ? (@hyper.upcase == "NO" ? "NO" : "YES") : "")}",690,110,0,2,1,1,
+      label.draw_text("#{(!@hyper.nil? ? (@hyper.upcase == "NO" ? "NO" : "YES") : "")}",690,89,0,2,1,1,
         (!@hyper.nil? ? (@hyper.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@diabetes.nil? ? (@diabetes.upcase == "NO" ? "NO" : "YES") : "")}",690,140,0,2,1,1,
+      label.draw_text("#{(!@diabetes.nil? ? (@diabetes.upcase == "NO" ? "NO" : "YES") : "")}",690,119,0,2,1,1,
         (!@diabetes.nil? ? (@diabetes.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@epilepsy.nil? ? (@epilepsy.upcase == "NO" ? "NO" : "YES") : "")}",690,170,0,2,1,1,
+      label.draw_text("#{(!@epilepsy.nil? ? (@epilepsy.upcase == "NO" ? "NO" : "YES") : "")}",690,149,0,2,1,1,
         (!@epilepsy.nil? ? (@epilepsy.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@renal.nil? ? (@renal.upcase == "NO" ? "NO" : "YES") : "")}",690,200,0,2,1,1,
+      label.draw_text("#{(!@renal.nil? ? (@renal.upcase == "NO" ? "NO" : "YES") : "")}",690,179,0,2,1,1,
         (!@renal.nil? ? (@renal == "NO" ? false : true) : false))
-      label.draw_text("#{(!@fistula.nil? ? (@fistula.upcase == "NO" ? "NO" : "YES") : "")}",690,230,0,2,1,1,
+      label.draw_text("#{(!@fistula.nil? ? (@fistula.upcase == "NO" ? "NO" : "YES") : "")}",690,209,0,2,1,1,
         (!@fistula.nil? ? (@fistula.upcase == "NO" ? false : true) : false))
-      label.draw_text("#{(!@deform.nil? ? (@deform.upcase == "NO" ? "NO" : "YES") : "")}",690,260,0,2,1,1,
+      label.draw_text("#{(!@deform.nil? ? (@deform.upcase == "NO" ? "NO" : "YES") : "")}",690,239,0,2,1,1,
         (!@deform.nil? ? (@deform == "NO" ? false : true) : false))
-      label.draw_text("#{@age}",690,285,0,2,1,1,
+      label.draw_text("#{@age}",690,264,0,2,1,1,
         (((@age > 0 && @age < 16) || (@age > 40)) ? true : false))
 
       label.print(1)
