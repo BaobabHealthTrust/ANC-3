@@ -1652,37 +1652,14 @@ class Reports
   end
 
   def women_previously_tested_hiv_positive
+    hiv_pos_concept = ConceptName.find_by_name("positive")
+    prev_hiv_status_concept = ConceptName.find_by_name("Previous HIV Test Results")
 
-    select = Encounter.find_by_sql([
-        "SELECT
-                e.patient_id,
-                (select max(encounter_datetime) as date from encounter
-                inner join obs on obs.person_id = encounter.patient_id
-                where encounter_type = ? AND obs.concept_id = ? AND DATE(encounter_datetime) >= ?
-                AND DATE(encounter_datetime) <= ? AND encounter.voided = 0 AND encounter.patient_id = e.patient_id)
-                AS date,
-                (SELECT value_datetime FROM obs
-                WHERE encounter_id = e.encounter_id AND obs.concept_id =
-                (SELECT concept_id FROM concept_name WHERE name = 'Previous HIV test date' LIMIT 1)) AS test_date
-                FROM encounter e
-                INNER JOIN obs o ON o.encounter_id = e.encounter_id AND e.voided = 0
-                WHERE o.concept_id = (SELECT concept_id FROM concept_name WHERE name = 'Previous HIV Test Results' LIMIT 1)
-                AND ((o.value_coded = (SELECT concept_id FROM concept_name WHERE name = 'Positive' LIMIT 1))
-                OR (o.value_text = 'Positive'))
-                AND e.patient_id IN (?)
-                AND e.encounter_id = (SELECT MAX(encounter.encounter_id) FROM encounter
-                INNER JOIN obs ON obs.encounter_id = encounter.encounter_id AND obs.concept_id =
-                (SELECT concept_id FROM concept_name WHERE name = 'Previous HIV test date' LIMIT 1)
-                WHERE encounter_type = e.encounter_type AND patient_id = e.patient_id
-                AND DATE(encounter.encounter_datetime) <= ?)
-                AND (DATE(e.encounter_datetime) <= ?)
-                GROUP BY e.patient_id
-                HAVING DATE(date) = DATE(test_date)
-        ",CURRENT_PREGNANCY_ENCOUNTER.id,
-        LMP_CONCEPT.concept_id,
-        @monthly_start_date.to_date.beginning_of_month.strftime('%Y-%m-%d 00:00:00'),
-        @monthly_end_date.to_date.end_of_month.strftime('%Y-%m-%d 23:59:59'),
-        @new_monthly_visits,@monthly_end_date.to_date, @monthly_end_date.to_date
+    select = Encounter.find_by_sql(["SELECT e.patient_id
+      FROM encounter e INNER JOIN obs o ON o.encounter_id = e.encounter_id AND e.voided = 0
+      WHERE o.concept_id = ? AND (o.value_coded = ? OR o.value_text = 'Positive')
+      AND e.patient_id IN (?)",
+      hiv_status_concept.concept_id, prev_hiv_pos_concept.concept_id, @new_monthly_visits
       ]).map(&:patient_id)
   end
 
