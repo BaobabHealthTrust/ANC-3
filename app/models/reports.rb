@@ -1659,7 +1659,7 @@ class Reports
       FROM encounter e INNER JOIN obs o ON o.encounter_id = e.encounter_id AND e.voided = 0
       WHERE o.concept_id = ? AND (o.value_coded = ? OR o.value_text = 'Positive')
       AND e.patient_id IN (?)",
-      hiv_status_concept.concept_id, prev_hiv_pos_concept.concept_id, @new_monthly_visits
+      prev_hiv_status_concept.concept_id, hiv_pos_concept.concept_id, @new_monthly_visits
       ]).map(&:patient_id)
   end
 
