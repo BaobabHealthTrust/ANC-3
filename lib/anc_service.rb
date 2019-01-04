@@ -792,7 +792,7 @@ module ANCService
 
       label = ZebraPrinter::StandardLabel.new
 
-      label.draw_text("Examination",28,09,0,1,1,2,false)
+      label.draw_text("Examination",28,9,0,1,1,2,false)
       label.draw_line(25,35,115,1,0)
       label.draw_line(180,140,250,1,0)
 
