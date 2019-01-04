@@ -845,7 +845,6 @@ module ANCService
       label.draw_text("#{@malaria.blank? ? "N/A" : @malaria.to_s}",325,236,0,2,1,1,false)
       label.draw_text("#{@blood_group.blank? ? "N/A" : @blood_group.to_s}",325,266,0,2,1,1,false)
       #label.draw_text(@malaria,188,226,0,2,1,1,false)
-      label.draw_text("Pregnancy Test Done",400,59,0,2,1,1,false)
 
       label.print(1)
 
