@@ -77,7 +77,7 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
     end
 
     if person_params.present?
-      person_params[:uuid] = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+      # person_params[:uuid] = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
       person = Bart2Connection::Person.create(person_params)
     end
 
@@ -89,12 +89,12 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
     person.save
 
     if names_params.present?
-      names_params[:uuid] = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+      names_params[:uuid] = SecureRandom.uuid # self.connection.select_one("SELECT UUID() as uuid")["uuid"]
       person.names.create(names_params)
     end
 
     if address_params.present?
-      address_params[:uuid] = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+      address_params[:uuid] = SecureRandom.uuid # self.connection.select_one("SELECT UUID() as uuid")["uuid"]
       person.addresses.create(address_params) unless address_params.empty? rescue nil
     end
 
@@ -132,13 +132,13 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
 	
         identifier_type_name = p_identifier[0]
         identifier = p_identifier[1]
-        uuid = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+        uuid = SecureRandom.uuid
         next if identifier.blank?
 
         identifier_type = Bart2Connection::PatientIdentifierType.find_by_name(identifier_type_name) || Bart2Connection::PatientIdentifierType.find_by_name("Unknown id")
         patient.patient_identifiers.create("identifier" => identifier,
           "identifier_type" => identifier_type.patient_identifier_type_id,
-          "uuid" => 	uuid = self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+          "uuid" => 	SecureRandom.uuid
         )
       } if patient_params["identifiers"]
 
@@ -219,13 +219,13 @@ class Bart2Connection::PatientIdentifier < ActiveRecord::Base
           patient.patient_identifiers.create(
             :identifier_type => PatientIdentifierType.find_by_name("Old Identification Number").id,
             :identifier => old_national_id,
-            :uuid => self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+            :uuid => SecureRandom.uuid
           )
 
           patient.patient_identifiers.create(
             :identifier_type => PatientIdentifierType.find_by_name("National id").id,
             :identifier => national_id,
-            :uuid => self.connection.select_one("SELECT UUID() as uuid")["uuid"]
+            :uuid => SecureRandom.uuid
           )
 
           art_npid.each do |npid|

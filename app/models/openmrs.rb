@@ -39,7 +39,7 @@ module Openmrs
       self.date_created = Time.now if self.has_attribute?("date_created")
     end
 
-    self.uuid = ActiveRecord::Base.connection.select_one("SELECT UUID() as uuid")['uuid'] if self.has_attribute?("uuid")
+    self.uuid = SecureRandom.uuid if self.has_attribute?("uuid")
   end
 
   # Override this
