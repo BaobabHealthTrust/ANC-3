@@ -1625,10 +1625,12 @@ class Reports
   end
 
   def women_received_itn
-    Encounter.joins([:observations]).where(["concept_id = ? AND (value_text = 'Yes')
-        AND ( DATE(encounter_datetime) >= ? 
-        AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
-        ConceptName.find_by_name("Bed Net").concept_id,
+    yes_concept = ConceptName.find_by_name("yes")
+    Encounter.joins([:observations]).where(["concept_id = ? AND (value_text = 'Yes'
+      OR value_coded = ?) AND ( DATE(encounter_datetime) >= ? 
+      AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
+      ConceptName.find_by_name("Bed Net").concept_id,
+      yes_concept.concept_id,
         @monthly_start_date.to_date.beginning_of_month, 
         @monthly_end_date.to_date.end_of_month, 
         @new_monthly_visits]
