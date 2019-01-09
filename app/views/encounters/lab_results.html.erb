@@ -467,7 +467,8 @@
     <!-- %= touch_hidden_tag "MALAWI ART SIDE EFFECTS", @patient, "#{element}", :id => "#{element}" %_-->
     <%= (touch_hidden_tag "#{element}", @patient, "", :id => "#{element}_child_concept").html_safe %>
   <% end %>
-  
+
+  <% unless @patient.previous_pregnancy_test_done?(today) == true %>
   <%= (touch_select_tag "Pregnancy test", @patient,
     options_for_select([["", ""],["Yes", "Yes"],["No", "No"]] ),
     {
@@ -477,6 +478,8 @@
       :tt_onLoad => "parsedConceptName = 'Pregnancy test';"
     }).html_safe
   %>
+  <% end %>
+  
 
   <%= text_field_tag :showSummary, nil,
     {
