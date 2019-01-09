@@ -238,10 +238,10 @@ class ReportsController < ApplicationController
 
         @first_visit_hiv_not_done = (@new_women_registered - @first_visit_hiv_test_result_prev_negative -
             @first_visit_hiv_test_result_prev_positive - @first_visit_new_negative - @first_visit_new_positive)
-        @final_visit_hiv_test_result_prev_negative = report.final_visit_hiv_test_result_prev_negative
         @final_visit_hiv_test_result_prev_positive = report.final_visit_hiv_test_result_prev_positive
         @final_visit_new_negative = report.final_visit_new_negative
         @final_visit_new_positive = report.final_visit_new_positive
+        @final_visit_hiv_test_result_prev_negative = (report.final_visit_hiv_test_result_prev_negative - @final_visit_new_negative).uniq
         
          @final_visit_hiv_not_done = (report.total_on_booking_cohort - @final_visit_hiv_test_result_prev_negative -
             @final_visit_hiv_test_result_prev_positive - @final_visit_new_negative - @final_visit_new_positive)
@@ -414,10 +414,10 @@ class ReportsController < ApplicationController
     @first_visit_hiv_not_done = (@new_women_registered - @first_visit_hiv_test_result_prev_negative -
         @first_visit_hiv_test_result_prev_positive - @first_visit_new_negative - @first_visit_new_positive)
 
-    @final_visit_hiv_test_result_prev_negative = report.final_visit_hiv_test_result_prev_negative
     @final_visit_hiv_test_result_prev_positive = report.final_visit_hiv_test_result_prev_positive
     @final_visit_new_negative = report.final_visit_new_negative
     @final_visit_new_positive = report.final_visit_new_positive
+    @final_visit_hiv_test_result_prev_negative = (report.final_visit_hiv_test_result_prev_negative - @final_visit_new_negative).uniq
     @final_visit_hiv_not_done = (report.final_visit_hiv_not_done - @final_visit_hiv_test_result_prev_negative -
         @final_visit_hiv_test_result_prev_positive - @final_visit_new_negative - @final_visit_new_positive)
 
