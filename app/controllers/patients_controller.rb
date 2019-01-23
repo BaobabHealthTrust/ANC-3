@@ -900,6 +900,7 @@ class PatientsController < ApplicationController
   end
 
   def observations
+    @anc_patient = ANCService::ANC.new(@patient)
 
   end
 

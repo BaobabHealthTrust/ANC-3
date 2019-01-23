@@ -8,6 +8,7 @@
     var selectedSigns = "";
     var values_hash = {};
 
+    var fundus_by_lmp = "<%= @anc_patient.fundus_by_lmp %>"
     function selectNone(){
     
     if (__$("chkSelectAll") && __$("lblSelectAll")){
@@ -521,7 +522,71 @@
         jQuery('#touchscreenInput'+ tstCurrentPage).attr("absoluteMax", abMax);
     }
 
+    function validateFundalHeight(){
+      var fundal_input = __$('touchscreenInput'+tstCurrentPage);
+      var max_value = 0
+      
+      if (fundus_by_lmp <= 13){
+        max_value = 12;
+      }else if (fundus_by_lmp <= 14){
+        max_value = 13
+      }else if (fundus_by_lmp <= 16){
+        max_value = 14
+      }else if (fundus_by_lmp <= 17){
+        max_value = 15
+      }else if (fundus_by_lmp <= 18){
+        max_value = 16
+      }else if (fundus_by_lmp <= 19){
+        max_value = 17
+      }else if (fundus_by_lmp <= 20){
+        max_value = 18
+      }else if (fundus_by_lmp <= 19){
+        max_value = 21
+      }else if (fundus_by_lmp <= 22){
+        max_value = 20
+      }else if (fundus_by_lmp <= 24){
+        max_value = 21
+      }else if (fundus_by_lmp <= 25){
+        max_value = 22
+      }else if (fundus_by_lmp <= 26){
+        max_value = 23
+      }else if (fundus_by_lmp <= 27){
+        max_value = 24
+      }else if (fundus_by_lmp <= 28){
+        max_value = 25
+      }else if (fundus_by_lmp <= 29){
+        max_value = 26
+      }else if (fundus_by_lmp <= 30){
+        max_value = 27
+      }else if (fundus_by_lmp <= 32){
+        max_value = 28
+      }else if (fundus_by_lmp <= 33){
+        max_value = 29
+      }else if (fundus_by_lmp <= 34){
+        max_value = 30
+      }else if (fundus_by_lmp <= 35){
+        max_value = 31
+      }else if (fundus_by_lmp <= 36){
+        max_value = 32
+      }else if (fundus_by_lmp <= 37){
+        max_value = 33
+      }else if (fundus_by_lmp <= 38){
+        max_value = 34
+      }else if (fundus_by_lmp <= 39){
+        max_value = 35
+      }else if (fundus_by_lmp <= 40){
+        max_value = 36
+      }else if (fundus_by_lmp <= 42){
+        max_value = 37
+      }else if (fundus_by_lmp > 42){
+        max_value = 38
+      }
+
+      fundal_input.setAttribute("absoluteMax", max_value)
+    }
+
     setTimeout("selectNone()", 50);
+    //setInterval("validateFundalHeight()", 200);
     //-->
 </script>
 
@@ -650,7 +715,8 @@
       :helptext => "Fundal height (cm) <span class='helper'> ANC Examination</span>",
       :tt_pageStyleClass => "NumbersWithUnknown",
       :absoluteMin => 10,
-      :absoluteMax => 45
+      :absoluteMax => 45,
+      :tt_onLoad => "validateFundalHeight();"
      }, session_date).html_safe %>
 
     <%= (touch_select_tag "FETAL HEART BEAT", @patient,
