@@ -52,11 +52,17 @@ mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/migrate/
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/migrate/global_property.sql
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/openmrs_metadata_1_7.sql
 
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/addition_concepts.sql
+mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/anc2_schema_additions.sql
 
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/initial_setup/modular_tables.sql
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/bart2_views_schema_additions.sql
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/initial_setup/regimens.sql
 mysql --host=$HOST --user=$USERNAME --password=$PASSWORD $DATABASE < db/revised_regimens.sql
+
+export RAILS_ENV=$ENV
+
+bundle exec rake db:migrate db:seed
 
 echo "After completing database setup, you are advised to run the following:"
 echo "rake test"
