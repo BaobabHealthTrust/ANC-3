@@ -982,7 +982,7 @@ module ANCService
           label.draw_text("Visit Date: #{element}",450,33,0,1,1,2,false)
 
           gest = (((element.to_date - @current_range[0]["START"].to_date).to_i / 7) <= 0 ? "?" :
-              (((element.to_date - @current_range[0]["START"].to_date).to_i / 7) - 1).to_s + "cm") rescue ""
+              (((element.to_date - @current_range[0]["START"].to_date).to_i / 7) - 1).to_s + "wks") rescue ""
 
           label.draw_text(gest,29,200,0,2,1,1,false)
 
