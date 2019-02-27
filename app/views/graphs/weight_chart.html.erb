@@ -13,7 +13,7 @@
 		<%= javascript_include_tag "Highcharts/js/jquery.min.js" %>
 		<script type="text/javascript">
 
-		var obs = JSON.parse('<%=@obs%>');
+		var obs = JSON.parse('<%=@obs.html_safe%>');
 
 
   function getDates() {
