@@ -999,7 +999,7 @@ EOF
     patient.person_id = person.id
     patient.patient_id = person.patient.id rescue nil
     patient.arv_number = get_patient_identifier(person.patient, 'ARV Number') rescue nil
-    patient.address = person.addresses.first.city_village
+    patient.address = person.addresses.first.city_village rescue nil
     patient.national_id = get_patient_identifier(person.patient, 'National id') rescue nil
 	  patient.national_id_with_dashes = get_national_id_with_dashes(person.patient) rescue nil
     patient.name = person.names.first.given_name + ' ' + person.names.first.family_name rescue nil
