@@ -2450,6 +2450,6 @@ EOF
 
   private
   def format_date(date)
-     return  DateTime.parse(date).strftime("%d/%m/%Y")
+     return  date.to_date.strftime("%d/%m/%Y")
   end
 end

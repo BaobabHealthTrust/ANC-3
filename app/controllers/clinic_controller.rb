@@ -81,20 +81,22 @@ class ClinicController < GenericClinicController
       cat = cat > 4 ? ">5" : cat.to_s
       
       if data.creator.to_i == current_user.user_id.to_i
-        @me["#{cat}"] += 1
+        @me["#{cat}"] += 1 unless @me["#{cat}"].blank?
       end
-      @today["#{cat}"] += 1      
+      @today["#{cat}"] += 1 unless @today["#{cat}"].blank?
     end
 
-    Encounter.joins([:observations]).where(["encounter_type = ? AND concept_id = ? AND (DATE(encounter_datetime) BETWEEN (?) AND (?))",
+    x = Encounter.joins([:observations]).where(["encounter_type = ? AND concept_id = ? AND (DATE(encounter_datetime) BETWEEN (?) AND (?))",
         EncounterType.find_by_name("ANC VISIT TYPE").id,
         ConceptName.find_by_name("Reason for visit").concept_id,
         session_date.beginning_of_year, session_date.end_of_year]).group(["person_id"]
-    ).select(["encounter.creator, encounter_datetime AS date, MAX(value_numeric) form_id"]).each do |data|
+    ).select(["encounter.creator, encounter_datetime AS date, MAX(value_numeric) form_id"])
+    #raise x.inspect
+    x.each do |data|
 
       cat = data.form_id.to_i
       cat = cat > 4 ? ">5" : cat.to_s
-      @year["#{cat}"] += 1
+      @year["#{cat}"] += 1 unless @year["#{cat}"].blank?
     end
   
     @user = current_user.name rescue ""
