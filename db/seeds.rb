@@ -7,9 +7,9 @@
 #   Major.create(:name => 'Daley', :city => cities.first)
 
 # Validation rules for cohort report
-require 'fastercsv'
+require 'csv'
 puts "Adding validation rules for cohort reports"
-FasterCSV.foreach('db/validation_rules.csv',
+CSV.foreach('db/validation_rules.csv',
                   :col_sep => ',', :headers => :first_row) do |row|
                 
   expr = row['expr'] || ''
