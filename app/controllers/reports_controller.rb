@@ -212,6 +212,7 @@ class ReportsController < ApplicationController
       @sp_doses_given_more_than_three = report.sp_doses_given_more_than_three.uniq
 
       @fefo__number_of_tablets_given_1, @fefo__number_of_tablets_given_2 = report.fefo
+
       @albendazole_more_than_1 = report.albendazole(">1")
 
       @albendazole = report.albendazole(1) + @albendazole_more_than_1

@@ -347,18 +347,7 @@ class Reports
             [o.patient_id, o.count]
           }.compact.delete_if { |x, y| y.to_i <= 2 }.collect { |p, c| p }.uniq
   end
-=begin
-  def fansida__sp___number_of_tablets_given_1
 
-    Order.find(:all, :joins => [[:drug_order => :drug], :encounter],
-          :select => ["encounter.patient_id, encounter_datetime, drug.name instructions"],
-          :group => [:patient_id], :conditions => ["drug.name = ?  " +
-                                                      "AND DATE(encounter_datetime) <= ? AND encounter.patient_id IN (?)", "SP (3 tablets)",
-                                                   ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients]).collect { |o|
-          [o.patient_id, o.encounter_id]
-        }.delete_if { |x, y| y.to_i != 1 }.collect { |p, c| p }.uniq
-  end
-=end
   def fansida__sp
     fansida = {}
     single = []
@@ -384,30 +373,6 @@ class Reports
     return single, (twice + plus_3)
 
   end
-
-
-  def fansida__sp___number_of_tablets_given_2
-
-    Order.joins([[:drug_order => :drug], :encounter]).where(["(drug.name = ? OR drug.name = ?) " +
-          "AND DATE(encounter_datetime) <= ? AND encounter.patient_id IN (?)",
-        "Sulphadoxine and Pyrimenthane (25mg tablet)", "SP (3 tablets)",
-        ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients]).group([:patient_id]).select(["encounter.patient_id, count(distinct(DATE(encounter_datetime))) encounter_id, drug.name instructions"]).collect { |o|
-      [o.patient_id, o.encounter_id]
-    }.delete_if { |x, y| y.to_i != 2 }.collect { |p, c| p }
-
-  end
-
-  def fansida__sp___number_of_tablets_given_more_than_2
-
-    Order.joins([[:drug_order => :drug], :encounter]).where(["(drug.name = ? OR drug.name = ?)  " +
-          "AND DATE(encounter_datetime) <= ? AND encounter.patient_id IN (?)",
-        "Sulphadoxine and Pyrimenthane (25mg tablet)", "SP (3 tablets)",
-        ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients]).group([:patient_id]).select(["encounter.patient_id, count(distinct(DATE(encounter_datetime))) encounter_id, drug.name instructions"]).collect { |o|
-      [o.patient_id, o.encounter_id]
-    }.delete_if { |x, y| y.to_i < 3 }.collect { |p, c| p }
-
-  end
-
 
   def fefo
     fefol = {}
@@ -1260,11 +1225,15 @@ class Reports
 
   def bed_net
 
-    Encounter.joins([:observations]).where(["concept_id = ? AND (value_text IN ('Given Today', 'Given during previous ANC visit for current pregnancy')) AND ( DATE(encounter_datetime) >= #{@lmp} " +
-          "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
-        ConceptName.find_by_name("Bed Net").concept_id,
-        (@start_date.to_date + @pregnant_range), @cohort_patients]).collect { |e| e.patient_id }.uniq rescue []
-
+    Encounter.joins([:observations]).where(["concept_id = ? AND 
+      (value_text = 'Yes' OR value_coded = ? 
+        OR value_text IN ('Given Today', 'Given during previous ANC visit for current pregnancy')) 
+      AND ( DATE(encounter_datetime) >= #{@lmp} AND DATE(encounter_datetime) <= ?) 
+      AND encounter.patient_id IN (?)",
+      ConceptName.find_by_name("Bed Net").concept_id,
+      ConceptName.find_by_name("Yes").concept_id,
+      (@start_date.to_date + @pregnant_range), @cohort_patients])
+    .collect { |e| e.patient_id }.uniq rescue []
   end
 
   def on_art_in_bart
