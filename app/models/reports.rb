@@ -324,14 +324,28 @@ class Reports
   end
 
 
-  def fansida__sp___number_of_tablets_given_0
+  def sp_doses_given_zero_to_two
+    Order.where("(drug.name = ? OR drug.name = ?) AND DATE(encounter_datetime) <= ? 
+            AND encounter.patient_id IN (?)",
+            "Sulphadoxine and Pyrimenthane (25mg tablet)","SP (3 tablets)", 
+            ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients)
+          .joins([[:drug_order => :drug], :encounter])
+          .select(["encounter.patient_id, count(encounter.encounter_id) as count, encounter_datetime, drug.name instructions"])
+          .group([:patient_id]).collect { |o|
+            [o.patient_id, o.count]
+          }.compact.delete_if { |x, y| y.to_i > 2 }.collect { |p, c| p }.uniq
+  end
 
-    select = Order.joins([[:drug_order => :drug], :encounter]).where(["(drug.name = ? OR drug.name = ?)  AND (DATE(encounter_datetime) >= ? " +
-          "AND DATE(encounter_datetime) <= ?) AND encounter.patient_id IN (?)",
-        "Sulphadoxine and Pyrimenthane (25mg tablet)", "SP (3 tablets)",
-        @lmp,((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients]).select(["encounter.patient_id"]).map(&:patient_id).uniq
-    @cohort_patients - select
-
+  def sp_doses_given_more_than_three
+    Order.where("(drug.name = ? OR drug.name = ?) AND DATE(encounter_datetime) <= ? 
+            AND encounter.patient_id IN (?)",
+            "Sulphadoxine and Pyrimenthane (25mg tablet)","SP (3 tablets)", 
+            ((@start_date.to_date + @pregnant_range) - 1.day), @cohort_patients)
+          .joins([[:drug_order => :drug], :encounter])
+          .select(["encounter.patient_id, count(encounter.encounter_id) as count, encounter_datetime, drug.name instructions"])
+          .group([:patient_id]).collect { |o|
+            [o.patient_id, o.count]
+          }.compact.delete_if { |x, y| y.to_i <= 2 }.collect { |p, c| p }.uniq
   end
 =begin
   def fansida__sp___number_of_tablets_given_1

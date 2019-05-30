@@ -62,7 +62,7 @@ class ReportsController < ApplicationController
 
     @ttv__total_previous_doses_2 = report.ttv__total_previous_doses_2
 
-    @fansida__sp___number_of_tablets_given_1, @fansida__sp___number_of_tablets_given_2 = report.fansida__sp
+    #@fansida__sp___number_of_tablets_given_1, @fansida__sp___number_of_tablets_given_2 = report.fansida__sp
 
     @fefo__number_of_tablets_given_1 = report.fefo__number_of_tablets_given_1
 
@@ -207,11 +207,9 @@ class ReportsController < ApplicationController
 
       @ttv__total_previous_doses_2 = report.ttv__total_previous_doses_2
 
-      @fansida__sp___number_of_tablets_given_0 = report.fansida__sp___number_of_tablets_given_0.uniq
-
-      @fansida__sp___number_of_tablets_given_1, @fansida__sp___number_of_tablets_given_6 = report.fansida__sp
-
-      @fansida__sp___number_of_tablets_given_2 = @observations_total - (@fansida__sp___number_of_tablets_given_0 + @fansida__sp___number_of_tablets_given_1)
+      @sp_doses_given_zero_to_two = report.sp_doses_given_zero_to_two.uniq
+      
+      @sp_doses_given_more_than_three = report.sp_doses_given_more_than_three.uniq
 
       @fefo__number_of_tablets_given_1, @fefo__number_of_tablets_given_2 = report.fefo
       @albendazole_more_than_1 = report.albendazole(">1")
@@ -384,11 +382,10 @@ class ReportsController < ApplicationController
 
     @ttv__total_previous_doses_2 = report.ttv__total_previous_doses_2
 
-    @fansida__sp___number_of_tablets_given_0 = report.fansida__sp___number_of_tablets_given_0.uniq
+    @sp_doses_given_zero_to_two = report.sp_doses_given_zero_to_two.uniq
+    
+    @sp_doses_given_more_than_three = report.sp_doses_given_more_than_three.uniq
 
-    @fansida__sp___number_of_tablets_given_1, @fansida__sp___number_of_tablets_given_6 = report.fansida__sp
-
-    @fansida__sp___number_of_tablets_given_2 = @observations_total - (@fansida__sp___number_of_tablets_given_0 + @fansida__sp___number_of_tablets_given_1)
     @fefo__number_of_tablets_given_1, @fefo__number_of_tablets_given_2 = report.fefo
     @fefo__number_of_tablets_given_1 = @observations_total - @fefo__number_of_tablets_given_2 #report.fefo__number_of_tablets_given_1
     @albendazole_more_than_1 = report.albendazole(">1")

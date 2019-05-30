@@ -736,14 +736,14 @@
                                 12
                               </td>
                               <td style="border-top: 1px solid #999; border-left: 1px solid #999;">
-                                <form id="fansida__sp___number_of_tablets_given_0" method="post" action="decompose">
-                                  <input type="hidden" value="<%= @fansida__sp___number_of_tablets_given_0.join(",") %>" name="patients" />
+                                <form id="sp_doses_given_zero_to_two" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @sp_doses_given_zero_to_two.join(",") %>" name="patients" />
                                   0-2 doses
                                 </form>
                               </td>
                               <td class="valueCell">
-                                <a href="javascript:document.getElementById('fansida__sp___number_of_tablets_given_0').submit()">
-                                  <%= @fansida__sp___number_of_tablets_given_0.length %>
+                                <a href="javascript:document.getElementById('sp_doses_given_zero_to_two').submit()">
+                                  <%= @sp_doses_given_zero_to_two.length %>
                                 </a>
                               </td>
                             </tr>
@@ -752,34 +752,17 @@
                                 13
                               </td>
                               <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="fansida__sp___number_of_tablets_given_1" method="post" action="decompose">
-                                  <input type="hidden" value="<%= @fansida__sp___number_of_tablets_given_1.join(",") %>" name="patients" />
+                                <form id="sp_doses_given_more_than_three" method="post" action="decompose">
+                                  <input type="hidden" value="<%= @sp_doses_given_more_than_three.join(",") %>" name="patients" />
                                   &ge; 3 tabs
                                 </form>
                               </td>
                               <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('fansida__sp___number_of_tablets_given_1').submit()">
-                                  <%= @fansida__sp___number_of_tablets_given_1.length %>
+                                <a href="javascript:document.getElementById('sp_doses_given_more_than_three').submit()">
+                                  <%= @sp_doses_given_more_than_three.length %>
                                 </a>
                               </td>
                             </tr>
-                            <!-- tr>
-                              <td>
-                                11
-                              </td>
-                              <td style="border-left: 1px solid #999; border-bottom: 1px solid #999;">
-                                <form id="fansida__sp___number_of_tablets_given_2" method="post" action="decompose">
-                                  <input type="hidden" value="<%= @fansida__sp___number_of_tablets_given_2.join(",") %>" name="patients" />
-                                  2+ x 3 tabs
-                                </form>
-                              </td>
-                              <td class="valueCell" style="border-top: 0px;">
-                                <a href="javascript:document.getElementById('fansida__sp___number_of_tablets_given_2').submit()">
-                                  <%= @fansida__sp___number_of_tablets_given_2.length %>
-                                </a>
-                              </td>
-                            </tr -->
-
                             <tr>
                               <td>
                                 &nbsp;

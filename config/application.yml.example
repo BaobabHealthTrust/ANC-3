@@ -26,6 +26,8 @@ production:
  use.column.interface: true
  maternity.links: localhost:3000
  father_details: true
+ use_portal: false
+ portal_url: http://0.0.0.0:3008
  recency_test: false
  district: Lilongwe
 
@@ -58,6 +60,8 @@ development:
  use.column.interface: true
  maternity.links: localhost:3000
  father_details: true
+ use_portal: true
+ portal_url: http://0.0.0.0:3008
  recency_test: false
  district: Lilongwe
  
