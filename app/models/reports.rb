@@ -817,7 +817,7 @@ class Reports
                 where encounter_type = ? AND obs.concept_id = ? AND DATE(encounter_datetime) >= ?
                 AND DATE(encounter_datetime) <= ? AND encounter.voided = 0 AND encounter.patient_id = e.patient_id)
                 AS date,
-                (SELECT value_datetime FROM obs
+                (SELECT COALESCE(value_text, value_datetime) FROM obs
                 WHERE encounter_id = e.encounter_id AND obs.concept_id =
                 (SELECT concept_id FROM concept_name WHERE name = 'HIV test date' LIMIT 1)) AS test_date
                 FROM encounter e
