@@ -490,7 +490,7 @@
     :helpText => "<span class='helper'> ART Summary </span>"
   }
 %>
-  <% unless @hiv_status.blank? %>
+  <% unless @hiv_status.blank? && @patient.resent_hiv_status?(today) == 'Positive' %>
 <%= (touch_hidden_tag "Previous HIV Test done", @patient, "Yes", :id => "previous_hiv_test" ).html_safe
     %>
     
@@ -502,8 +502,8 @@
         :helptext => "Previous HIV Test Date <span class='helper'> Lab Results</span>",
         :tt_onUnLoad => "parsedConceptName = '';",
         :tt_onLoad => " parsedConceptName = 'Previous HIV Test date'; initializeDate();",
-        :condition => "__$('prev_hiv_test_results').value != '' ||
-          __$('previous_hiv_test').value == 'Yes'",
+        :condition => "(__$('prev_hiv_test_results').value != '' ||
+          __$('previous_hiv_test').value == 'Yes') && #{!(@patient.resent_hiv_status?(today) == 'positive')}",
         :absoluteMax => "#{(session[:datetime].to_date - 1.days) rescue (Date.today - 1.days)}",
         :absoluteMin => "#{@patient.person.birthdate.to_date rescue nil}"
       }).html_safe
@@ -521,7 +521,7 @@
         :helptext => "Is Patient On ART? <span class='helper'> Lab Results</span>",
         :tt_onUnLoad => "parsedConceptName = '';",
         :tt_onLoad => " parsedConceptName = 'On ART';",
-        :condition => "__$('prev_hiv_test_results').value == 'Positive'"
+        :condition => "__$('prev_hiv_test_results').value == 'Positive' && #{!(@patient.resent_hiv_status?(today) == 'positive')}"
       }).html_safe
     %>
     <% end %>

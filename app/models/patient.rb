@@ -347,31 +347,31 @@ EOF
   end
 end
 
-# Verifies if the last visit patient undergo pregnancy test
+  # Verifies if the last visit patient undergo pregnancy test
 
-def previous_pregnancy_test_done?(today = Date.today)
-  lab_encounter   = EncounterType.find_by_name("LAB RESULTS")
-  pregnancy_test  = ConceptName.find_by_name("Pregnancy test")
-  yes_concept     = ConceptName.find_by_name("Yes")
+  def previous_pregnancy_test_done?(today = Date.today)
+    lab_encounter   = EncounterType.find_by_name("LAB RESULTS")
+    pregnancy_test  = ConceptName.find_by_name("Pregnancy test")
+    yes_concept     = ConceptName.find_by_name("Yes")
 
-  lmp = self.lmp(today)
+    lmp = self.lmp(today)
 
-  checked_date = lmp.present?? lmp : (today.to_date - 9.months)
+    checked_date = lmp.present?? lmp : (today.to_date - 9.months)
 
-  last_test_visit = self.encounters.joins([:observations])
-    .where(["encounter.encounter_type = ? AND (obs.concept_id = ?) 
-      AND encounter.encounter_datetime > ?", lab_encounter.id,
-      pregnancy_test.concept_id,checked_date.to_date])
-    .order([:encounter_datetime])
-    .select("value_coded")
-    .last.value_coded rescue nil
+    last_test_visit = self.encounters.joins([:observations])
+      .where(["encounter.encounter_type = ? AND (obs.concept_id = ?) 
+        AND encounter.encounter_datetime > ?", lab_encounter.id,
+        pregnancy_test.concept_id,checked_date.to_date])
+      .order([:encounter_datetime])
+      .select("value_coded")
+      .last.value_coded rescue nil
   
-  if last_test_visit == yes_concept.concept_id
-    return true
+    if last_test_visit == yes_concept.concept_id
+      return true
+    end
+
+    return false
+
   end
-
-  return false
-
-end
 
 end
